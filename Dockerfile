@@ -20,4 +20,4 @@ COPY recommend_app ./recommend_app
 
 RUN poetry install --without dev,docs
 
-ENTRYPOINT ["poetry", "run", "python", "recommend_app/foo.py"]
+ENTRYPOINT ["poetry", "run", "python", "-m", "recommend_app"]

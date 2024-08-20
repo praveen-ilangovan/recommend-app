@@ -46,6 +46,12 @@ drun: ## Run the docker container
 	@docker run praveen/recommend-app
 
 ##################
+#####  RUN   #####
+.PHONY: run
+run: ## Run the app locally
+	@poetry run py -m recommend_app
+
+##################
 #####  HELP  #####
 .PHONY: help
 help:

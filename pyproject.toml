@@ -12,6 +12,8 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.12"
+pymongo = {extras = ["srv"], version = "^4.8.0"}
+python-dotenv = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

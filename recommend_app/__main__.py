@@ -2,14 +2,22 @@
 Entrypoint to the app
 """
 
+# Project specific imports
+from dotenv import load_dotenv
+
 # Local imports
-from .schema.card import Card
+from .db.recommendDB import RecommendDB
+
+# Load the environment variables
+load_dotenv()
 
 
 def main() -> None:
     """Main function"""
-    card = Card("https://www.netflix.com/gb/title/81767635", "Godzilla Minus One")
-    print(card)
+
+    db = RecommendDB.connect()
+    user_id = db.add_user("test121@example.com")
+    print(user_id)
 
 
 if __name__ == "__main__":

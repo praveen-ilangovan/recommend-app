@@ -9,10 +9,12 @@ from typing import TYPE_CHECKING
 
 # Project specific imports
 from pymongo import MongoClient
+from pymongo.errors import InvalidURI, OperationFailure, ServerSelectionTimeoutError
 
 # Local imports
 from . import constants as Key
 from .collections.users import Users
+from .exceptions import RecommendDBConnectionError
 
 if TYPE_CHECKING:
     from .typealiases import MongoDatabase
@@ -44,11 +46,37 @@ class RecommendDB:
 
         Returns:
             RecommendDB: An instance of this class
+
+        Raises:
+            RecommendDBConnectionError
         """
-        url = Key.DB_URL.format(
+        url = os.environ["DB_URL"].format(
             USER=os.getenv("DB_USER_ID"), PWD=os.getenv("DB_PASSWORD")
         )
-        return cls(MongoClient(url)[dbname])
+
+        try:
+            # Check if custom timeout is set.
+            serverSelectionTimeoutMS = os.getenv("DB_SERVERSELECTIONTIMEOUT")
+            if serverSelectionTimeoutMS is not None:
+                client: MongoClient = MongoClient(
+                    url, serverSelectionTimeoutMS=int(serverSelectionTimeoutMS)
+                )
+            else:
+                client = MongoClient(url)
+
+            client.server_info()
+            return cls(client[dbname])
+
+        except (InvalidURI, OperationFailure, ServerSelectionTimeoutError) as err:
+            raise RecommendDBConnectionError from err
+
+    ###########################################################################
+    # Properties
+    ###########################################################################
+    @property
+    def _db(self) -> "MongoDatabase":
+        """Returns the instance of the MongoDB"""
+        return self.__db
 
     ###########################################################################
     # Methods: Users

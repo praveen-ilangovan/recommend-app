@@ -14,6 +14,7 @@ packages = [
 python = "^3.12"
 pymongo = {extras = ["srv"], version = "^4.8.0"}
 python-dotenv = "^1.0.1"
+pytest-dotenv = "^0.5.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
@@ -25,6 +26,9 @@ pre-commit = "^3.8.0"
 mkdocs = "^1.6.0"
 mkdocs-material = "^9.5.31"
 mkdocstrings = {extras = ["python"], version = "^0.25.2"}
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pytest-dotenv"]
 
 [build-system]
 requires = ["poetry-core"]

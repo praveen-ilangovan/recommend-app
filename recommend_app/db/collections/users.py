@@ -45,4 +45,4 @@ class Users(AbstractCollection):
         Raises:
             RecommendDBDuplicateKeyError - If the email_address isn't unique.
         """
-        return super().add(**{Key.USER_EMAIL_ADDRESS: email_address})
+        return self._add(**{Key.USER_EMAIL_ADDRESS: email_address})

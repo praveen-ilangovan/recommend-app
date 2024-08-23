@@ -57,7 +57,7 @@ class AbstractCollection(ABC):
         """
         self.__collection.create_index([(key, pymongo.ASCENDING)], unique=unique)
 
-    def add(self, **kwargs) -> str:
+    def _add(self, **kwargs) -> str:
         """Adds a new entry to the collection
 
         Please refer to the classes instancing this class for arguments.

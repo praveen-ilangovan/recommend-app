@@ -72,3 +72,15 @@ class Users(AbstractCollection):
         """
         user_dict = self._find({"email_address": email_address})
         return User(**user_dict)
+
+    def remove(self, user: "User") -> bool:
+        """
+        Remove the user from the database
+
+        Args:
+            user (User) : User to be removed
+
+        Returns:
+            True if user is removed
+        """
+        return self._remove({Key.ATTR_ID: user._id})

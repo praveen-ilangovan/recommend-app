@@ -123,3 +123,15 @@ class RecommendDB:
             User : user data
         """
         return self.__users.get_by_email_address(email_address)
+
+    def remove_user(self, user: "User") -> bool:
+        """
+        Remove the user from the database
+
+        Args:
+            user (User) : User to be removed
+
+        Returns:
+            True if user is removed
+        """
+        return self.__users.remove(user)

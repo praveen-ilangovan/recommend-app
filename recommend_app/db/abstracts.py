@@ -100,6 +100,21 @@ class AbstractCollection(ABC):
 
         return obj
 
+    def _remove(self, attrs_dict: dict[str, Any]) -> bool:
+        """
+        Remove a document from the database
+
+        Args:
+            attrs_dict (dict): A dictionary of key-value pairs.
+
+        Returns:
+            True if the item is removed.
+        """
+        if Key.ATTR_ID in attrs_dict:
+            attrs_dict[Key.ATTR_ID] = self.__get_object_id(attrs_dict[Key.ATTR_ID])
+
+        return self.__collection.delete_one(attrs_dict).deleted_count != 0
+
     ###########################################################################
     # Methods: private
     ###########################################################################

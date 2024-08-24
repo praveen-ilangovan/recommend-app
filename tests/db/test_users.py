@@ -6,6 +6,7 @@ Test the Users collection
 import pytest
 
 # Package imports
+from recommend_app.db.models.user import User
 from recommend_app.db.exceptions import (RecommendDBDuplicateKeyError,
                                          RecommendDBInvalidIDError,
                                          RecommendDBObjectNotFound)
@@ -46,3 +47,12 @@ def test_get_user_by_email_address(recommendDB):
     user = recommendDB.get_user_by_email_address(email_address)
     assert user.email_address == email_address
     assert user._id == user_id
+
+def test_remove_user(recommendDB):
+    user_id = recommendDB.add_user("test1219@example.com")
+    user = recommendDB.get_user(user_id) 
+    assert recommendDB.remove_user(user)
+
+def test_remove_user_non_existent_user(recommendDB):
+    user = User('t@eple.com', _id='66c9fa30ead0ee3fdef76ad2')
+    assert not recommendDB.remove_user(user)

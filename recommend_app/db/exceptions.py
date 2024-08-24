@@ -19,3 +19,15 @@ class RecommendDBDuplicateKeyError(BaseException):
     Catches mongoDB's duplicate key error
     pymongo.errors.DuplicateKeyError: E11000 duplicate key error collection
     """
+
+
+class RecommendDBInvalidIDError(BaseException):
+    """
+    Raises when an object id is invalid
+    """
+
+
+class RecommendDBObjectNotFound(BaseException):
+    """
+    Raises when an object is not found
+    """

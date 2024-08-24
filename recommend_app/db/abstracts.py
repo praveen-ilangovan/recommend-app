@@ -4,14 +4,20 @@ Holds the abstract classes used in the recommend_app.db module
 
 # Builtin imports
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from bson.objectid import ObjectId
+from bson.errors import InvalidId
+from typing import TYPE_CHECKING, Any
 
 # Project specific imports
 import pymongo
 import pymongo.errors
 
 # Local imports
-from .exceptions import RecommendDBDuplicateKeyError
+from .exceptions import (
+    RecommendDBDuplicateKeyError,
+    RecommendDBInvalidIDError,
+    RecommendDBObjectNotFound,
+)
 
 if TYPE_CHECKING:
     from .typealiases import MongoDatabase
@@ -74,3 +80,23 @@ class AbstractCollection(ABC):
             raise RecommendDBDuplicateKeyError(
                 "Document with this unique index already exists"
             ) from err
+
+    def _get_by_id(self, _id: str) -> dict[str, Any]:
+        """Get the document by its ID
+
+        Args:
+            _id (str) : ID of the object
+
+        Returns:
+            dict
+        """
+        try:
+            object_id: ObjectId = ObjectId(_id)
+        except (TypeError, InvalidId) as err:
+            raise RecommendDBInvalidIDError(err) from err
+
+        obj = self.__collection.find_one({"_id": object_id})
+        if obj is None:
+            raise RecommendDBObjectNotFound(f"Object with id: {_id} not found.")
+
+        return obj

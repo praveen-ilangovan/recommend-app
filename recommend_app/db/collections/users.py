@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 # Local imports
 from ..abstracts import AbstractCollection
 from .. import constants as Key
+from ..models.user import User
 
 if TYPE_CHECKING:
     from ..typealiases import MongoDatabase
@@ -46,3 +47,15 @@ class Users(AbstractCollection):
             RecommendDBDuplicateKeyError - If the email_address isn't unique.
         """
         return self._add(**{Key.USER_EMAIL_ADDRESS: email_address})
+
+    def get(self, _id: str) -> User:
+        """Get the user by their unique ID
+
+        Args:
+            _id (str) : ID of the user
+
+        Returns:
+            User
+        """
+        user_dict = self._get_by_id(_id)
+        return User(**user_dict)

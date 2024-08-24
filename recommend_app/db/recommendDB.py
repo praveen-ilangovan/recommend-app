@@ -18,6 +18,7 @@ from .exceptions import RecommendDBConnectionError
 
 if TYPE_CHECKING:
     from .typealiases import MongoDatabase
+    from .models.user import User
 
 
 class RecommendDB:
@@ -64,6 +65,8 @@ class RecommendDB:
             else:
                 client = MongoClient(url)
 
+            # Do this to make sure the connection is established. This throws
+            # an exception if there is no connection.
             client.server_info()
             return cls(client[dbname])
 
@@ -96,6 +99,18 @@ class RecommendDB:
             RecommendDBDuplicateKeyError - If the email_address isn't unique.
         """
         return self.__users.add(email_address)
+
+    def get_user(self, _id: str) -> "User":
+        """
+        Get the user from the database using their uniqueID.
+
+        Args:
+            _id (str) : User's unique ID
+
+        Returns:
+            User : user data
+        """
+        return self.__users.get(_id)
 
 
 # class TRecommendDB():

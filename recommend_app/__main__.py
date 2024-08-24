@@ -16,9 +16,9 @@ def main() -> None:
     """Main function"""
 
     db = RecommendDB.connect()
-    print(db)
-    # user_id = db.add_user("test121@example.com")
-    # print(user_id)
+    user_id = db.add_user("test1217@example.com")
+    user = db.get_user(user_id)
+    print(user)
 
 
 if __name__ == "__main__":

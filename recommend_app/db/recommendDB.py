@@ -112,51 +112,14 @@ class RecommendDB:
         """
         return self.__users.get(_id)
 
+    def get_user_by_email_address(self, email_address: str) -> "User":
+        """
+        Get the user from the database using their email address.
 
-# class TRecommendDB():
-#     def __init__(self, client: pymongo.MongoClient):
-#         self.__client = client
-#         self.__db = self.__client[Key.RECOMMEND_DATABASE]
+        Args:
+            email_address (str) : User's email address
 
-#         self.__users = self.__db[Key.USERS_COLLECTION]
-#         print(self.__users)
-#         self.__users.create_index([(Key.USER_EMAIL_ADDRESS, pymongo.ASCENDING)], unique=True)
-
-#     ###########################################################################
-#     # Methods: User
-#     ###########################################################################
-#     def add_user(self, email_address: str) -> None:
-#         """ Adds a new user to the db.
-
-#         Args:
-#             email_address (str): Email address of the user
-#         """
-#         return self.__users.insert_one({Key.USER_EMAIL_ADDRESS: email_address}).inserted_id
-
-#     def get_user_by_id(self, id: str) -> None:
-#         return self.__users.find_one({"_id": ObjectId(id)})
-
-#     def get_user_by_index(self, email_address) -> None:
-#         return self.__users.find_one({Key.USER_EMAIL_ADDRESS: email_address})
-
-
-# class TUsers:
-#     def __init__(self, db):
-#         self.__collection = self.__db[Key.USERS_COLLECTION]
-#         self.__collection.create_index([(Key.USER_EMAIL_ADDRESS, pymongo.ASCENDING)], unique=True)
-
-#     def add(self, email_address):
-#         """
-#         """
-
-#     def get_by_id(self, id):
-#         """
-#         """
-
-#     def get_by_index(self, email_address):
-#         """
-#         """
-
-#     def remove(self, email_address):
-#         """
-#         """
+        Returns:
+            User : user data
+        """
+        return self.__users.get_by_email_address(email_address)

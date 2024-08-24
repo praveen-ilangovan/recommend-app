@@ -39,3 +39,10 @@ def test_get_user_invalid_id_length(recommendDB):
 def test_get_user_who_doesnt_exist(recommendDB):
     with pytest.raises(RecommendDBObjectNotFound):
         recommendDB.get_user('111111111111111111111111')
+
+def test_get_user_by_email_address(recommendDB):
+    email_address = 'testUser126@example.com'
+    user_id = recommendDB.add_user(email_address)
+    user = recommendDB.get_user_by_email_address(email_address)
+    assert user.email_address == email_address
+    assert user._id == user_id

@@ -14,3 +14,6 @@ COL_BOARDS = "boards"
 
 # Collection: Cards
 COL_CARDS = "cards"
+
+# Attr_ID
+ATTR_ID = "_id"

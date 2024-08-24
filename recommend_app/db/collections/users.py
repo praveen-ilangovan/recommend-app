@@ -57,5 +57,18 @@ class Users(AbstractCollection):
         Returns:
             User
         """
-        user_dict = self._get_by_id(_id)
+        user_dict = self._find({Key.ATTR_ID: _id})
+        return User(**user_dict)
+
+    def get_by_email_address(self, email_address: str) -> "User":
+        """
+        Get the user from the database using their email address.
+
+        Args:
+            email_address (str) : User's email address
+
+        Returns:
+            User : user data
+        """
+        user_dict = self._find({"email_address": email_address})
         return User(**user_dict)

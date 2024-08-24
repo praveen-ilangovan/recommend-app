@@ -13,6 +13,7 @@ import pymongo
 import pymongo.errors
 
 # Local imports
+from . import constants as Key
 from .exceptions import (
     RecommendDBDuplicateKeyError,
     RecommendDBInvalidIDError,
@@ -81,22 +82,42 @@ class AbstractCollection(ABC):
                 "Document with this unique index already exists"
             ) from err
 
-    def _get_by_id(self, _id: str) -> dict[str, Any]:
-        """Get the document by its ID
+    def _find(self, attrs_dict: dict[str, Any]) -> dict[str, Any]:
+        """Find the document using its attributes
 
         Args:
-            _id (str) : ID of the object
+            attrs_dict (dict): A dictionary of key-value pairs.
 
         Returns:
             dict
         """
-        try:
-            object_id: ObjectId = ObjectId(_id)
-        except (TypeError, InvalidId) as err:
-            raise RecommendDBInvalidIDError(err) from err
+        if Key.ATTR_ID in attrs_dict:
+            attrs_dict[Key.ATTR_ID] = self.__get_object_id(attrs_dict[Key.ATTR_ID])
 
-        obj = self.__collection.find_one({"_id": object_id})
+        obj = self.__collection.find_one(attrs_dict)
         if obj is None:
-            raise RecommendDBObjectNotFound(f"Object with id: {_id} not found.")
+            raise RecommendDBObjectNotFound(f"No object found matching - {attrs_dict}")
 
         return obj
+
+    ###########################################################################
+    # Methods: private
+    ###########################################################################
+    def __get_object_id(self, _id: str) -> ObjectId:
+        """
+        Convert str id to ObjectId.
+
+        Args:
+            _id (str) : Unique ID
+
+        Returns:
+            ObjectId
+
+        Raises:
+            TypeError: if _id isn't str|byte
+            InvalidId: if _id isn't of right length
+        """
+        try:
+            return ObjectId(_id)
+        except (TypeError, InvalidId) as err:
+            raise RecommendDBInvalidIDError(err) from err

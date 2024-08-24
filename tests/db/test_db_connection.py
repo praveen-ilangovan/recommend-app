@@ -15,7 +15,7 @@ from recommend_app.db.exceptions import RecommendDBConnectionError
 TEST_DB_NAME = 'testRecommendDB'
 
 ###############################################################################
-# Fixtures: With invalid env variables
+# Fixtures
 ###############################################################################
 @pytest.fixture(scope="function")
 def invalidURL():

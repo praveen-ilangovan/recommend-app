@@ -1,5 +1,27 @@
 """
-Defines the user model
+Module: user
+
+This module defines the `User` class, which represents a user entity in the
+recommend_app. The `User` class is a simple data structure implemented using
+Python's `dataclass` decorator, which provides an easy way to create classes
+that primarily store data.
+
+Classes:
+- User: Represents a user with an email address and a unique identifier (UID).
+  It includes a custom string representation for better readability.
+
+Attributes:
+- email_address (str): The email address of the user.
+- uid (str): A unique identifier for the user. Defaults to an empty string.
+  The `uid` field is excluded from the `repr` output and from comparisons between `User` instances.
+
+Methods:
+- __str__() -> str: Returns a string representation of the `User` instance,
+  showing the user's email address in a formatted way.
+
+Example usage:
+    user = User(email_address="user@example.com", uid="12345")
+    print(user)  # Output: User[user@example.com]
 """
 
 # Builtin imports
@@ -9,11 +31,14 @@ from dataclasses import dataclass, field
 @dataclass
 class User:
     """
-    Dataclass that defines a user.
+    Represents a user with an email address and a unique identifier (UID).
+    It includes a custom string representation for better readability.
 
     Args:
-        email_address (str): Email address of the user
-        uid (str): Id for this card. This is optional.
+        email_address (str): The email address of the user.
+        uid (str): A unique identifier for the user. Defaults to an empty string.
+                The `uid` field is excluded from the `repr` output and from
+                comparisons between `User` instances.
     """
 
     email_address: str
@@ -23,5 +48,8 @@ class User:
     # Dunders
     ###########################################################################
     def __str__(self) -> str:
-        """Human readable representation of this instance."""
+        """
+        Returns a string representation of the `User` instance, showing the
+        user's email address in a formatted way.
+        """
         return f"User[{self.email_address}]"

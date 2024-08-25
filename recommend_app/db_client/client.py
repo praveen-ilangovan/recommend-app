@@ -1,14 +1,38 @@
 """
-Module: client
+Module: recommend_db_client
 
-This module provides the `RecommendDbClient` class, which serves as the primary
-interface for interacting with the database. It exposes methods to add, get
-and remove users, boards and cards.
+This module contains the `RecommendDbClient` class, which provides a
+higher-level interface to interact with the recommendation database.
+The `RecommendDbClient` class abstracts operations such as connecting to the
+database, adding, retrieving, and removing the users, boards and cards.
+
+The class relies on an underlying database implementation that adheres to the
+`AbstractRecommendDB` interface. This ensures flexibility and allows the
+application to work with different database backends by providing a consistent
+API.
 
 Classes:
-- RecommendDbClient: Interface to perform CRUD operations (i.e) add, get and
-                     remove users, boards and cards.
+- RecommendDbClient: A wrapper class that interacts with the underlying database
+  and handles common operations such as connecting, adding, retrieving, and
+  removing users, boards and cards.
 
+Example usage:
+    from recommend_app.db_client.client import RecommendDbClient
+
+    db_client = RecommendDbClient(db=SomeRecommendDB())
+    db_client.connect()
+    new_user = db_client.add_user("user@example.com")
+    fetched_user = db_client.get_user(new_user.id)
+    db_client.remove_user(fetched_user)
+
+Exceptions:
+- RecommendDBConnectionError: Raised when the database connection fails.
+- RecommendDBModelCreationError: Raised when a model (e.g., user) creation fails.
+- RecommendDBModelNotFound: Raised when a requested model is not found in the database.
+
+Dependencies:
+- AbstractRecommendDB: An abstract base class that the underlying database
+  implementation must inherit from.
 """
 
 # Builtin imports
@@ -46,7 +70,7 @@ class RecommendDbClient:
         Establishes connection to the database
 
         Raises:
-            RecommendDBConnectionError
+            `RecommendDBConnectionError` if the connection fails.
         """
         status = self.__db.connect()
         if not status:
@@ -66,7 +90,7 @@ class RecommendDbClient:
             User
 
         Raises:
-            RecommendDBModelCreationError - If the email_address isn't unique.
+            `RecommendDBModelCreationError` if user creation fails.
         """
         user = self.__db.add_user(email_address)
         if user is None:
@@ -84,6 +108,9 @@ class RecommendDbClient:
 
         Returns:
             User
+
+        Raises:
+            `RecommendDBModelNotFound` if the user is not found.
         """
         user = self.__db.get_user(uid)
         if user is None:
@@ -99,6 +126,9 @@ class RecommendDbClient:
 
         Returns:
             User
+
+        Raises:
+            `RecommendDBModelNotFound` if the user is not found.
         """
         user = self.__db.get_user_by_email_address(email_address)
         if user is None:

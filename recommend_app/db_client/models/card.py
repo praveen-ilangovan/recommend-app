@@ -1,9 +1,34 @@
 """
-Card: An item that can be recommended.
+Module: card
 
-Card is the fundamental unit of this app. It stores the url of the item along
-with some key metadata like a human readable name, a short description and an
-image.
+This module defines the `Card` class, which represents a card-like structure
+containing a URL, title, description, image, and a unique identifier (UID).
+The `Card` class is implemented as an immutable data structure using Python's
+`dataclass` decorator with the `frozen=True` option, making instances of this
+class hashable and ensuring that they cannot be modified after creation.
+
+Classes:
+- Card: An immutable class representing a card with various attributes, such as
+  a URL, title, description, image, and UID. It also includes a custom string
+  representation for easier readability.
+
+Attributes:
+- url (str): The URL associated with the card.
+- title (str): The title of the card. This field is excluded from comparisons.
+- description (str): A brief description of the card. This field is excluded
+  from both `repr` output and comparisons.
+- image (str): The URL or path to the image associated with the card. This field
+  is excluded from both `repr` output and comparisons.
+- uid (str): A unique identifier for the card. This field is excluded from both
+  `repr` output and comparisons.
+
+Methods:
+- __str__() -> str: Returns a string representation of the `Card` instance,
+  displaying the card's title and URL.
+
+Example usage:
+    card = Card(url="https://example.com", title="Example Title")
+    print(card)  # Output: Example Title [https://example.com]
 """
 
 # Builtin imports
@@ -13,16 +38,19 @@ from dataclasses import dataclass, field
 @dataclass(frozen=True)
 class Card:
     """
-    Dataclass that defines a card.
+    An immutable class representing a card with various attributes, such as
+    a URL, title, description, image, and UID. It also includes a custom string
+    representation for easier readability.
 
-    Args:
-        url (str): URL of an item
-        title (str): Human readable name for this url
-        description (str): A short description about what the url is about.
-                           This is optional. Default is an empty string.
-        image (str): Link to an image. Could be used as a thumbnail.
-                     This is optional. Default is an empty string.
-        uid (str): Id for this card. This is optional.
+    Attributes:
+        url (str): The URL associated with the card.
+        title (str): The title of the card. This field is excluded from comparisons.
+        description (str): A brief description of the card. This field is
+                    excluded from both `repr` output and comparisons.
+        image (str): The URL or path to the image associated with the card. This field
+                    is excluded from both `repr` output and comparisons.
+        uid (str): A unique identifier for the card. This field is excluded from both
+                    `repr` output and comparisons.
     """
 
     url: str
@@ -35,5 +63,8 @@ class Card:
     # Dunders
     ###########################################################################
     def __str__(self) -> str:
-        """Human readable representation of this instance."""
+        """
+        Returns a string representation of the `Card` instance, displaying the
+        card's title and URL.
+        """
         return f"{self.title} [{self.url}]"

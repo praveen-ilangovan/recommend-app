@@ -17,7 +17,7 @@ class User:
     """
 
     email_address: str
-    _id: str = field(default="", repr=False, compare=False)
+    uid: str = field(default="", repr=False, compare=False)
 
     ###########################################################################
     # Dunders

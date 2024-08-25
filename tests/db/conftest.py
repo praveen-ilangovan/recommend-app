@@ -2,7 +2,8 @@
 import pytest
 
 # Package imports
-from recommend_app.db.recommendDB import RecommendDB
+from recommend_app.db_client import create_client
+from recommend_app.db_impl import create_db
 
 TEST_DB_NAME = 'testRecommendDB'
 
@@ -10,10 +11,12 @@ TEST_DB_NAME = 'testRecommendDB'
 # Fixtures
 ###############################################################################
 @pytest.fixture(scope="module")
-def recommendDB():
-    db = RecommendDB.connect(TEST_DB_NAME)
+def recommendDBClient():
+    db = create_db(TEST_DB_NAME)
+    client = create_client(db)
+    client.connect()
 
-    yield db
+    yield client
 
     # Cleanup
     db._db.client.drop_database(TEST_DB_NAME)

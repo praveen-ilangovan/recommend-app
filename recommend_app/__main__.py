@@ -2,12 +2,15 @@
 Entrypoint to the app
 """
 
+# Builtin imports
+import time
+
 # Project specific imports
 from dotenv import load_dotenv
 
 # Local imports
-from .db.recommendDB import RecommendDB
-from .db.models.user import User
+from .db_client import create_client
+from .db_impl import create_db
 
 # Load the environment variables
 load_dotenv()
@@ -15,17 +18,14 @@ load_dotenv()
 
 def main() -> None:
     """Main function"""
+    db = create_db()
+    client = create_client(db)
+    client.connect()
 
-    db = RecommendDB.connect()
-
-    user_id = db.add_user("test1219@example.com")
-    user = db.get_user(user_id)
-    res = db.remove_user(user)
-    print(res)
-
-    user = User("t@eple.com", _id="66c9fa30ead0ee3fdef76ad2")
-    res = db.remove_user(user)
-    print(res)
+    user = client.add_user(str(time.time()))
+    user1 = client.get_user(user.uid)
+    print(user1.email_address)
+    print(user == user1)
 
 
 if __name__ == "__main__":

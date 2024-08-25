@@ -9,11 +9,5 @@ DB_NAME = "recommendDB"
 COL_USERS = "users"
 USER_EMAIL_ADDRESS = "email_address"
 
-# Collection: Boards
-COL_BOARDS = "boards"
-
-# Collection: Cards
-COL_CARDS = "cards"
-
 # Attr_ID
 ATTR_ID = "_id"

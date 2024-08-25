@@ -6,7 +6,7 @@ Test the user model
 import pytest
 
 # Package imports
-from recommend_app.db.models.user import User
+from recommend_app.db_client.models.user import User
 
 TEST_EMAIL_ADDRESS = 'thisCoulcBeAnything@gmail.com'
 

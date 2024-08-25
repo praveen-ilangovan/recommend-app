@@ -9,8 +9,10 @@ import os
 import pytest
 
 # Package imports
-from recommend_app.db.recommendDB import RecommendDB
-from recommend_app.db.exceptions import RecommendDBConnectionError
+from recommend_app.db_client import create_client
+from recommend_app.db_impl import create_db
+from recommend_app.db_client.client import RecommendDbClient
+from recommend_app.db_client.exceptions import RecommendDBConnectionError
 
 TEST_DB_NAME = 'testRecommendDB'
 
@@ -38,7 +40,9 @@ def invalidURL():
 ###############################################################################
 def test_db_connection_with_invalid_url(invalidURL):
     with pytest.raises(RecommendDBConnectionError):
-        RecommendDB.connect(TEST_DB_NAME)
+        db = create_db("InvalidDBForTesting")
+        client = create_client(db)
+        client.connect()
 
-def test_db_connection(recommendDB):
-    assert isinstance(recommendDB, RecommendDB)
+def test_db_connection(recommendDBClient):
+    assert isinstance(recommendDBClient, RecommendDbClient)

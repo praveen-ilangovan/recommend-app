@@ -9,7 +9,7 @@ from dataclasses import FrozenInstanceError
 import pytest
 
 # Package import
-from recommend_app.schema.card import Card
+from recommend_app.db_client.models.card import Card
 
 CARD_DATA = {
     "url": "https://www.netflix.com/gb/title/81767635",

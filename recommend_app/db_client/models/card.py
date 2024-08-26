@@ -34,9 +34,12 @@ Example usage:
 # Builtin imports
 from dataclasses import dataclass, field
 
+# Local imports
+from ..model import RecommendBaseModel
 
-@dataclass(frozen=True)
-class Card:
+
+@dataclass(frozen=True, kw_only=True)
+class Card(RecommendBaseModel):
     """
     An immutable class representing a card with various attributes, such as
     a URL, title, description, image, and UID. It also includes a custom string

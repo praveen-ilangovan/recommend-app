@@ -29,7 +29,7 @@ def card():
 
 # Check creation of the card
 def test_creating_card_with_url_and_title():
-    card = Card(CARD_DATA["url"], CARD_DATA["title"])
+    card = Card(url=CARD_DATA["url"], title=CARD_DATA["title"])
     assert isinstance(card, Card)
 
 
@@ -39,7 +39,7 @@ def test_creating_card_with_all_attributes(card):
 
 def test_creating_card_with_only_url():
     with pytest.raises(TypeError):
-        card = Card(CARD_DATA["url"])
+        card = Card(url=CARD_DATA["url"])
 
 
 # Check the values of the card
@@ -72,10 +72,10 @@ def test_card_title_immutability(card):
 
 # Check its comparison
 def test_comparing_two_cards(card):
-    card2 = Card(CARD_DATA["url"], "Godzilla")
+    card2 = Card(url=CARD_DATA["url"], title="Godzilla")
     assert card == card2
 
 
 def test_comparing_two_cards_with_diff_url(card):
-    card2 = Card("https://www.imdb.com/title/tt23289160/", CARD_DATA["title"])
+    card2 = Card(url="https://www.imdb.com/title/tt23289160/", title=CARD_DATA["title"])
     assert card != card2

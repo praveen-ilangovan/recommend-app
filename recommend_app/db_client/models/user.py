@@ -25,24 +25,23 @@ Example usage:
 """
 
 # Builtin imports
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+
+# Local imports
+from ..model import RecommendBaseModel
 
 
-@dataclass
-class User:
+@dataclass(frozen=True, kw_only=True)
+class User(RecommendBaseModel):
     """
     Represents a user with an email address and a unique identifier (UID).
     It includes a custom string representation for better readability.
 
     Args:
         email_address (str): The email address of the user.
-        uid (str): A unique identifier for the user. Defaults to an empty string.
-                The `uid` field is excluded from the `repr` output and from
-                comparisons between `User` instances.
     """
 
     email_address: str
-    uid: str = field(default="", repr=False, compare=False)
 
     ###########################################################################
     # Dunders

@@ -62,5 +62,5 @@ def test_remove_user(recommendDBClient):
     assert recommendDBClient.remove_user(user)
 
 def test_remove_user_non_existent_user(recommendDBClient):
-    user = User('t@eple.com', uid='66c9fa30ead0ee3fdef76ad2')
+    user = User(email_address='t@eple.com', uid='66c9fa30ead0ee3fdef76ad2')
     assert not recommendDBClient.remove_user(user)

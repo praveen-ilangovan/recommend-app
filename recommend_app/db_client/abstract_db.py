@@ -73,6 +73,16 @@ class AbstractRecommendDB(ABC):
             Must return `True` on successful connection, otherwise `False`.
         """
 
+    # @abstractmethod
+    # def add(self, model, attrs_dict) -> Model:
+    #     """
+    #     Adds a new model entity to the database. Takes in the type of the model
+    #     to be added and a dictionary of required attributes for the entity.
+
+    #     Args:
+    #         model
+    #     """
+
     @abstractmethod
     def add_user(self, email_address: str) -> Optional[User]:
         """

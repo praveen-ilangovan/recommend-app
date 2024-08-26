@@ -44,7 +44,7 @@ class Users(AbstractCollection):
             User
         """
         uid = self._add(**{Key.USER_EMAIL_ADDRESS: email_address})
-        return User(email_address, uid) if uid else None
+        return User(email_address=email_address, uid=uid) if uid else None
 
     def get(self, uid: str) -> Optional[User]:
         """Get the user by their unique ID

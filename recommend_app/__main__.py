@@ -26,11 +26,13 @@ def main() -> None:
     client.connect()
 
     user = client.add_user(str(time.time()))
-    print(user)
-    client.remove_user(user)
+    print(user.uid)
+    # client.remove_user(user)
 
-    # user1 = client.get_user(user.uid)
-    # print(user1.email_address)
+    user1 = client.get_user(user.uid)
+    print(user1.uid)
+    user1 = client.get_user(user1.uid)
+    print(user1)
     # # print(user == user1)
 
 

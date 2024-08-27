@@ -21,7 +21,7 @@ from .collections import Collection, Users
 # from .collections.users import Users
 from ..db_client.abstracts.abstract_db import AbstractRecommendDB
 from ..db_client.models import RecommendModelType, RecommendModel
-from . import constants as Key
+from ..db_client.models import constants as ModelsKey
 
 from ..db_client.exceptions import (
     RecommendDBModelCreationError,
@@ -161,7 +161,7 @@ class RecommendDB(AbstractRecommendDB):
             msg = f"No collection found for {model.type}."
             raise RecommendDBModelNotFound(msg)
 
-        return collection.remove({Key.ATTR_ID: model.uid})
+        return collection.remove({ModelsKey.RECOMMEND_MODEL_ATTR_ID: model.uid})
 
     ###########################################################################
     # Methods: Privates

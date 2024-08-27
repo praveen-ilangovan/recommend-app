@@ -14,6 +14,7 @@ import pymongo
 # Local imports
 from . import constants as Key
 from ..db_client.models import RecommendModelType, RecommendModel, create_model
+from ..db_client.models import constants as ModelsKey
 from ..db_client.exceptions import (
     RecommendDBModelCreationError,
     RecommendDBModelNotFound,
@@ -70,12 +71,9 @@ class AbstractCollection(ABC):
             method must throw this exception if the model creation failed.
         """
         try:
-            uid = self.__collection.insert_one(attrs_dict).inserted_id
-
+            self.__collection.insert_one(attrs_dict)
             # dict cleanup
-            del attrs_dict["_id"]
-            attrs_dict["uid"] = uid
-
+            self.__mongo_to_attrs_dict(attrs_dict)
             return create_model(self.model_type, attrs_dict)
         except pymongo.errors.DuplicateKeyError as err:
             raise RecommendDBModelCreationError from err
@@ -89,14 +87,11 @@ class AbstractCollection(ABC):
         Returns:
             dict
         """
-        if "uid" in attrs_dict:
-            attrs_dict["_id"] = self.__get_object_id(attrs_dict["uid"])
-            del attrs_dict["uid"]
+        self.__attrs_dict_to_mongo(attrs_dict)
 
         result = self.__collection.find_one(attrs_dict)
         if result:
-            result["uid"] = result[Key.ATTR_ID]
-            del result[Key.ATTR_ID]
+            self.__mongo_to_attrs_dict(result)
             return create_model(self.model_type, result)
 
         msg = f"No result found. ModelType: {self.model_type}. Fields: {attrs_dict}"
@@ -112,9 +107,7 @@ class AbstractCollection(ABC):
         Returns:
             True if the item is removed.
         """
-        if Key.ATTR_ID in attrs_dict:
-            attrs_dict[Key.ATTR_ID] = self.__get_object_id(attrs_dict[Key.ATTR_ID])
-
+        self.__attrs_dict_to_mongo(attrs_dict)
         return self.__collection.delete_one(attrs_dict).deleted_count != 0
 
     ###########################################################################
@@ -134,3 +127,26 @@ class AbstractCollection(ABC):
             return ObjectId(_id)
         except (TypeError, InvalidId) as err:
             raise RecommendDBModelNotFound from err
+
+    def __attrs_dict_to_mongo(self, attr_dict):
+        """
+        Change key uid to _id
+        Then convert the value of _id to ObjectID
+        Delete uid
+        """
+        if ModelsKey.RECOMMEND_MODEL_ATTR_ID in attr_dict:
+            object_id = self.__get_object_id(
+                attr_dict[ModelsKey.RECOMMEND_MODEL_ATTR_ID]
+            )
+            attr_dict[Key.ATTR_ID] = object_id
+            del attr_dict[ModelsKey.RECOMMEND_MODEL_ATTR_ID]
+
+    def __mongo_to_attrs_dict(self, result):
+        """
+        Change key _id to uid
+        Convert the value to string
+        Delete _id
+        """
+        if Key.ATTR_ID in result:
+            result[ModelsKey.RECOMMEND_MODEL_ATTR_ID] = str(result[Key.ATTR_ID])
+            del result[Key.ATTR_ID]

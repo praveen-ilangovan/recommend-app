@@ -28,14 +28,16 @@ def main() -> None:
     board = client.add_board("movies", user)
     print(board)
 
-    board = client.add_board("books", user)
-    print(board)
-
     user2 = client.add_user(str(time.time()))
-    print(user2.uid)
+    # print(user2.uid)
 
-    board = client.add_board("movies", user2)
-    print(board)
+    board2 = client.add_board("movies", user2)
+
+    board1 = client.get_board_by_name(board.name, user2)
+    print(board1)
+
+    print(board2 == board1)
+    print(board == board1)
 
     # board = client.add_board("movies", user)
     # print(board)

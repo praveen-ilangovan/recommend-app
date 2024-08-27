@@ -175,3 +175,46 @@ class RecommendDbClient:
         )
         board = cast(Board, model)  # Type narrowing to keep static type checker happy.
         return board
+
+    def get_board(self, uid: str) -> Board:
+        """
+        Get the board from the database using its unique identifier.
+
+        Args:
+            uid (str) : Board's unique ID
+
+        Returns:
+            Board
+
+        Raises:
+            `RecommendDBModelNotFound` if the user is not found.
+        """
+        model = self.__db.get(
+            RecommendModelType.BOARD, {Key.RECOMMEND_MODEL_ATTR_ID: uid}
+        )
+        board = cast(Board, model)  # Type narrowing to keep static type checker happy.
+        return board
+
+    def get_board_by_name(self, name: str, user: User) -> Board:
+        """
+        Get the board by its name for the specified user.
+
+        Args:
+            uid (str) : Board's unique ID
+            user (User): User who creates and owns the board
+
+        Returns:
+            Board
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found.
+        """
+        model = self.__db.get(
+            RecommendModelType.BOARD,
+            {
+                Key.RECOMMEND_MODEL_ATTR_BOARD_NAME: name,
+                Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_ID: user.uid,
+            },
+        )
+        board = cast(Board, model)  # Type narrowing to keep static type checker happy.
+        return board

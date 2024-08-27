@@ -146,6 +146,29 @@ class RecommendDB(AbstractRecommendDB):
 
         return collection.find_one(attrs_dict)
 
+    def get_all(
+        self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
+    ) -> list[RecommendModel]:
+        """
+        Get all the entities for the given attrs_dict
+
+        Args:
+            model_type (RecommendModelType): Type of model
+            attrs_dict (dict): Key-value pairs.
+
+        Returns:
+            List[Board]
+
+        Raises:
+            `RecommendDBModelNotFound` if the boards are not found.
+        """
+        collection = self.__collections.get(model_type)
+        if not collection:
+            msg = f"No collection found for {model_type}."
+            raise RecommendDBModelNotFound(msg)
+
+        return collection.find_all(attrs_dict)
+
     def remove(self, model: RecommendModel) -> bool:
         """
         Remove the entity from the database

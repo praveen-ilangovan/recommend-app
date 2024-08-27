@@ -218,3 +218,37 @@ class RecommendDbClient:
         )
         board = cast(Board, model)  # Type narrowing to keep static type checker happy.
         return board
+
+    def get_all_boards(self, user: User) -> list[Board]:
+        """
+        Get all the boards for the given user
+
+        Args:
+            user (User): User who creates and owns the board
+
+        Returns:
+            List[Board]
+
+        Raises:
+            `RecommendDBModelNotFound` if the boards are not found.
+        """
+        models = self.__db.get_all(
+            RecommendModelType.BOARD,
+            {Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_ID: user.uid},
+        )
+        board = cast(
+            list[Board], models
+        )  # Type narrowing to keep static type checker happy.
+        return board
+
+    def remove_board(self, board: Board) -> bool:
+        """
+        Remove the board from the database
+
+        Args:
+            board (Board) : board to be removed
+
+        Returns:
+            True if user is removed
+        """
+        return self.__db.remove(board)

@@ -23,24 +23,10 @@ def main() -> None:
     client.connect()
 
     user = client.add_user(str(time.time()))
-    print(user.uid)
+    board1 = client.add_board("movies", user)
 
-    board = client.add_board("movies", user)
-    print(board)
-
-    user2 = client.add_user(str(time.time()))
-    # print(user2.uid)
-
-    board2 = client.add_board("movies", user2)
-
-    board1 = client.get_board_by_name(board.name, user2)
-    print(board1)
-
-    print(board2 == board1)
-    print(board == board1)
-
-    # board = client.add_board("movies", user)
-    # print(board)
+    result = client.remove_board(board1)
+    print(result)
 
 
 if __name__ == "__main__":

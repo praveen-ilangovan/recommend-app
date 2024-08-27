@@ -98,6 +98,30 @@ class AbstractCollection(ABC):
         msg = f"No result found. ModelType: {self.model_type}. Fields: {attrs_dict}"
         raise RecommendDBModelNotFound(msg)
 
+    def find_all(self, attrs_dict: dict[str, Any]) -> list[RecommendModel]:
+        """Find all the documents matching the attributes
+
+        Args:
+            attrs_dict (dict): A dictionary of key-value pairs.
+
+        Returns:
+            list[RecommendModel]
+        """
+        entities: list[RecommendModel] = []
+
+        self.__attrs_dict_to_mongo(attrs_dict)
+        result = self.__collection.find(attrs_dict)
+
+        for entity in result:
+            self.__mongo_to_attrs_dict(entity)
+            entities.append(create_model(self.model_type, entity))
+
+        if not entities:
+            msg = f"No result found. ModelType: {self.model_type}. Fields: {attrs_dict}"
+            raise RecommendDBModelNotFound(msg)
+
+        return entities
+
     def remove(self, attrs_dict: dict[str, Any]) -> bool:
         """
         Remove a document from the database

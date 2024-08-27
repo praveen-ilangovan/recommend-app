@@ -114,6 +114,24 @@ class AbstractRecommendDB(ABC):
         """
 
     @abstractmethod
+    def get_all(
+        self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
+    ) -> list[RecommendModel]:
+        """
+        Get all the entities for the given attrs_dict
+
+        Args:
+            model_type (RecommendModelType): Type of model
+            attrs_dict (dict): Key-value pairs.
+
+        Returns:
+            List[Board]
+
+        Raises:
+            `RecommendDBModelNotFound` if the boards are not found.
+        """
+
+    @abstractmethod
     def remove(self, model: RecommendModel) -> bool:
         """
         Remove the entity from the database.
@@ -124,16 +142,3 @@ class AbstractRecommendDB(ABC):
         Returns:
             bool
         """
-
-    # @abstractmethod
-    # def remove_user(self, user: User) -> bool:
-    #     """
-    #     Removes the specified `User` from the database. Must return `True` if
-    #     the removal is successful, otherwise `False`.
-
-    #     Args:
-    #         user (User) : User to be removed
-
-    #     Returns:
-    #         bool
-    #     """

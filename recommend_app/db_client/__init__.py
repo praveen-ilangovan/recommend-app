@@ -57,7 +57,7 @@ from typing import TYPE_CHECKING
 from .client import RecommendDbClient
 
 if TYPE_CHECKING:
-    from .abstract_db import AbstractRecommendDB
+    from .abstracts.abstract_db import AbstractRecommendDB
 
 
 def create_client(db: "AbstractRecommendDB") -> RecommendDbClient:

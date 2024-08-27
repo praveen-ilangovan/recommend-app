@@ -29,3 +29,50 @@ This package provides a centralized location for managing the core data models
 used throughout the application, ensuring that entities like `User` and `Card`
 are consistently represented and easily accessible.
 """
+
+# Builtin imports
+from typing import TypeAlias, Union, Any
+from enum import Enum
+
+# Local imports
+from .user import User
+from .card import Card
+from ..exceptions import RecommendDBModelTypeError
+from . import constants as Key
+
+# Custom data type for Recommend Models
+RecommendModel: TypeAlias = Union[User, Card]
+
+
+# Enum for models
+class RecommendModelType(Enum):
+    """
+    List all the available Models
+    """
+
+    USER = Key.RECOMMEND_MODEL_USER
+    CARD = Key.RECOMMEND_MODEL_CARD
+
+
+# Simple factory function to create a model
+def create_model(
+    model_type: RecommendModelType, attrs_dict: dict[str, Any]
+) -> RecommendModel:
+    """
+    Factory function to create a new instance of the model.
+
+    Args:
+      model_type (RecommendModelType): Type of model to be created.
+      attrs_dict (dict): Attrs to be passed to the model class.
+
+    Returns:
+      User | Board | Card
+
+    Raises:
+
+    """
+    if model_type == RecommendModelType.USER:
+        return User(**attrs_dict)
+    elif model_type == RecommendModelType.CARD:
+        return Card(**attrs_dict)
+    raise RecommendDBModelTypeError(f"Invalid RecommendModelType: {model_type}")

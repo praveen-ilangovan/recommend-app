@@ -42,10 +42,10 @@ databases without modifying the core application logic.
 
 # Builtin imports
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Any
 
 # Local imports
-from .models.user import User
+from ..models import RecommendModel, RecommendModelType
 
 
 class AbstractRecommendDB(ABC):
@@ -73,65 +73,67 @@ class AbstractRecommendDB(ABC):
             Must return `True` on successful connection, otherwise `False`.
         """
 
-    # @abstractmethod
-    # def add(self, model, attrs_dict) -> Model:
-    #     """
-    #     Adds a new model entity to the database. Takes in the type of the model
-    #     to be added and a dictionary of required attributes for the entity.
-
-    #     Args:
-    #         model
-    #     """
-
     @abstractmethod
-    def add_user(self, email_address: str) -> Optional[User]:
+    def add(
+        self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
+    ) -> RecommendModel:
         """
-        Adds a new user to the database based on the provided email address.
-        Must return the created `User` object on success, or `None` if
-        creation fails.
+        Adds a new model entity to the database. Takes in the type of the model
+        to be added and a dictionary of required attributes for the entity.
 
         Args:
-            email_address (str) : Email address of the user
+            model_type (RecommendModelType): Type of model
+            attrs_dict (dict): Key-value pairs.
 
         Returns:
-            User
+            `RecommendModel` - `User` | `Board` | `Card`
+
+        Raises:
+            `RecommendDBModelCreationError` - The class that implements this
+            method must throw this exception if the model creation failed.
         """
 
     @abstractmethod
-    def get_user(self, uid: str) -> Optional[User]:
+    def get(
+        self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
+    ) -> RecommendModel:
         """
-        Retrieves a user from the database by their unique identifier. Must
-        return the `User` object if found, or `None` if the user is not found.
+        Get the entity from the database that matches the fields set in the
+        attrs_dict.
 
         Args:
-            uid (str) : User's unique ID
+            model_type (RecommendModelType): Type of model
+            attrs_dict (dict): Key-value pairs.
 
         Returns:
-            User
+            `RecommendModel` - `User` | `Board` | `Card`
+
+        Raises:
+            `RecommendDBModelNotFound` - The class that implements this
+            method must throw this exception if the model is not found.
         """
 
     @abstractmethod
-    def get_user_by_email_address(self, email_address: str) -> Optional[User]:
+    def remove(self, model: RecommendModel) -> bool:
         """
-        Retrieves a user from the database by their email address. Must return
-        the `User` object if found, or `None` if the user is not found.
+        Remove the entity from the database.
 
         Args:
-            email_address (str) : User's email address
-
-        Returns:
-            User
-        """
-
-    @abstractmethod
-    def remove_user(self, user: User) -> bool:
-        """
-        Removes the specified `User` from the database. Must return `True` if
-        the removal is successful, otherwise `False`.
-
-        Args:
-            user (User) : User to be removed
+            model (RecommendModel): Model to be deleted.
 
         Returns:
             bool
         """
+
+    # @abstractmethod
+    # def remove_user(self, user: User) -> bool:
+    #     """
+    #     Removes the specified `User` from the database. Must return `True` if
+    #     the removal is successful, otherwise `False`.
+
+    #     Args:
+    #         user (User) : User to be removed
+
+    #     Returns:
+    #         bool
+    #     """

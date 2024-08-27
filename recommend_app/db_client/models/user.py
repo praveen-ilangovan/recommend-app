@@ -28,11 +28,12 @@ Example usage:
 from dataclasses import dataclass
 
 # Local imports
-from ..model import RecommendBaseModel
+from ..abstracts.abstract_model import AbstractRecommendModel
+from . import constants as Key
 
 
 @dataclass(frozen=True, kw_only=True)
-class User(RecommendBaseModel):
+class User(AbstractRecommendModel):
     """
     Represents a user with an email address and a unique identifier (UID).
     It includes a custom string representation for better readability.
@@ -42,6 +43,14 @@ class User(RecommendBaseModel):
     """
 
     email_address: str
+
+    ###########################################################################
+    # Property
+    ###########################################################################
+    @property
+    def type(self) -> str:
+        """Return the type of this model"""
+        return Key.RECOMMEND_MODEL_USER
 
     ###########################################################################
     # Dunders

@@ -35,11 +35,12 @@ Example usage:
 from dataclasses import dataclass, field
 
 # Local imports
-from ..model import RecommendBaseModel
+from ..abstracts.abstract_model import AbstractRecommendModel
+from . import constants as Key
 
 
 @dataclass(frozen=True, kw_only=True)
-class Card(RecommendBaseModel):
+class Card(AbstractRecommendModel):
     """
     An immutable class representing a card with various attributes, such as
     a URL, title, description, image, and UID. It also includes a custom string
@@ -61,6 +62,14 @@ class Card(RecommendBaseModel):
     description: str = field(default="", repr=False, compare=False)
     image: str = field(default="", repr=False, compare=False)
     uid: str = field(default="", repr=False, compare=False)
+
+    ###########################################################################
+    # Property
+    ###########################################################################
+    @property
+    def type(self) -> str:
+        """Return the type of this model"""
+        return Key.RECOMMEND_MODEL_CARD
 
     ###########################################################################
     # Dunders

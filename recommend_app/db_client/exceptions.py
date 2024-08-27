@@ -76,3 +76,10 @@ class RecommendDBModelNotFound(RecommendAppError):
     This is useful for handling cases where queries for non-existent records
     are made.
     """
+
+
+class RecommendDBModelTypeError(RecommendAppError):
+    """
+    Raised when the method expects a model of a particular type but received
+    something else.
+    """

@@ -36,18 +36,15 @@ Dependencies:
 """
 
 # Builtin imports
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 # Local imports
-from .exceptions import (
-    RecommendDBConnectionError,
-    RecommendDBModelCreationError,
-    RecommendDBModelNotFound,
-)
+from .models import RecommendModelType, User
+from .models import constants as Key
+from .exceptions import RecommendDBConnectionError
 
 if TYPE_CHECKING:
-    from .abstract_db import AbstractRecommendDB
-    from .models.user import User
+    from .abstracts.abstract_db import AbstractRecommendDB
 
 
 class RecommendDbClient:
@@ -78,7 +75,7 @@ class RecommendDbClient:
                 f"Connection to {self.__db.__class__.__name__} failed."
             )
 
-    def add_user(self, email_address: str) -> "User":
+    def add_user(self, email_address: str) -> User:
         """
         Add a new user to the db using their email_address. This email address
         has to be unique.
@@ -92,16 +89,15 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelCreationError` if user creation fails.
         """
-        user = self.__db.add_user(email_address)
-        if user is None:
-            raise RecommendDBModelCreationError(
-                f"Failed to create user: {email_address}"
-            )
+        model = self.__db.add(
+            RecommendModelType.USER, {Key.RECOMMEND_MODEL_ATTR_EMAIL: email_address}
+        )
+        user = cast(User, model)  # Type narrowing to keep static type checker happy.
         return user
 
-    def get_user(self, uid: str) -> "User":
+    def get_user(self, uid: str) -> User:
         """
-        Get the user from the database using their uniqueID.
+        Get the user from the database using their unique identifier.
 
         Args:
             uid (str) : User's unique ID
@@ -112,12 +108,13 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelNotFound` if the user is not found.
         """
-        user = self.__db.get_user(uid)
-        if user is None:
-            raise RecommendDBModelNotFound(f"User not found - uid:{uid}")
+        model = self.__db.get(
+            RecommendModelType.USER, {Key.RECOMMEND_MODEL_ATTR_ID: uid}
+        )
+        user = cast(User, model)  # Type narrowing to keep static type checker happy.
         return user
 
-    def get_user_by_email_address(self, email_address: str) -> "User":
+    def get_user_by_email_address(self, email_address: str) -> User:
         """
         Get the user from the database using their email address.
 
@@ -130,14 +127,13 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelNotFound` if the user is not found.
         """
-        user = self.__db.get_user_by_email_address(email_address)
-        if user is None:
-            raise RecommendDBModelNotFound(
-                f"User not found - email_address:{email_address}"
-            )
+        model = self.__db.get(
+            RecommendModelType.USER, {Key.RECOMMEND_MODEL_ATTR_EMAIL: email_address}
+        )
+        user = cast(User, model)  # Type narrowing to keep static type checker happy.
         return user
 
-    def remove_user(self, user: "User") -> bool:
+    def remove_user(self, user: User) -> bool:
         """
         Remove the user from the database
 
@@ -147,4 +143,4 @@ class RecommendDbClient:
         Returns:
             True if user is removed
         """
-        return self.__db.remove_user(user)
+        return self.__db.remove(user)

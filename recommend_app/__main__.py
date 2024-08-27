@@ -18,14 +18,20 @@ load_dotenv()
 
 def main() -> None:
     """Main function"""
+    # from .db_client.models import RecommendModelType
+    # print(RecommendModelType('User'))
+
     db = create_db()
     client = create_client(db)
     client.connect()
 
     user = client.add_user(str(time.time()))
-    user1 = client.get_user(user.uid)
-    print(user1.email_address)
-    print(user == user1)
+    print(user)
+    client.remove_user(user)
+
+    # user1 = client.get_user(user.uid)
+    # print(user1.email_address)
+    # # print(user == user1)
 
 
 if __name__ == "__main__":

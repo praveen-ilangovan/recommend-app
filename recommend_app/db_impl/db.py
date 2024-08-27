@@ -4,7 +4,7 @@ module: db
 
 # Builtin imports
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any
 
 # Project specific imports
 from pymongo import MongoClient
@@ -16,9 +16,17 @@ from pymongo.errors import (
 )
 
 # Local imports
-from .collections.users import Users
-from ..db_client.abstract_db import AbstractRecommendDB
-from ..db_client.models.user import User
+from .collections import Collection, Users
+
+# from .collections.users import Users
+from ..db_client.abstracts.abstract_db import AbstractRecommendDB
+from ..db_client.models import RecommendModelType, RecommendModel
+from . import constants as Key
+
+from ..db_client.exceptions import (
+    RecommendDBModelCreationError,
+    RecommendDBModelNotFound,
+)
 
 if TYPE_CHECKING:
     from pymongo.database import Database as MongoDB
@@ -28,8 +36,12 @@ class RecommendDB(AbstractRecommendDB):
     def __init__(self, dbname: str):
         super().__init__()
         self.__dbname = dbname
+
+        # Database
         self.__db: Optional["MongoDB"] = None
-        self.__users: Optional[Users] = None
+
+        # Collections
+        self.__collections: dict[RecommendModelType, Collection] = {}
 
     ###########################################################################
     # Properties
@@ -84,62 +96,72 @@ class RecommendDB(AbstractRecommendDB):
         ):
             return False
 
-    def add_user(self, email_address: str) -> Optional[User]:
+    def add(
+        self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
+    ) -> RecommendModel:
         """
-        Add a new user to the db using their email_address. This email address
-        has to be unique.
+        Adds a new model entity to the database. Takes in the type of the model
+        to be added and a dictionary of required attributes for the entity.
 
         Args:
-            email_address (str) : Email address of the user
+            model_type (RecommendModelType): Type of model
+            attrs_dict (dict): Key-value pairs.
 
         Returns:
-            User or None
-        """
-        if not self.__users:
-            return None
-        return self.__users.add(email_address)
+            `RecommendModel` - `User` | `Board` | `Card`
 
-    def get_user(self, uid: str) -> Optional[User]:
+        Raises:
+            `RecommendDBModelCreationError` - The class that implements this
+            method must throw this exception if the model creation failed.
         """
-        Get the user from the database using their uniqueID.
+        collection = self.__collections.get(model_type)
+        if not collection:
+            msg = f"No collection found for {model_type}."
+            raise RecommendDBModelCreationError(msg)
+
+        return collection.add(attrs_dict)
+
+    def get(
+        self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
+    ) -> RecommendModel:
+        """
+        Get the entity from the database that matches the fields set in the
+        attrs_dict.
 
         Args:
-            uid (str) : User's unique ID
+            model_type (RecommendModelType): Type of model
+            attrs_dict (dict): Key-value pairs.
 
         Returns:
-            User
-        """
-        if not self.__users:
-            return None
-        return self.__users.get(uid)
+            `RecommendModel` - `User` | `Board` | `Card`
 
-    def get_user_by_email_address(self, email_address: str) -> Optional[User]:
+        Raises:
+            `RecommendDBModelNotFound` - The class that implements this
+            method must throw this exception if the model is not found.
         """
-        Get the user from the database using their email address.
+        collection = self.__collections.get(model_type)
+        if not collection:
+            msg = f"No collection found for {model_type}."
+            raise RecommendDBModelNotFound(msg)
+
+        return collection.find_one(attrs_dict)
+
+    def remove(self, model: RecommendModel) -> bool:
+        """
+        Remove the entity from the database
 
         Args:
-            email_address (str) : User's email address
+            model (RecommendModel - User|Board|Card) : model to be removed
 
         Returns:
-            User : user data
+            True if model is removed
         """
-        if not self.__users:
-            return None
-        return self.__users.get_by_email_address(email_address)
+        collection = self.__collections.get(RecommendModelType(model.type))
+        if not collection:
+            msg = f"No collection found for {model.type}."
+            raise RecommendDBModelNotFound(msg)
 
-    def remove_user(self, user: User) -> bool:
-        """
-        Remove the user from the database
-
-        Args:
-            user (User) : User to be removed
-
-        Returns:
-            True if user is removed
-        """
-        if not self.__users:
-            return False
-        return self.__users.remove(user)
+        return collection.remove({Key.ATTR_ID: model.uid})
 
     ###########################################################################
     # Methods: Privates
@@ -149,4 +171,4 @@ class RecommendDB(AbstractRecommendDB):
         Initializes the db and collections
         """
         self.__db = db
-        self.__users = Users(self.__db)
+        self.__collections[RecommendModelType.USER] = Users(self.__db)

@@ -13,6 +13,11 @@ import pymongo
 
 # Local imports
 from . import constants as Key
+from ..db_client.models import RecommendModelType, RecommendModel, create_model
+from ..db_client.exceptions import (
+    RecommendDBModelCreationError,
+    RecommendDBModelNotFound,
+)
 
 if TYPE_CHECKING:
     from pymongo.database import Database as MongoDB
@@ -32,6 +37,11 @@ class AbstractCollection(ABC):
     def collection_name(self) -> str:
         """Returns the name of the collection"""
 
+    @property
+    @abstractmethod
+    def model_type(self) -> RecommendModelType:
+        """Returns the name of the model type this class handles"""
+
     ###########################################################################
     # Methods
     ###########################################################################
@@ -45,20 +55,32 @@ class AbstractCollection(ABC):
         """
         self.__collection.create_index([(key, pymongo.ASCENDING)], unique=unique)
 
-    def _add(self, **kwargs) -> Optional[str]:
-        """Adds a new entry to the collection
+    def add(self, attrs_dict: dict[str, Any]) -> RecommendModel:
+        """
+        Adds a new document to the collection.
 
-        Please refer to the classes instancing this class for arguments.
+        Args:
+            attrs_dict (dict): Key-value pairs.
 
         Returns:
-            str : Unique ID of the created entry or None
+            `RecommendModel` - `User` | `Board` | `Card`
+
+        Raises:
+            `RecommendDBModelCreationError` - The class that implements this
+            method must throw this exception if the model creation failed.
         """
         try:
-            return self.__collection.insert_one(kwargs).inserted_id
-        except pymongo.errors.DuplicateKeyError:
-            return None
+            uid = self.__collection.insert_one(attrs_dict).inserted_id
 
-    def _find(self, attrs_dict: dict[str, Any]) -> Optional[dict[str, Any]]:
+            # dict cleanup
+            del attrs_dict["_id"]
+            attrs_dict["uid"] = uid
+
+            return create_model(self.model_type, attrs_dict)
+        except pymongo.errors.DuplicateKeyError as err:
+            raise RecommendDBModelCreationError from err
+
+    def find_one(self, attrs_dict: dict[str, Any]) -> RecommendModel:
         """Find the document using its attributes
 
         Args:
@@ -67,17 +89,20 @@ class AbstractCollection(ABC):
         Returns:
             dict
         """
-        if Key.ATTR_ID in attrs_dict:
-            attrs_dict[Key.ATTR_ID] = self.__get_object_id(attrs_dict[Key.ATTR_ID])
+        if "uid" in attrs_dict:
+            attrs_dict["_id"] = self.__get_object_id(attrs_dict["uid"])
+            del attrs_dict["uid"]
 
         result = self.__collection.find_one(attrs_dict)
         if result:
             result["uid"] = result[Key.ATTR_ID]
             del result[Key.ATTR_ID]
+            return create_model(self.model_type, result)
 
-        return result
+        msg = f"No result found. ModelType: {self.model_type}. Fields: {attrs_dict}"
+        raise RecommendDBModelNotFound(msg)
 
-    def _remove(self, attrs_dict: dict[str, Any]) -> bool:
+    def remove(self, attrs_dict: dict[str, Any]) -> bool:
         """
         Remove a document from the database
 
@@ -107,5 +132,5 @@ class AbstractCollection(ABC):
         """
         try:
             return ObjectId(_id)
-        except (TypeError, InvalidId):
-            return None
+        except (TypeError, InvalidId) as err:
+            raise RecommendDBModelNotFound from err

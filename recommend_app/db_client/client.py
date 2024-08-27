@@ -39,7 +39,7 @@ Dependencies:
 from typing import TYPE_CHECKING, cast
 
 # Local imports
-from .models import RecommendModelType, User
+from .models import RecommendModelType, User, Board
 from .models import constants as Key
 from .exceptions import RecommendDBConnectionError
 
@@ -75,6 +75,9 @@ class RecommendDbClient:
                 f"Connection to {self.__db.__class__.__name__} failed."
             )
 
+    ###########################################################################
+    # Users
+    ###########################################################################
     def add_user(self, email_address: str) -> User:
         """
         Add a new user to the db using their email_address. This email address
@@ -144,3 +147,23 @@ class RecommendDbClient:
             True if user is removed
         """
         return self.__db.remove(user)
+
+    ###########################################################################
+    # Boards
+    ###########################################################################
+    def add_board(self, name: str, user: User) -> Board:
+        """
+        Add a board to the database. Takes in the name of the board and the
+        user who creates it. The name should be unique for the given user.
+
+        Args:
+            name (str): Name of the board
+            user (User): User who creates and owns the board
+
+        Returns:
+            Board
+
+        Raises:
+            `RecommendDBModelCreationError` if board creation fails.
+        """
+        return Board(name=name, owner_uid=user.uid)

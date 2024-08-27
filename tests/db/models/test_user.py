@@ -2,6 +2,9 @@
 Test the user model
 """
 
+# Builtin imports
+from dataclasses import FrozenInstanceError
+
 # PyTest imports
 import pytest
 
@@ -26,6 +29,10 @@ def test_user_creation(user):
 
 def test_user_email_address(user):
     assert user.email_address == TEST_EMAIL_ADDRESS
+
+def test_user_immutability(user):
+    with pytest.raises(FrozenInstanceError):
+        user.email_address = 'thisCoulcBeAnything@gmail.com'
 
 def test_user_comparison(user):
     user2 = User(email_address='thisCoulcBeAnything@gmail.com')

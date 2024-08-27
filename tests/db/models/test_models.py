@@ -6,12 +6,16 @@ Test the models.__init__
 import pytest
 
 # Package imports
-from recommend_app.db_client.models import RecommendModelType, User, Card, create_model
+from recommend_app.db_client.models import RecommendModelType, User, Card, Board, create_model
 from recommend_app.db_client.exceptions import RecommendDBModelTypeError
 
 def test_create_model_factory_user():
     user = create_model(RecommendModelType.USER, {"email_address":"hello@example.com"})
     assert isinstance(user, User)
+
+def test_create_model_factory_board():
+    board = create_model(RecommendModelType.BOARD, {"name":"movies", "owner_uid": "1234"})
+    assert isinstance(board, Board)
 
 def test_create_model_factory_card():
     card = create_model(RecommendModelType.CARD, {"url":"hello@example.com", "title": "hi"})

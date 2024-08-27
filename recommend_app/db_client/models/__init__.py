@@ -36,12 +36,13 @@ from enum import Enum
 
 # Local imports
 from .user import User
+from .board import Board
 from .card import Card
 from ..exceptions import RecommendDBModelTypeError
 from . import constants as Key
 
 # Custom data type for Recommend Models
-RecommendModel: TypeAlias = Union[User, Card]
+RecommendModel: TypeAlias = Union[User, Board, Card]
 
 
 # Enum for models
@@ -51,6 +52,7 @@ class RecommendModelType(Enum):
     """
 
     USER = Key.RECOMMEND_MODEL_USER
+    BOARD = Key.RECOMMEND_MODEL_BOARD
     CARD = Key.RECOMMEND_MODEL_CARD
 
 
@@ -73,6 +75,8 @@ def create_model(
     """
     if model_type == RecommendModelType.USER:
         return User(**attrs_dict)
+    elif model_type == RecommendModelType.BOARD:
+        return Board(**attrs_dict)
     elif model_type == RecommendModelType.CARD:
         return Card(**attrs_dict)
     raise RecommendDBModelTypeError(f"Invalid RecommendModelType: {model_type}")

@@ -12,28 +12,28 @@ from dotenv import load_dotenv
 from .db_client import create_client
 from .db_impl import create_db
 
+from .db_client.models.board import Board
+
 # Load the environment variables
 load_dotenv()
 
 
 def main() -> None:
     """Main function"""
-    # from .db_client.models import RecommendModelType
-    # print(RecommendModelType('User'))
-
     db = create_db()
     client = create_client(db)
     client.connect()
 
     user = client.add_user(str(time.time()))
     print(user.uid)
-    # client.remove_user(user)
 
-    user1 = client.get_user(user.uid)
-    print(user1.uid)
-    user1 = client.get_user(user1.uid)
-    print(user1)
-    # # print(user == user1)
+    board = Board(name="movies", owner_uid="1234")
+    print(board)
+
+    board1 = Board(name="movies", owner_uid="1235")
+    print(board1)
+
+    print(board == board1)
 
 
 if __name__ == "__main__":

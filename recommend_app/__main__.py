@@ -12,8 +12,6 @@ from dotenv import load_dotenv
 from .db_client import create_client
 from .db_impl import create_db
 
-from .db_client.models.board import Board
-
 # Load the environment variables
 load_dotenv()
 
@@ -27,13 +25,20 @@ def main() -> None:
     user = client.add_user(str(time.time()))
     print(user.uid)
 
-    board = Board(name="movies", owner_uid="1234")
+    board = client.add_board("movies", user)
     print(board)
 
-    board1 = Board(name="movies", owner_uid="1235")
-    print(board1)
+    board = client.add_board("books", user)
+    print(board)
 
-    print(board == board1)
+    user2 = client.add_user(str(time.time()))
+    print(user2.uid)
+
+    board = client.add_board("movies", user2)
+    print(board)
+
+    # board = client.add_board("movies", user)
+    # print(board)
 
 
 if __name__ == "__main__":

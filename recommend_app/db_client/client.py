@@ -166,4 +166,12 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelCreationError` if board creation fails.
         """
-        return Board(name=name, owner_uid=user.uid)
+        model = self.__db.add(
+            RecommendModelType.BOARD,
+            {
+                Key.RECOMMEND_MODEL_ATTR_BOARD_NAME: name,
+                Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_ID: user.uid,
+            },
+        )
+        board = cast(Board, model)  # Type narrowing to keep static type checker happy.
+        return board

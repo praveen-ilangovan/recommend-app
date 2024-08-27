@@ -46,7 +46,7 @@ class AbstractCollection(ABC):
     ###########################################################################
     # Methods
     ###########################################################################
-    def create_index(self, key: str, unique: bool = False) -> None:
+    def create_index(self, keys: list[str], unique: bool = False) -> None:
         """Make the key an index. If unique is set to True, make it a unique
         index.
 
@@ -54,7 +54,8 @@ class AbstractCollection(ABC):
             key (str): Key to be made an index
             unique (bool): If true, a unique index is created. Default: False.
         """
-        self.__collection.create_index([(key, pymongo.ASCENDING)], unique=unique)
+        index_list = [(key, pymongo.ASCENDING) for key in keys]
+        self.__collection.create_index(index_list, unique=unique)
 
     def add(self, attrs_dict: dict[str, Any]) -> RecommendModel:
         """
@@ -76,7 +77,7 @@ class AbstractCollection(ABC):
             self.__mongo_to_attrs_dict(attrs_dict)
             return create_model(self.model_type, attrs_dict)
         except pymongo.errors.DuplicateKeyError as err:
-            raise RecommendDBModelCreationError from err
+            raise RecommendDBModelCreationError(err) from err
 
     def find_one(self, attrs_dict: dict[str, Any]) -> RecommendModel:
         """Find the document using its attributes
@@ -126,7 +127,7 @@ class AbstractCollection(ABC):
         try:
             return ObjectId(_id)
         except (TypeError, InvalidId) as err:
-            raise RecommendDBModelNotFound from err
+            raise RecommendDBModelNotFound(err) from err
 
     def __attrs_dict_to_mongo(self, attr_dict):
         """

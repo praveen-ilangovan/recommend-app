@@ -16,7 +16,7 @@ from pymongo.errors import (
 )
 
 # Local imports
-from .collections import Collection, Users
+from .collections import Collection, Users, Boards
 
 # from .collections.users import Users
 from ..db_client.abstracts.abstract_db import AbstractRecommendDB
@@ -172,3 +172,4 @@ class RecommendDB(AbstractRecommendDB):
         """
         self.__db = db
         self.__collections[RecommendModelType.USER] = Users(self.__db)
+        self.__collections[RecommendModelType.BOARD] = Boards(self.__db)

@@ -1,9 +1,13 @@
+# Builtin imports
+import time
+
 # PyTest imports
 import pytest
 
 # Package imports
 from recommend_app.db_client import create_client
 from recommend_app.db_impl import create_db
+from recommend_app.db_client.models import User
 
 TEST_DB_NAME = 'testRecommendDB'
 

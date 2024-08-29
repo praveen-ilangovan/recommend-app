@@ -60,4 +60,4 @@ class User(AbstractRecommendModel):
         Returns a string representation of the `User` instance, showing the
         user's email address in a formatted way.
         """
-        return f"User[{self.email_address}]"
+        return f"{self.type}: [{self.email_address}]"

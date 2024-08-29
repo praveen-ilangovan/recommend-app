@@ -9,8 +9,11 @@ import pytest
 from recommend_app.db_client.models import RecommendModelType, User, Card, Board, create_model
 from recommend_app.db_client.exceptions import RecommendDBModelTypeError
 
+# Local imports
+from .. import utils
+
 def test_create_model_factory_user():
-    user = create_model(RecommendModelType.USER, {"email_address":"hello@example.com"})
+    user = create_model(RecommendModelType.USER, {"email_address":utils.get_random_email_address()})
     assert isinstance(user, User)
 
 def test_create_model_factory_board():
@@ -27,8 +30,8 @@ def test_create_model_factory_invalid():
 
 def test_create_model_factory_invalid_arg():
     with pytest.raises(TypeError):
-        create_model(RecommendModelType.USER, {"email_id":"hello@example.com"})
+        create_model(RecommendModelType.USER, {"email_id":utils.get_random_email_address()})
 
 def test_create_model_factory_extra_Arg():
     with pytest.raises(TypeError):
-        create_model(RecommendModelType.USER, {"email_address":"hello@example.com", "first_name": "John"})
+        create_model(RecommendModelType.USER, {"email_address":utils.get_random_email_address(), "first_name": "John"})

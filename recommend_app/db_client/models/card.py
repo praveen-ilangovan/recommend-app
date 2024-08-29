@@ -61,7 +61,7 @@ class Card(AbstractRecommendModel):
     title: str = field(compare=False)
     description: str = field(default="", repr=False, compare=False)
     image: str = field(default="", repr=False, compare=False)
-    uid: str = field(default="", repr=False, compare=False)
+    board_uid: str = field(default="", compare=True)
 
     ###########################################################################
     # Property
@@ -79,4 +79,4 @@ class Card(AbstractRecommendModel):
         Returns a string representation of the `Card` instance, displaying the
         card's title and URL.
         """
-        return f"{self.title} [{self.url}]"
+        return f"{self.type}: [{self.url}, {self.title}, {self.board_uid}]"

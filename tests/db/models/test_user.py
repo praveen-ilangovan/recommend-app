@@ -11,7 +11,10 @@ import pytest
 # Package imports
 from recommend_app.db_client.models.user import User
 
-TEST_EMAIL_ADDRESS = 'thisCoulcBeAnything@gmail.com'
+# Local imports
+from .. import utils
+
+TEST_EMAIL_ADDRESS = utils.get_random_email_address()
 
 ###############################################################################
 # Fixtures
@@ -32,9 +35,9 @@ def test_user_email_address(user):
 
 def test_user_immutability(user):
     with pytest.raises(FrozenInstanceError):
-        user.email_address = 'thisCoulcBeAnything@gmail.com'
+        user.email_address = utils.get_random_email_address()
 
 def test_user_comparison(user):
-    user2 = User(email_address='thisCoulcBeAnything@gmail.com')
+    user2 = User(email_address=TEST_EMAIL_ADDRESS)
     assert user == user2
 

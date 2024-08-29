@@ -39,7 +39,7 @@ Dependencies:
 from typing import TYPE_CHECKING, cast
 
 # Local imports
-from .models import RecommendModelType, User, Board
+from .models import RecommendModelType, User, Board, Card
 from .models import constants as Key
 from .exceptions import RecommendDBConnectionError
 
@@ -252,3 +252,39 @@ class RecommendDbClient:
             True if user is removed
         """
         return self.__db.remove(board)
+
+    ###########################################################################
+    # Cards
+    ###########################################################################
+    def add_card(
+        self, url: str, title: str, description: str, image: str, board: Board
+    ) -> Card:
+        """
+        Add a card to the database. Takes in the url, title, description, imaage and
+        also the board it should be added to.
+
+        Args:
+            url (str): URL of the card
+            title (str): Title of the card
+            description (str): Description
+            image (str): Link to an image
+            board (Board): Board to add to.
+
+        Returns:
+            Card
+
+        Raises:
+            `RecommendDBModelCreationError` if card creation fails.
+        """
+        model = self.__db.add(
+            RecommendModelType.CARD,
+            {
+                Key.RECOMMEND_MODEL_ATTR_CARD_URL: url,
+                Key.RECOMMEND_MODEL_ATTR_CARD_TITLE: title,
+                Key.RECOMMEND_MODEL_ATTR_CARD_DESCRIPTION: description,
+                Key.RECOMMEND_MODEL_ATTR_CARD_IMAGE: image,
+                Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID: board.uid,
+            },
+        )
+        card = cast(Card, model)  # Type narrowing to keep static type checker happy.
+        return card

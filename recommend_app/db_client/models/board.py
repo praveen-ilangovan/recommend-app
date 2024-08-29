@@ -39,4 +39,4 @@ class Board(AbstractRecommendModel):
         Returns a string representation of the `Board` instance, showing the
         board's name and the owner_id in a formatted way.
         """
-        return f"Board: [name:{self.name}, owner_uid:{self.owner_uid}]"
+        return f"{self.type}: [{self.name}, {self.owner_uid}]"

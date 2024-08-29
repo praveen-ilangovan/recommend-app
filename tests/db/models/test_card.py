@@ -19,6 +19,7 @@ CARD_DATA = {
                             massive nuclear-enhanced monster attacking their \
                             shores.",
     "image": "url/to/the/image",
+    "board_uid": "1234"
 }
 
 
@@ -58,6 +59,9 @@ def test_card_description(card):
 def test_card_image(card):
     assert card.image == CARD_DATA["image"]
 
+def test_card_board_uid(card):
+    assert card.board_uid == CARD_DATA["board_uid"]
+
 
 # Check its immutability
 def test_card_url_immutability(card):
@@ -72,7 +76,7 @@ def test_card_title_immutability(card):
 
 # Check its comparison
 def test_comparing_two_cards(card):
-    card2 = Card(url=CARD_DATA["url"], title="Godzilla")
+    card2 = Card(url=CARD_DATA["url"], title="Godzilla", board_uid="1234")
     assert card == card2
 
 

@@ -288,3 +288,80 @@ class RecommendDbClient:
         )
         card = cast(Card, model)  # Type narrowing to keep static type checker happy.
         return card
+
+    def get_card(self, uid: str) -> Card:
+        """
+        Get the card from the database using its unique identifier.
+
+        Args:
+            uid (str) : Card's unique ID
+
+        Returns:
+            Card
+
+        Raises:
+            `RecommendDBModelNotFound` if the user is not found.
+        """
+        model = self.__db.get(
+            RecommendModelType.CARD, {Key.RECOMMEND_MODEL_ATTR_ID: uid}
+        )
+        card = cast(Card, model)  # Type narrowing to keep static type checker happy.
+        return card
+
+    def get_card_by_url(self, url: str, board: Board) -> Card:
+        """
+        Get the card by its url from the specified board.
+
+        Args:
+            url (str) : Url of the card
+            board (Board): Board to look for
+
+        Returns:
+            Card
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found.
+        """
+        model = self.__db.get(
+            RecommendModelType.CARD,
+            {
+                Key.RECOMMEND_MODEL_ATTR_CARD_URL: url,
+                Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID: board.uid,
+            },
+        )
+        card = cast(Card, model)  # Type narrowing to keep static type checker happy.
+        return card
+
+    def get_all_cards(self, board: Board) -> list[Card]:
+        """
+        Get all the card in the given board
+
+        Args:
+            board (Board): Board to query
+
+        Returns:
+            List[Card]
+
+        Raises:
+            `RecommendDBModelNotFound` if the boards are not found.
+        """
+        models = self.__db.get_all(
+            RecommendModelType.CARD,
+            {Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID: board.uid},
+        )
+        cards = cast(
+            list[Card], models
+        )  # Type narrowing to keep static type checker happy.
+        return cards
+
+    def remove_card(self, card: Card) -> bool:
+        """
+        Remove the card from the database
+
+        Args:
+            card (Card) : card to be removed
+
+        Returns:
+            True if card is removed
+        """
+        return self.__db.remove(card)

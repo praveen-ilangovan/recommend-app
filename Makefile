@@ -43,7 +43,7 @@ dbuild: ## Build a docker container
 
 .PHONY: drun
 drun: ## Run the docker container
-	@docker run praveen/recommend-app
+	@docker run --rm -it praveen/recommend-app
 
 ##################
 #####  RUN   #####

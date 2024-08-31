@@ -24,6 +24,9 @@ TODO
     User - EmailAddress
     Board - Name + OwnerUID
     Card - URL + BoardUID
+[] Update Dockerfile
+[] Update Docstrings
+[] Create Docs
 """
 
 CARD_DATA = {

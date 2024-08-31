@@ -18,7 +18,6 @@ load_dotenv()
 
 """
 TODO
-[] Rename models constants *_ID to *_UID
 [] Update Docstrings
 [] Create Docs
 """

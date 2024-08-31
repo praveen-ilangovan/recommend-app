@@ -112,7 +112,7 @@ class RecommendDbClient:
             `RecommendDBModelNotFound` if the user is not found.
         """
         model = self.__db.get(
-            RecommendModelType.USER, {Key.RECOMMEND_MODEL_ATTR_ID: uid}
+            RecommendModelType.USER, {Key.RECOMMEND_MODEL_ATTR_UID: uid}
         )
         user = cast(User, model)  # Type narrowing to keep static type checker happy.
         return user
@@ -170,7 +170,7 @@ class RecommendDbClient:
             RecommendModelType.BOARD,
             {
                 Key.RECOMMEND_MODEL_ATTR_BOARD_NAME: name,
-                Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_ID: user.uid,
+                Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_UID: user.uid,
             },
         )
         board = cast(Board, model)  # Type narrowing to keep static type checker happy.
@@ -190,7 +190,7 @@ class RecommendDbClient:
             `RecommendDBModelNotFound` if the user is not found.
         """
         model = self.__db.get(
-            RecommendModelType.BOARD, {Key.RECOMMEND_MODEL_ATTR_ID: uid}
+            RecommendModelType.BOARD, {Key.RECOMMEND_MODEL_ATTR_UID: uid}
         )
         board = cast(Board, model)  # Type narrowing to keep static type checker happy.
         return board
@@ -213,7 +213,7 @@ class RecommendDbClient:
             RecommendModelType.BOARD,
             {
                 Key.RECOMMEND_MODEL_ATTR_BOARD_NAME: name,
-                Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_ID: user.uid,
+                Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_UID: user.uid,
             },
         )
         board = cast(Board, model)  # Type narrowing to keep static type checker happy.
@@ -234,7 +234,7 @@ class RecommendDbClient:
         """
         models = self.__db.get_all(
             RecommendModelType.BOARD,
-            {Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_ID: user.uid},
+            {Key.RECOMMEND_MODEL_ATTR_BOARD_OWNER_UID: user.uid},
         )
         board = cast(
             list[Board], models
@@ -283,7 +283,7 @@ class RecommendDbClient:
                 Key.RECOMMEND_MODEL_ATTR_CARD_TITLE: title,
                 Key.RECOMMEND_MODEL_ATTR_CARD_DESCRIPTION: description,
                 Key.RECOMMEND_MODEL_ATTR_CARD_IMAGE: image,
-                Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID: board.uid,
+                Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_UID: board.uid,
             },
         )
         card = cast(Card, model)  # Type narrowing to keep static type checker happy.
@@ -303,7 +303,7 @@ class RecommendDbClient:
             `RecommendDBModelNotFound` if the user is not found.
         """
         model = self.__db.get(
-            RecommendModelType.CARD, {Key.RECOMMEND_MODEL_ATTR_ID: uid}
+            RecommendModelType.CARD, {Key.RECOMMEND_MODEL_ATTR_UID: uid}
         )
         card = cast(Card, model)  # Type narrowing to keep static type checker happy.
         return card
@@ -326,7 +326,7 @@ class RecommendDbClient:
             RecommendModelType.CARD,
             {
                 Key.RECOMMEND_MODEL_ATTR_CARD_URL: url,
-                Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID: board.uid,
+                Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_UID: board.uid,
             },
         )
         card = cast(Card, model)  # Type narrowing to keep static type checker happy.
@@ -347,7 +347,7 @@ class RecommendDbClient:
         """
         models = self.__db.get_all(
             RecommendModelType.CARD,
-            {Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID: board.uid},
+            {Key.RECOMMEND_MODEL_ATTR_CARD_BOARD_UID: board.uid},
         )
         cards = cast(
             list[Card], models

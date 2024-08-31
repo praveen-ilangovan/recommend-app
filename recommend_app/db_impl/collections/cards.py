@@ -22,7 +22,7 @@ class Cards(AbstractCollection):
         self.create_index(
             [
                 ModelKey.RECOMMEND_MODEL_ATTR_CARD_URL,
-                ModelKey.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID,
+                ModelKey.RECOMMEND_MODEL_ATTR_CARD_BOARD_UID,
             ],
             unique=True,
         )

@@ -22,7 +22,7 @@ class Boards(AbstractCollection):
         self.create_index(
             [
                 ModelKey.RECOMMEND_MODEL_ATTR_BOARD_NAME,
-                ModelKey.RECOMMEND_MODEL_ATTR_BOARD_OWNER_ID,
+                ModelKey.RECOMMEND_MODEL_ATTR_BOARD_OWNER_UID,
             ],
             unique=True,
         )

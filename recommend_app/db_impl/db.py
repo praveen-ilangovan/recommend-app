@@ -184,7 +184,7 @@ class RecommendDB(AbstractRecommendDB):
             msg = f"No collection found for {model.type}."
             raise RecommendDBModelNotFound(msg)
 
-        return collection.remove({ModelsKey.RECOMMEND_MODEL_ATTR_ID: model.uid})
+        return collection.remove({ModelsKey.RECOMMEND_MODEL_ATTR_UID: model.uid})
 
     ###########################################################################
     # Methods: Privates

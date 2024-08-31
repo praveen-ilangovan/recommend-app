@@ -159,12 +159,12 @@ class AbstractCollection(ABC):
         Then convert the value of _id to ObjectID
         Delete uid
         """
-        if ModelsKey.RECOMMEND_MODEL_ATTR_ID in attr_dict:
+        if ModelsKey.RECOMMEND_MODEL_ATTR_UID in attr_dict:
             object_id = self.__get_object_id(
-                attr_dict[ModelsKey.RECOMMEND_MODEL_ATTR_ID]
+                attr_dict[ModelsKey.RECOMMEND_MODEL_ATTR_UID]
             )
             attr_dict[Key.ATTR_ID] = object_id
-            del attr_dict[ModelsKey.RECOMMEND_MODEL_ATTR_ID]
+            del attr_dict[ModelsKey.RECOMMEND_MODEL_ATTR_UID]
 
     def __mongo_to_attrs_dict(self, result):
         """
@@ -173,5 +173,5 @@ class AbstractCollection(ABC):
         Delete _id
         """
         if Key.ATTR_ID in result:
-            result[ModelsKey.RECOMMEND_MODEL_ATTR_ID] = str(result[Key.ATTR_ID])
+            result[ModelsKey.RECOMMEND_MODEL_ATTR_UID] = str(result[Key.ATTR_ID])
             del result[Key.ATTR_ID]

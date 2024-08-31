@@ -1,6 +1,6 @@
 """
-Package: models
-===============
+sub-package: models
+===================
 
 The `models` package defines the core data models for the recommend_app,
 including `User`, `Board`, and `Card`. These models inherit from

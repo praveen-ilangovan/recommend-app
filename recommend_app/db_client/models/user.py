@@ -1,6 +1,6 @@
 """
-Module: user.py
-===============
+Module: user
+============
 
 This module defines the `User` model, which represents a user in the
 recommend_app. The `User` model inherits from the `AbstractRecommendModel`

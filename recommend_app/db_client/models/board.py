@@ -1,6 +1,6 @@
 """
-Module: board.py
-================
+Module: board
+=============
 
 This module defines the `Board` model, which represents a collection of
 recommendations (cards) grouped under a specific topic or name. The `Board`

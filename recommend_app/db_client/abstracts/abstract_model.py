@@ -1,6 +1,6 @@
 """
-Module: abstract_model.py
-=========================
+Module: abstract_model
+======================
 
 This module defines the abstract base class `AbstractRecommendModel`, which
 serves as a blueprint for all models in the recommend_app. Models such as User,

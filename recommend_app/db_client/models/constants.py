@@ -1,5 +1,6 @@
 """
-Constants
+Module: constants
+=================
 """
 
 # Models

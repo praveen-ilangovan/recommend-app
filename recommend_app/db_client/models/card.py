@@ -1,6 +1,6 @@
 """
-Module: card.py
-===============
+Module: card
+============
 
 This module defines the `Card` model, which represents an individual
 recommendation in the recommend_app. The `Card` model inherits from the

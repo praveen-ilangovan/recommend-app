@@ -1,6 +1,6 @@
 """
-Module: abstract_db.py
-======================
+Module: abstract_db
+===================
 
 This module defines the abstract base class `AbstractRecommendDB`, which
 serves as a blueprint for database interaction within the recommend_app. Any

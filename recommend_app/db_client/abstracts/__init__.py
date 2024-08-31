@@ -1,6 +1,6 @@
 """
 sub-package: abstracts
-===================
+======================
 
 The `abstracts` sub-package contains abstract base classes that define the core
 structure and behavior of key components in the recommend_app. These

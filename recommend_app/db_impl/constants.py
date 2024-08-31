@@ -1,4 +1,7 @@
 """
+Module: constants
+=================
+
 Literals used in the db module
 """
 

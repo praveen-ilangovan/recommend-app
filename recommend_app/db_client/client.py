@@ -1,6 +1,6 @@
 """
-Module: client.py
-==================
+Module: client
+==============
 
 This module defines the `RecommendDbClient` class, which acts as a client for
 interacting with the underlying database that stores the data for the

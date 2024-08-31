@@ -1,5 +1,5 @@
 """
-Module: exceptions.py
+Module: exceptions
 ==================
 
 This module defines custom exceptions for handling specific errors related to

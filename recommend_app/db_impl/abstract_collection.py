@@ -34,9 +34,9 @@ class AbstractCollection(ABC):
     # abstracts
     ###########################################################################
     @property
-    @abstractmethod
     def collection_name(self) -> str:
         """Returns the name of the collection"""
+        return self.__class__.__name__
 
     @property
     @abstractmethod

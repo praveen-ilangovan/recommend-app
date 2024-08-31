@@ -19,12 +19,6 @@ load_dotenv()
 """
 TODO
 [] Rename models constants *_ID to *_UID
-[] Card.title or Card.name?? (Board has a name and not title.)
-[] Compare:
-    User - EmailAddress
-    Board - Name + OwnerUID
-    Card - URL + BoardUID
-[] Update Dockerfile
 [] Update Docstrings
 [] Create Docs
 """

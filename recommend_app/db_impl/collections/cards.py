@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 # Local imports
 from ..abstract_collection import AbstractCollection
-from . import constants as Key
 from ...db_client.models import RecommendModelType
+from ...db_client.models import constants as ModelKey
 
 if TYPE_CHECKING:
     from pymongo.database import Database as MongoDB
@@ -19,16 +19,17 @@ class Cards(AbstractCollection):
         super().__init__(db)
 
         # Make a unique compound index using url and board_uid
-        self.create_index([Key.CARD_URL, Key.CARD_BOARD_UID], unique=True)
+        self.create_index(
+            [
+                ModelKey.RECOMMEND_MODEL_ATTR_CARD_URL,
+                ModelKey.RECOMMEND_MODEL_ATTR_CARD_BOARD_ID,
+            ],
+            unique=True,
+        )
 
     ###########################################################################
     # Properties
     ###########################################################################
-    @property
-    def collection_name(self) -> str:
-        """Returs the name of this collection"""
-        return Key.COL_CARDS
-
     @property
     def model_type(self) -> RecommendModelType:
         """Returns the name of the model type this class handles"""

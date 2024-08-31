@@ -1,27 +1,16 @@
 """
-Module: user
+Module: user.py
+===============
 
-This module defines the `User` class, which represents a user entity in the
-recommend_app. The `User` class is a simple data structure implemented using
-Python's `dataclass` decorator, which provides an easy way to create classes
-that primarily store data.
+This module defines the `User` model, which represents a user in the
+recommend_app. The `User` model inherits from the `AbstractRecommendModel`
+class, ensuring that it follows a consistent structure defined for all models
+in the application. Each `User` instance is immutable and identified by a
+unique identifier (UID) and an email address.
 
-Classes:
-- User: Represents a user with an email address and a unique identifier (UID).
-  It includes a custom string representation for better readability.
-
-Attributes:
-- email_address (str): The email address of the user.
-- uid (str): A unique identifier for the user. Defaults to an empty string.
-  The `uid` field is excluded from the `repr` output and from comparisons between `User` instances.
-
-Methods:
-- __str__() -> str: Returns a string representation of the `User` instance,
-  showing the user's email address in a formatted way.
-
-Example usage:
-    user = User(email_address="user@example.com", uid="12345")
-    print(user)  # Output: User[user@example.com]
+The `User` model is crucial for managing user-related data, such as storing
+user information and associating users with boards and recommendations within
+the app.
 """
 
 # Builtin imports
@@ -35,11 +24,16 @@ from . import constants as Key
 @dataclass(frozen=True, kw_only=True)
 class User(AbstractRecommendModel):
     """
-    Represents a user with an email address and a unique identifier (UID).
-    It includes a custom string representation for better readability.
+    Model representing a user in the recommend_app.
 
-    Args:
-        email_address (str): The email address of the user.
+    This class inherits from `AbstractRecommendModel` and represents a user
+    entity with a unique identifier (UID) and an associated email address.
+    The class is immutable (due to `frozen=True`), ensuring that instances
+    cannot be modified after creation, which helps maintain consistency and
+    data integrity.
+
+    Attributes:
+        email_address (str): The email address associated with the user.
     """
 
     email_address: str
@@ -49,7 +43,15 @@ class User(AbstractRecommendModel):
     ###########################################################################
     @property
     def type(self) -> str:
-        """Return the type of this model"""
+        """
+        Returns the type of the model, which is 'User'.
+
+        This property overrides the abstract `type` property from the
+        `AbstractRecommendModel` class.
+
+        Returns:
+            str: The string constant representing the type of the model, 'User'.
+        """
         return Key.RECOMMEND_MODEL_USER
 
     ###########################################################################
@@ -57,7 +59,12 @@ class User(AbstractRecommendModel):
     ###########################################################################
     def __str__(self) -> str:
         """
-        Returns a string representation of the `User` instance, showing the
-        user's email address in a formatted way.
+        Returns a string representation of the User instance.
+
+        The string includes the model type ('User') and the user's email
+        address in the format: 'User: [email_address]'.
+
+        Returns:
+            str: A string representation of the User instance.
         """
         return f"{self.type}: [{self.email_address}]"

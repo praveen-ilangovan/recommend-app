@@ -1,33 +1,37 @@
 """
 Package: models
+===============
 
-This package contains data models used in the application. These models
-represent core entities such as users and cards, and are implemented using
-Python's `dataclass` decorator for simplicity and ease of use. The package
-provides structured and immutable data types that help to maintain
-consistency across the application.
+The `models` package defines the core data models for the recommend_app,
+including `User`, `Board`, and `Card`. These models inherit from
+`AbstractRecommendModel` and are used to represent and manage key entities in
+the application.
 
-Modules:
-- user.py: Defines the `User` class, which represents a user entity, storing
-  user-related information such as email address and unique identifier (UID).
+Additionally, this package provides utilities for working with these models,
+including:
 
-- card.py: Defines the `Card` class, an immutable data structure that
-  represents a card entity containing details such as URL, title, description,
-  image, and unique identifier (UID).
+- `RecommendModel` TypeAlias: A type alias representing any of the core models
+                              (`User`, `Board`, or `Card`).
+- `RecommendModelType` Enum: An enumeration listing the types of models
+                             available in the application.
+- `create_model` Function: A factory function for creating instances of the
+                           models based on the specified model type.
 
-Example usage:
-    from recommend_app.db_client.models.user import User
-    from recommend_app.db_client.models.card import Card
+Modules within this package:
+----------------------------
+- `user.py`: Contains the `User` model.
+- `board.py`: Contains the `Board` model.
+- `card.py`: Contains the `Card` model.
+- `constants.py`: Defines constants used across the models.
 
-    user = User(email_address="user@example.com", uid="12345")
-    card = Card(url="https://example.com", title="Example Title")
+Exceptions:
+------------
+- `RecommendDBModelTypeError`: Raised when an invalid model type is provided
+                               to the `create_model` function.
 
-    print(user)  # Output: User[user@example.com]
-    print(card)  # Output: Example Title [https://example.com]
-
-This package provides a centralized location for managing the core data models
-used throughout the application, ensuring that entities like `User` and `Card`
-are consistently represented and easily accessible.
+This package is essential for managing and instantiating the application's data
+models, ensuring a consistent and flexible approach to handling different types
+of data entities.
 """
 
 # Builtin imports
@@ -48,7 +52,12 @@ RecommendModel: TypeAlias = Union[User, Board, Card]
 # Enum for models
 class RecommendModelType(Enum):
     """
-    List all the available Models
+    Enumeration for different types of models in the recommend_app.
+
+    Attributes:
+        USER: Represents the User model.
+        BOARD: Represents the Board model.
+        CARD: Represents the Card model.
     """
 
     USER = Key.RECOMMEND_MODEL_USER
@@ -61,17 +70,24 @@ def create_model(
     model_type: RecommendModelType, attrs_dict: dict[str, Any]
 ) -> RecommendModel:
     """
-    Factory function to create a new instance of the model.
+    Factory function to create a new instance of a model based on the specified
+    type.
 
     Args:
-      model_type (RecommendModelType): Type of model to be created.
-      attrs_dict (dict): Attrs to be passed to the model class.
+        model_type (RecommendModelType): The type of model to be created.
+                                         Must be one of
+                                          `RecommendModelType.USER`,
+                                          `RecommendModelType.BOARD`, or
+                                          `RecommendModelType.CARD`.
+        attrs_dict (dict[str, Any]): A dictionary of attributes to be passed
+                                     to the model class constructor.
 
     Returns:
-      User | Board | Card
+        RecommendModel: An instance of the specified model type
+                        (`User`, `Board`, or `Card`).
 
     Raises:
-
+        RecommendDBModelTypeError: If an invalid model type is provided.
     """
     if model_type == RecommendModelType.USER:
         return User(**attrs_dict)

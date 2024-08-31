@@ -1,38 +1,13 @@
 """
-Module: recommend_db_client
+Module: client.py
+==================
 
-This module contains the `RecommendDbClient` class, which provides a
-higher-level interface to interact with the recommendation database.
-The `RecommendDbClient` class abstracts operations such as connecting to the
-database, adding, retrieving, and removing the users, boards and cards.
-
-The class relies on an underlying database implementation that adheres to the
-`AbstractRecommendDB` interface. This ensures flexibility and allows the
-application to work with different database backends by providing a consistent
-API.
-
-Classes:
-- RecommendDbClient: A wrapper class that interacts with the underlying database
-  and handles common operations such as connecting, adding, retrieving, and
-  removing users, boards and cards.
-
-Example usage:
-    from recommend_app.db_client.client import RecommendDbClient
-
-    db_client = RecommendDbClient(db=SomeRecommendDB())
-    db_client.connect()
-    new_user = db_client.add_user("user@example.com")
-    fetched_user = db_client.get_user(new_user.id)
-    db_client.remove_user(fetched_user)
-
-Exceptions:
-- RecommendDBConnectionError: Raised when the database connection fails.
-- RecommendDBModelCreationError: Raised when a model (e.g., user) creation fails.
-- RecommendDBModelNotFound: Raised when a requested model is not found in the database.
-
-Dependencies:
-- AbstractRecommendDB: An abstract base class that the underlying database
-  implementation must inherit from.
+This module defines the `RecommendDbClient` class, which acts as a client for
+interacting with the underlying database that stores the data for the
+recommend_app. It handles operations related to users, boards, and cards,
+including adding, retrieving, and removing entities. The `RecommendDbClient`
+class abstracts away the direct interactions with the database, making it
+easier to manage and extend the application's data storage layer.
 """
 
 # Builtin imports
@@ -49,14 +24,29 @@ if TYPE_CHECKING:
 
 class RecommendDbClient:
     """
-    Provides interface to perform CRUD operations (i.e) add, get and remove
-    users, boards and cards.
+    A client class for managing operations related to users, boards, and cards
+    in the recommend_app database.
 
-    Args:
-        db (AbstractRecommendDB) : Child class inheriting this abstract class.
+    This class interacts with an abstract database layer defined by the
+    `AbstractRecommendDB` interface. It provides methods to add, retrieve, and
+    remove users, boards, and cards. The class also manages the connection to
+    the database and handles exceptions related to database connectivity.
+
+    Attributes:
+        __db (AbstractRecommendDB): The database instance used for storage and
+        retrieval of data.
     """
 
     def __init__(self, db: "AbstractRecommendDB"):
+        """
+        Initialize the RecommendDbClient with a specific database
+        implementation.
+
+        Args:
+            db (AbstractRecommendDB): An instance of a class implementing the
+                                      AbstractRecommendDB interface, which
+                                      defines the database operations.
+        """
         self.__db = db
 
     ###########################################################################
@@ -64,10 +54,10 @@ class RecommendDbClient:
     ###########################################################################
     def connect(self) -> None:
         """
-        Establishes connection to the database
+        Establish a connection to the database.
 
         Raises:
-            `RecommendDBConnectionError` if the connection fails.
+            RecommendDBConnectionError: If the connection to the database fails.
         """
         status = self.__db.connect()
         if not status:
@@ -80,14 +70,13 @@ class RecommendDbClient:
     ###########################################################################
     def add_user(self, email_address: str) -> User:
         """
-        Add a new user to the db using their email_address. This email address
-        has to be unique.
+        Add a new user to the database.
 
         Args:
-            email_address (str) : Email address of the user
+            email_address (str): The email address of the user to be added.
 
         Returns:
-            User
+            User: The newly created User object.
 
         Raises:
             `RecommendDBModelCreationError` if user creation fails.
@@ -100,13 +89,13 @@ class RecommendDbClient:
 
     def get_user(self, uid: str) -> User:
         """
-        Get the user from the database using their unique identifier.
+        Retrieve a user from the database by their unique identifier (UID).
 
         Args:
-            uid (str) : User's unique ID
+            uid (str): The unique identifier of the user.
 
         Returns:
-            User
+            User: The User object corresponding to the provided UID.
 
         Raises:
             `RecommendDBModelNotFound` if the user is not found.
@@ -119,13 +108,13 @@ class RecommendDbClient:
 
     def get_user_by_email_address(self, email_address: str) -> User:
         """
-        Get the user from the database using their email address.
+        Retrieve a user from the database by their email address.
 
         Args:
-            email_address (str) : User's email address
+            email_address (str): The email address of the user.
 
         Returns:
-            User
+            User: The User object corresponding to the provided email address.
 
         Raises:
             `RecommendDBModelNotFound` if the user is not found.
@@ -138,13 +127,13 @@ class RecommendDbClient:
 
     def remove_user(self, user: User) -> bool:
         """
-        Remove the user from the database
+        Remove a user from the database.
 
         Args:
-            user (User) : User to be removed
+            user (User): The User object to be removed.
 
         Returns:
-            True if user is removed
+            bool: True if the user was successfully removed, False otherwise.
         """
         return self.__db.remove(user)
 
@@ -153,15 +142,14 @@ class RecommendDbClient:
     ###########################################################################
     def add_board(self, name: str, user: User) -> Board:
         """
-        Add a board to the database. Takes in the name of the board and the
-        user who creates it. The name should be unique for the given user.
+        Add a new board to the database, associated with a specific user.
 
         Args:
-            name (str): Name of the board
-            user (User): User who creates and owns the board
+            name (str): The name of the board to be created.
+            user (User): The user who owns the board.
 
         Returns:
-            Board
+            Board: The newly created Board object.
 
         Raises:
             `RecommendDBModelCreationError` if board creation fails.
@@ -178,13 +166,13 @@ class RecommendDbClient:
 
     def get_board(self, uid: str) -> Board:
         """
-        Get the board from the database using its unique identifier.
+        Retrieve a board from the database by its unique identifier (UID).
 
         Args:
-            uid (str) : Board's unique ID
+            uid (str): The unique identifier of the board.
 
         Returns:
-            Board
+            Board: The Board object corresponding to the provided UID.
 
         Raises:
             `RecommendDBModelNotFound` if the user is not found.
@@ -197,14 +185,14 @@ class RecommendDbClient:
 
     def get_board_by_name(self, name: str, user: User) -> Board:
         """
-        Get the board by its name for the specified user.
+        Retrieve a board from the database by its name and the associated user.
 
         Args:
-            uid (str) : Board's unique ID
-            user (User): User who creates and owns the board
+            name (str): The name of the board.
+            user (User): The user who owns the board.
 
         Returns:
-            Board
+            Board: The Board object corresponding to the provided name and user.
 
         Raises:
             `RecommendDBModelNotFound` if the board is not found.
@@ -221,13 +209,13 @@ class RecommendDbClient:
 
     def get_all_boards(self, user: User) -> list[Board]:
         """
-        Get all the boards for the given user
+        Retrieve all boards associated with a specific user.
 
         Args:
-            user (User): User who creates and owns the board
+            user (User): The user whose boards are to be retrieved.
 
         Returns:
-            List[Board]
+            list[Board]: A list of Board objects belonging to the user.
 
         Raises:
             `RecommendDBModelNotFound` if the boards are not found.
@@ -243,13 +231,13 @@ class RecommendDbClient:
 
     def remove_board(self, board: Board) -> bool:
         """
-        Remove the board from the database
+        Remove a board from the database.
 
         Args:
-            board (Board) : board to be removed
+            board (Board): The Board object to be removed.
 
         Returns:
-            True if user is removed
+            bool: True if the board was successfully removed, False otherwise.
         """
         return self.__db.remove(board)
 
@@ -260,18 +248,17 @@ class RecommendDbClient:
         self, url: str, title: str, description: str, image: str, board: Board
     ) -> Card:
         """
-        Add a card to the database. Takes in the url, title, description, imaage and
-        also the board it should be added to.
+        Add a new card to the database, associated with a specific board.
 
         Args:
-            url (str): URL of the card
-            title (str): Title of the card
-            description (str): Description
-            image (str): Link to an image
-            board (Board): Board to add to.
+            url (str): The URL associated with the card.
+            title (str): The title of the card.
+            description (str): A description of the card.
+            image (str): The URL of the image associated with the card.
+            board (Board): The board to which the card belongs.
 
         Returns:
-            Card
+            Card: The newly created Card object.
 
         Raises:
             `RecommendDBModelCreationError` if card creation fails.
@@ -291,13 +278,13 @@ class RecommendDbClient:
 
     def get_card(self, uid: str) -> Card:
         """
-        Get the card from the database using its unique identifier.
+        Retrieve a card from the database by its unique identifier (UID).
 
         Args:
-            uid (str) : Card's unique ID
+            uid (str): The unique identifier of the card.
 
         Returns:
-            Card
+            Card: The Card object corresponding to the provided UID.
 
         Raises:
             `RecommendDBModelNotFound` if the user is not found.
@@ -310,14 +297,14 @@ class RecommendDbClient:
 
     def get_card_by_url(self, url: str, board: Board) -> Card:
         """
-        Get the card by its url from the specified board.
+        Retrieve a card from the database by its URL and the associated board.
 
         Args:
-            url (str) : Url of the card
-            board (Board): Board to look for
+            url (str): The URL associated with the card.
+            board (Board): The board to which the card belongs.
 
         Returns:
-            Card
+            Card: The Card object corresponding to the provided URL and board.
 
         Raises:
             `RecommendDBModelNotFound` if the board is not found.
@@ -334,13 +321,13 @@ class RecommendDbClient:
 
     def get_all_cards(self, board: Board) -> list[Card]:
         """
-        Get all the card in the given board
+        Retrieve all cards associated with a specific board.
 
         Args:
-            board (Board): Board to query
+            board (Board): The board whose cards are to be retrieved.
 
         Returns:
-            List[Card]
+            list[Card]: A list of Card objects belonging to the board.
 
         Raises:
             `RecommendDBModelNotFound` if the boards are not found.
@@ -356,12 +343,12 @@ class RecommendDbClient:
 
     def remove_card(self, card: Card) -> bool:
         """
-        Remove the card from the database
+        Remove a card from the database.
 
         Args:
-            card (Card) : card to be removed
+            card (Card): The Card object to be removed.
 
         Returns:
-            True if card is removed
+            bool: True if the card was successfully removed, False otherwise.
         """
         return self.__db.remove(card)

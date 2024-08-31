@@ -1,36 +1,41 @@
 """
-Package: recommend_app.db_client
+Package: db_client
+===================
 
-This package provides the core components and utilities for interacting with the
-application's database and data models. It includes the abstract base class for
-defining the database interface, a client class for database interactions, and custom
-exceptions for handling database-related errors.
+The `db_client` package provides the core functionality for interacting with
+the database within the recommend_app. It defines the interface for database
+operations, the data models used in the application, and utilities for creating
+and managing these models. This package is central to the application's data
+management and persistence layer.
 
-Modules:
-- client.py: Contains the `RecommendDbClient` class, which provides a
-  higher-level interface for interacting with the database. This class
-  manages common operations such as connecting to the database, adding,
-  retrieving, and removing users, boards and cards.
+Key Components:
+---------------
+1. **Sub-packages:**
+   - `abstracts`: Contains abstract base classes that define the structure and
+      behavior of the database and models.
+     - `abstract_db.py`: Defines the abstract base class `AbstractRecommendDB`
+       for database operations, outlining essential methods for connecting,
+       adding, retrieving, and removing data.
+     - `abstract_model.py`: Defines the abstract base class
+       `AbstractRecommendModel` for data models, ensuring a consistent
+       structure for all models.
 
-- abstract_db.py: Defines the `AbstractRecommendDB` class, which serves as a
-  blueprint for implementing database interactions. Any concrete database
-  implementation must inherit from this class and implement its abstract methods.
+   - `models`: Defines the core data models used in the application,
+     inheriting from `AbstractRecommendModel`.
+     - `user.py`: Contains the `User` model, representing users in the application.
+     - `board.py`: Contains the `Board` model, representing boards that group recommendations.
+     - `card.py`: Contains the `Card` model, representing individual recommendations.
+     - `constants.py`: Defines constants used across the models to ensure consistency.
 
-- exceptions.py: Defines custom exceptions related to this subpackage.
-  These include `RecommendDBConnectionError`, `RecommendDBModelCreationError`,
-  and `RecommendDBModelNotFound`, which are used to handle specific error
-  scenarios in database operations.
+2. **Utilities:**
+   - `create_model`: A factory function for creating instances of the
+     `User`, `Board`, or `Card` models based on the specified type and attributes.
+   - `create_client`: A function for creating an instance of `RecommendDbClient`,
+     which provides methods for interacting with the database.
 
-- models: Contains the data models used in the application, such as users
-  and cards. These models are implemented using Python's `dataclass` decorator
-  for simplicity and immutability.
-
-  Modules:
-  - user.py: Defines the `User` class, representing a user entity with an email
-    address and unique identifier (UID).
-  - card.py: Defines the `Card` class, an immutable data structure that represents
-    a card entity containing details such as URL, title, description, image, and UID.
-
+3. **Exceptions:**
+   - `RecommendDBConnectionError`: Raised when there is a failure in connecting
+     to the database.
 
 Usage:
     # Initialize the database client
@@ -40,14 +45,14 @@ Usage:
     # Connect to the database
     db_client.connect()
 
-    # Perform operations such as adding and retrieving users
+    # Perform operations
     new_user = db_client.add_user("user@example.com")
-    retrieved_user = db_client.get_user(new_user.id)
+    movies_board = client.add_board("movies", new_user)
+    card = client.add_card(url, title, description, image, board=movies_board)
 
-This package encapsulates both database operations and data modeling, providing
-a unified interface to interact with the core components of the system.
-It promotes modularity, flexibility, and robust error handling while ensuring
-consistency in how data is represented and manipulated across the application.
+This package ensures a cohesive approach to managing and interacting with the
+application's data, providing a consistent interface for different database
+backends and maintaining a clean architecture for data models and operations.
 """
 
 # Builtin imports
@@ -62,21 +67,15 @@ if TYPE_CHECKING:
 
 def create_client(db: "AbstractRecommendDB") -> RecommendDbClient:
     """
-    Factory function to create and return an instance of `RecommendDbClient`.
+    Factory function to create an instance of `RecommendDbClient`.
 
     Args:
-        db (AbstractRecommendDB): An instance of a class that implements the
-        `AbstractRecommendDB` interface. This will be used by the
-        `RecommendDbClient` to interact with the underlying database.
+        db (AbstractRecommendDB): An instance of a class implementing the
+                                 `AbstractRecommendDB` interface, which
+                                  defines the database operations.
 
     Returns:
-        RecommendDbClient: A client instance that interacts with the provided
-        database implementation for performing operations such as connecting,
-        adding, and retrieving users, boards and cards.
-
-    Example usage:
-        from recommend_app.db_client import create_client
-        db_client = create_client(SomeRecommendDBImplementation())
-        db_client.connect()
+        RecommendDbClient: An instance of `RecommendDbClient`
+        initialized with the provided database instance.
     """
     return RecommendDbClient(db)

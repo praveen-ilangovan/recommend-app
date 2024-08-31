@@ -1,43 +1,16 @@
 """
-Module: abstract_db
+Module: abstract_db.py
+======================
 
-This module defines the `AbstractRecommendDB` class, an abstract base class
-(ABC) that outlines the contract for database operations related to this
-application. Any concrete database implementation must inherit from this class
-and implement the abstract methods for connecting to the database and
-performing operations such as adding, retrieving, and removing users, boards
-and cards.
+This module defines the abstract base class `AbstractRecommendDB`, which
+serves as a blueprint for database interaction within the recommend_app. Any
+concrete database implementation must inherit from this class and implement the
+required methods for connecting to the database, adding, retrieving, and
+removing models such as users, boards, and cards.
 
-Classes:
-- AbstractRecommendDB: An abstract base class that serves as a blueprint for
-  database implementations. It defines methods that must be implemented by any
-  class intending to interact with the application's database.
-
-Example implementation:
-    class MySQLRecommendDB(AbstractRecommendDB):
-        def connect(self) -> bool:
-            # Implementation for MySQL database connection
-            pass
-
-        def add_user(self, email_address: str) -> Optional[User]:
-            # Implementation for adding a user in MySQL database
-            pass
-
-        def get_user(self, uid: str) -> Optional[User]:
-            # Implementation for retrieving a user by UID from MySQL
-            pass
-
-        def get_user_by_email_address(self, email_address: str) -> Optional[User]:
-            # Implementation for retrieving a user by email from MySQL
-            pass
-
-        def remove_user(self, user: User) -> bool:
-            # Implementation for removing a user from MySQL database
-            pass
-
-This module ensures that any database implementation for the recommend_app
-follows a consistent interface, making it easier to switch between different
-databases without modifying the core application logic.
+This abstraction allows the application to remain database-agnostic and makes
+it easier to switch between different database implementations without
+modifying the core logic.
 """
 
 # Builtin imports
@@ -49,16 +22,23 @@ from ..models import RecommendModel, RecommendModelType
 
 
 class AbstractRecommendDB(ABC):
-    """Abstract class that defines the interface for database operations.
-    Any database implementation class must inherit from this abstract class
-    and provide concrete implementations for all the methods outlined here
-    to be compatible with the application.
+    """
+    Abstract base class for database interactions in the recommend_app.
 
-    This ensures a consistent API for database interactions across different
-    database backends or implementations.
+    This class defines the contract that any concrete database implementation
+    must fulfill. It includes methods for connecting to the database, adding
+    models, retrieving single or multiple models, and removing models. The
+    exact implementation details will vary depending on the specific database
+    being used.
     """
 
     def __init__(self):
+        """
+        Initialize the AbstractRecommendDB class.
+
+        This constructor is intended to be called by subclasses, ensuring
+        proper initialization of the base class.
+        """
         super().__init__()
 
     ###########################################################################
@@ -67,10 +47,10 @@ class AbstractRecommendDB(ABC):
     @abstractmethod
     def connect(self) -> bool:
         """
-        Establishes a connection to the database.
+        Establish a connection to the database.
 
         Returns:
-            Must return `True` on successful connection, otherwise `False`.
+            bool: True if the connection was successful, False otherwise.
         """
 
     @abstractmethod
@@ -78,15 +58,16 @@ class AbstractRecommendDB(ABC):
         self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
     ) -> RecommendModel:
         """
-        Adds a new model entity to the database. Takes in the type of the model
-        to be added and a dictionary of required attributes for the entity.
+        Add a new model to the database.
 
         Args:
-            model_type (RecommendModelType): Type of model
-            attrs_dict (dict): Key-value pairs.
+            model_type (RecommendModelType): The type of the model to be added
+                                             (e.g., User, Board, Card).
+            attrs_dict (dict[str, Any]): A dictionary of attributes to set for
+                                         the new model.
 
         Returns:
-            `RecommendModel` - `User` | `Board` | `Card`
+            RecommendModel: The newly created model instance.
 
         Raises:
             `RecommendDBModelCreationError` - The class that implements this
@@ -98,15 +79,17 @@ class AbstractRecommendDB(ABC):
         self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
     ) -> RecommendModel:
         """
-        Get the entity from the database that matches the fields set in the
-        attrs_dict.
+        Retrieve a single model from the database that matches the given
+        criteria.
 
         Args:
-            model_type (RecommendModelType): Type of model
-            attrs_dict (dict): Key-value pairs.
+            model_type (RecommendModelType): The type of the model to retrieve
+                                             (e.g., User, Board, Card).
+            attrs_dict (dict[str, Any]): A dictionary of attributes to filter
+                                         the model by.
 
         Returns:
-            `RecommendModel` - `User` | `Board` | `Card`
+            RecommendModel: The model instance that matches the given criteria.
 
         Raises:
             `RecommendDBModelNotFound` - The class that implements this
@@ -118,14 +101,17 @@ class AbstractRecommendDB(ABC):
         self, model_type: RecommendModelType, attrs_dict: dict[str, Any]
     ) -> list[RecommendModel]:
         """
-        Get all the entities for the given attrs_dict
+        Retrieve all models from the database that match the given criteria.
 
         Args:
-            model_type (RecommendModelType): Type of model
-            attrs_dict (dict): Key-value pairs.
+            model_type (RecommendModelType): The type of the models to retrieve
+                                             (e.g., User, Board, Card).
+            attrs_dict (dict[str, Any]): A dictionary of attributes to filter
+                                         the models by.
 
         Returns:
-            List[Board]
+            list[RecommendModel]: A list of model instances that match the
+                                  given criteria.
 
         Raises:
             `RecommendDBModelNotFound` if the boards are not found.
@@ -134,11 +120,11 @@ class AbstractRecommendDB(ABC):
     @abstractmethod
     def remove(self, model: RecommendModel) -> bool:
         """
-        Remove the entity from the database.
+        Remove a model from the database.
 
         Args:
-            model (RecommendModel): Model to be deleted.
+            model (RecommendModel): The model instance to be removed.
 
         Returns:
-            bool
+            bool: True if the model was successfully removed, False otherwise.
         """

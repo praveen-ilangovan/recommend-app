@@ -1,4 +1,4 @@
-site_name: recommend-app
+site_name: Recommend
 repo_url: https://github.com/praveen-ilangovan/recommend-app
 site_url: https://praveen-ilangovan.github.io/recommend-app
 site_description: An app to recommend things.
@@ -10,6 +10,10 @@ copyright: Maintained by <a href="https://praveen-ilangovan.com">Praveen Ilangov
 nav:
   - Home: index.md
   - Modules: modules.md
+  - References: reference.md
+  - Tutorials: tutorials.md
+  - How-To Gudies: how-to-guides.md
+  - Explanation: explanation.md
 plugins:
   - search
   - mkdocstrings:

@@ -2,6 +2,9 @@
 Test the models.__init__
 """
 
+# Builtin imports
+from pydantic_core import ValidationError
+
 # PyTest imports
 import pytest
 
@@ -29,9 +32,9 @@ def test_create_model_factory_invalid():
         create_model("InvalidType", {})
 
 def test_create_model_factory_invalid_arg():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         create_model(RecommendModelType.USER, {"email_id":utils.get_random_email_address()})
 
 def test_create_model_factory_extra_Arg():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         create_model(RecommendModelType.USER, {"email_address":utils.get_random_email_address(), "first_name": "John"})

@@ -13,15 +13,11 @@ user information and associating users with boards and recommendations within
 the app.
 """
 
-# Builtin imports
-from dataclasses import dataclass
-
 # Local imports
 from ..abstracts.abstract_model import AbstractRecommendModel
 from . import constants as Key
 
 
-@dataclass(frozen=True, kw_only=True)
 class User(AbstractRecommendModel):
     """
     Model representing a user in the recommend_app.
@@ -57,6 +53,20 @@ class User(AbstractRecommendModel):
     ###########################################################################
     # Dunders
     ###########################################################################
+    def __eq__(self, other: object) -> bool:
+        """
+        Compares the two objects and returns True if the email_address is
+        the same.
+
+        Returns:
+            bool | NotImplemented: If the incoming object isn't of type User,
+            we return NotImplemented.
+        """
+        if not isinstance(other, User):
+            return NotImplemented
+
+        return self.email_address == other.email_address
+
     def __str__(self) -> str:
         """
         Returns a string representation of the User instance.

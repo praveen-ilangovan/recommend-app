@@ -4,6 +4,7 @@ Test suite for Card
 
 # Builtin imports
 from dataclasses import FrozenInstanceError
+from pydantic_core import ValidationError
 
 # PyTest imports
 import pytest
@@ -39,7 +40,7 @@ def test_creating_card_with_all_attributes(card):
 
 
 def test_creating_card_with_only_url():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         card = Card(url=CARD_DATA["url"])
 
 
@@ -65,12 +66,12 @@ def test_card_board_uid(card):
 
 # Check its immutability
 def test_card_url_immutability(card):
-    with pytest.raises(FrozenInstanceError):
+    with pytest.raises(ValidationError):
         card.url = "Let us change the url"
 
 
 def test_card_title_immutability(card):
-    with pytest.raises(FrozenInstanceError):
+    with pytest.raises(ValidationError):
         card.title = "Let us change the url"
 
 

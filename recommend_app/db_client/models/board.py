@@ -13,15 +13,11 @@ The `Board` model is essential for organizing recommendations under specific
 themes or categories, enabling users to share and manage their collections.
 """
 
-# Builtin imports
-from dataclasses import dataclass
-
 # Local imports
 from ..abstracts.abstract_model import AbstractRecommendModel
 from . import constants as Key
 
 
-@dataclass(frozen=True, kw_only=True)
 class Board(AbstractRecommendModel):
     """
     Model representing a board in the recommend_app.
@@ -59,6 +55,20 @@ class Board(AbstractRecommendModel):
     ###########################################################################
     # Dunders
     ###########################################################################
+    def __eq__(self, other: object) -> bool:
+        """
+        Compares the two objects an returns True if the name and owner_uid are
+        the same.
+
+        Returns:
+            bool | NotImplemented: If the incoming object isn't of type Board,
+            we return NotImplemented.
+        """
+        if not isinstance(other, Board):
+            return NotImplemented
+
+        return self.name == other.name and self.owner_uid == other.owner_uid
+
     def __str__(self) -> str:
         """
         Returns a string representation of the Board instance.

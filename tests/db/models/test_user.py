@@ -3,7 +3,8 @@ Test the user model
 """
 
 # Builtin imports
-from dataclasses import FrozenInstanceError
+from pydantic_core import ValidationError
+
 
 # PyTest imports
 import pytest
@@ -34,7 +35,7 @@ def test_user_email_address(user):
     assert user.email_address == TEST_EMAIL_ADDRESS
 
 def test_user_immutability(user):
-    with pytest.raises(FrozenInstanceError):
+    with pytest.raises(ValidationError):
         user.email_address = utils.get_random_email_address()
 
 def test_user_comparison(user):

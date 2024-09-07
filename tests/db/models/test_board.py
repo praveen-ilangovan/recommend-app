@@ -3,7 +3,7 @@ Test suite for Board
 """
 
 # Builtin imports
-from dataclasses import FrozenInstanceError
+from pydantic_core import ValidationError
 
 # PyTest imports
 import pytest
@@ -24,11 +24,11 @@ def test_creating_board_with_name_and_owner_id():
     assert isinstance(board, Board)
 
 def test_creating_board_with_only_name():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         Board(name="movies")
 
 def test_creating_board_with_only_owner_id():
-    with pytest.raises(TypeError):
+    with pytest.raises(ValidationError):
         Board(owner_uid="movies")
 
 # Check the values of the board
@@ -40,12 +40,12 @@ def test_board_owner_id(board):
 
 # Check its immutability
 def test_board_name_immutability(board):
-    with pytest.raises(FrozenInstanceError):
+    with pytest.raises(ValidationError):
         board.name = "Let us change the name"
 
 
 def test_board_owner_id_immutability(board):
-    with pytest.raises(FrozenInstanceError):
+    with pytest.raises(ValidationError):
         board.owner_uid = "Let1345"
 
 # Check its comparison

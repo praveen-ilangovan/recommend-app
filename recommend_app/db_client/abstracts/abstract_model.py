@@ -15,11 +15,10 @@ different types of entities.
 
 # Builtin imports
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from pydantic import BaseModel, ConfigDict
 
 
-@dataclass(frozen=True, kw_only=True)
-class AbstractRecommendModel(ABC):
+class AbstractRecommendModel(BaseModel, ABC):
     """
     Abstract base class for all models in the recommend_app.
 
@@ -35,7 +34,12 @@ class AbstractRecommendModel(ABC):
                    database.
     """
 
-    uid: str = field(default="", repr=False, compare=False)
+    # Model is frozen, meaning the attributes cannot be set after
+    # initialization. This makes the model hashable. And extra arguments are
+    # forbidden.
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    uid: str = ""
 
     ###########################################################################
     # Property

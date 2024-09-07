@@ -14,15 +14,11 @@ associating them with specific boards, allowing users to organize and share
 their recommendations effectively.
 """
 
-# Builtin imports
-from dataclasses import dataclass, field
-
 # Local imports
 from ..abstracts.abstract_model import AbstractRecommendModel
 from . import constants as Key
 
 
-@dataclass(frozen=True, kw_only=True)
 class Card(AbstractRecommendModel):
     """
     Model representing a recommendation card in the recommend_app.
@@ -45,10 +41,10 @@ class Card(AbstractRecommendModel):
     """
 
     url: str
-    title: str = field(compare=False)
-    description: str = field(default="", repr=False, compare=False)
-    image: str = field(default="", repr=False, compare=False)
-    board_uid: str = field(default="", compare=True)
+    title: str
+    description: str = ""
+    image: str = ""
+    board_uid: str = ""
 
     ###########################################################################
     # Property
@@ -69,6 +65,20 @@ class Card(AbstractRecommendModel):
     ###########################################################################
     # Dunders
     ###########################################################################
+    def __eq__(self, other: object) -> bool:
+        """
+        Compares the two objects and returns True if the url and board_uid are
+        the same.
+
+        Returns:
+            bool | NotImplemented: If the incoming object isn't of type Card,
+            we return NotImplemented.
+        """
+        if not isinstance(other, Card):
+            return NotImplemented
+
+        return self.url == other.url and self.board_uid == other.board_uid
+
     def __str__(self) -> str:
         """
         Returns a string representation of the Card instance.

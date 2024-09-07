@@ -13,6 +13,9 @@ user information and associating users with boards and recommendations within
 the app.
 """
 
+# Builtin imports
+from pydantic import EmailStr
+
 # Local imports
 from ..abstracts.abstract_model import AbstractRecommendModel
 from . import constants as Key
@@ -32,7 +35,7 @@ class User(AbstractRecommendModel):
         email_address (str): The email address associated with the user.
     """
 
-    email_address: str
+    email_address: EmailStr
 
     ###########################################################################
     # Property

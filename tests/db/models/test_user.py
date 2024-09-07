@@ -31,6 +31,10 @@ def user():
 def test_user_creation(user):
     assert isinstance(user, User)
 
+def test_user_invalid_email_address(user):
+    with pytest.raises(ValidationError):
+        User(email_address="12345.6789")
+
 def test_user_email_address(user):
     assert user.email_address == TEST_EMAIL_ADDRESS
 

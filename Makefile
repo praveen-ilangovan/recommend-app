@@ -49,7 +49,8 @@ drun: ## Run the docker container
 #####  RUN   #####
 .PHONY: run
 run: ## Run the app locally
-	@poetry run py -m recommend_app
+	# @poetry run py -m recommend_app
+	fastapi dev recommend_app/api/main.py
 
 ##################
 #####  HELP  #####

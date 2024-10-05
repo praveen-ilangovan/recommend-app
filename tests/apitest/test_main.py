@@ -18,4 +18,4 @@ def testclient():
 def test_main_root(testclient):
     response = testclient.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello from fastapi101/main"}
+    assert response.json() == {"message": "Recommend APP"}

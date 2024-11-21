@@ -14,7 +14,7 @@ packages = [
 python = "^3.12"
 pymongo = {extras = ["srv"], version = "^4.8.0"}
 python-dotenv = "^1.0.1"
-pydantic = {extras = ["email"], version = "^2.9.0"}
+motor = "^3.6.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

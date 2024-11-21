@@ -166,3 +166,7 @@ cython_debug/
 
 # Editor settings
 .vscode/
+
+
+# Local files
+async_typing.py

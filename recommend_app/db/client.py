@@ -50,14 +50,14 @@ class RecommendDbClient:
     ###########################################################################
     # Methods
     ###########################################################################
-    def connect(self) -> None:
+    async def connect(self) -> None:
         """
         Establish a connection to the database.
 
         Raises:
             RecommendDBConnectionError: If the connection to the database fails.
         """
-        status = self.__db.connect()
+        status: bool = await self.__db.connect()
         if not status:
             raise RecommendDBConnectionError(
                 f"Connection to {self.__db.__class__.__name__} failed."

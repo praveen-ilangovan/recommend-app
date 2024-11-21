@@ -41,7 +41,7 @@ class AbstractRecommendDB(ABC):
     # Methods: Abstracts
     ###########################################################################
     @abstractmethod
-    def connect(self) -> bool:
+    async def connect(self) -> bool:
         """
         Establish a connection to the database.
 

@@ -53,6 +53,12 @@ run: ## Run the app locally
 	fastapi dev recommend_app/api/main.py
 
 ##################
+#####  LOCAL   #####
+.PHONY: local
+local: ## Run the app locally
+	@poetry run py -m recommend_app
+
+##################
 #####  HELP  #####
 .PHONY: help
 help:

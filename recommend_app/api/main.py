@@ -10,7 +10,9 @@ from fastapi import FastAPI
 
 # Local imports
 from ..db_client import create_client
-from ..db_impl import create_db
+
+# from ..db_impl import create_db
+from ..db_async_impl import create_aysnc_db
 
 from ..db_client.models.user import User
 
@@ -20,7 +22,8 @@ if TYPE_CHECKING:
 # ----------------------------------------------------------------------------#
 # MONGO DB
 # ----------------------------------------------------------------------------#
-db = create_db()
+# db = create_db()
+db = create_aysnc_db()
 client: "RecommendDbClient" = create_client(db)
 client.connect()
 
@@ -49,9 +52,9 @@ async def root():
 
 
 @app.post("/api/v1/users/")
-def add_user(user: User) -> User:
+async def add_user(user: User) -> User:
     """
     Add a new user.
     """
-    new_user = client.add_user(user.email_address)
+    new_user = await client.add_user(user.email_address)
     return new_user

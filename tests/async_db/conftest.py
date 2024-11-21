@@ -6,16 +6,16 @@ import pytest
 
 # Package imports
 from recommend_app.db_client import create_client
-from recommend_app.db_impl import create_db
+from recommend_app.db_async_impl import create_aysnc_db
 
-TEST_DB_NAME = 'testRecommendDB'
+TEST_DB_NAME = 'asyncTestRecommendDB'
 
 ###############################################################################
 # Fixtures
 ###############################################################################
 @pytest.fixture(scope="module")
 def recommendDBClient():
-    db = create_db(TEST_DB_NAME)
+    db = create_aysnc_db(TEST_DB_NAME)
     client = create_client(db)
     client.connect()
 

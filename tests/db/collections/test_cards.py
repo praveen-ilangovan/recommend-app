@@ -11,7 +11,7 @@ from recommend_app.db_client.exceptions import (RecommendDBModelCreationError,
                                                 RecommendDBModelNotFound)
 
 # Local imports
-from .. import utils
+from ... import utils
 
 CARD_DATA = {
     "url": "https://www.netflix.com/gb/title/81767635",

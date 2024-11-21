@@ -2,15 +2,14 @@
 Entrypoint to the app
 """
 
-# Builtin imports
-import time
-
 # Project specific imports
 from dotenv import load_dotenv
 
 # Local imports
 from .db_client import create_client
-from .db_impl import create_db
+
+# from .db_impl import create_db
+from .db_async_impl import create_aysnc_db
 
 # Load the environment variables
 load_dotenv()
@@ -35,14 +34,14 @@ CARD_DATA = {
 
 def main() -> None:
     """Main function"""
-    db = create_db()
+    db = create_aysnc_db()
     client = create_client(db)
     client.connect()
 
-    user = client.add_user(str(time.time()))
-    board1 = client.add_board("movies", user)
-    card = client.add_card(**CARD_DATA, board=board1)
-    print(card)
+    # user = client.add_user(str(time.time()))
+    # board1 = client.add_board("movies", user)
+    # card = client.add_card(**CARD_DATA, board=board1)
+    # print(card)
 
 
 if __name__ == "__main__":

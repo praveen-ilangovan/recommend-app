@@ -11,7 +11,7 @@ from recommend_app.db_client.exceptions import (RecommendDBModelCreationError,
                                                 RecommendDBModelNotFound)
 
 # Local imports
-from .. import utils
+from ... import utils
 
 ###############################################################################
 # Tests

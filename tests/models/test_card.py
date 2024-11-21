@@ -3,7 +3,6 @@ Test suite for Card
 """
 
 # Builtin imports
-from dataclasses import FrozenInstanceError
 from pydantic_core import ValidationError
 
 # PyTest imports

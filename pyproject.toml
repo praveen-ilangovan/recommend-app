@@ -21,15 +21,20 @@ pytest = "^8.3.2"
 mypy = "^1.11.1"
 deptry = "^0.19.1"
 pre-commit = "^3.8.0"
-pytest-dotenv = "^0.5.2"
+pytest-asyncio = "^0.24.0"
+pytest-env = "^1.1.5"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.0"
 mkdocs-material = "^9.5.31"
 mkdocstrings = {extras = ["python"], version = "^0.25.2"}
 
-[tool.deptry.per_rule_ignores]
-DEP002 = ["pytest-dotenv"]
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+
+[tool.pytest_env]
+DB_NAME="TestRecommendDB"
 
 [build-system]
 requires = ["poetry-core"]

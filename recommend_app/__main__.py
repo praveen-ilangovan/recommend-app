@@ -18,8 +18,13 @@ load_dotenv()
 async def main() -> None:
     """Main function"""
     print("Recommend App")
+
     client = db.create_client()
     await client.connect()
+    status = await client.ping()
+    print(status)
+    status = await client.disconnect()
+    print(status)
 
 
 if __name__ == "__main__":

@@ -103,9 +103,38 @@ class RecommendDB(AbstractRecommendDB):
         else:
             client = AsyncIOMotorClient(url)
 
+        self.__db = client[self.__dbname]
+        await self.ping()
+
+        return True
+
+    async def ping(self) -> bool:
+        """
+        Checks if the connection is successful
+
+        Raises:
+            RecommendDBConnectionError
+        """
+        if self.__db is None:
+            return False
+
         try:
-            await client.admin.command("ping")
+            await self.__db.client.admin.command("ping")
         except OperationFailure as err:
             raise RecommendDBConnectionError("Failed to connect to the DB") from err
+
+        return True
+
+    async def disconnect(self) -> bool:
+        """
+        Removes the connection to the database.
+
+        Returns:
+            True if the connection is disconnected
+        """
+        if self.__db is None:
+            return False
+
+        await self.__db.client.drop_database(self.__dbname)
 
         return True

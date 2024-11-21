@@ -48,3 +48,18 @@ class AbstractRecommendDB(ABC):
         Returns:
             bool: True if the connection was successful, False otherwise.
         """
+
+    @abstractmethod
+    async def ping(self) -> bool:
+        """
+        Check if the connection is still active
+
+        Returns:
+            bool: True if the connection was successful, False otherwise.
+        """
+
+    @abstractmethod
+    async def disconnect(self) -> bool:
+        """
+        Removes the connection to the database.
+        """

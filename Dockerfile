@@ -25,5 +25,4 @@ RUN poetry install --without dev,docs
 ENV VIRTUAL_ENV=./.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# ENTRYPOINT ["poetry", "run", "python", "-m", "recommend_app"]
 ENTRYPOINT [ "/bin/bash" ]

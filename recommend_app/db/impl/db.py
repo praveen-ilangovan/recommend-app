@@ -26,15 +26,20 @@ from typing import TYPE_CHECKING, Optional
 
 # Project specific imports
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo.errors import OperationFailure
+from pymongo.errors import OperationFailure, DuplicateKeyError
+import beanie
 
 # Local imports
 from ..abstracts.abstract_db import AbstractRecommendDB
-from ..exceptions import RecommendDBConnectionError
+from ..exceptions import RecommendDBConnectionError, RecommendDBModelCreationError
+from ..types import RecommendModelType
+from .documents.user import UserDocument
 
 
 if TYPE_CHECKING:
     from motor.motor_asyncio import AsyncIOMotorDatabase
+    from .documents.base import BaseRecommendDocument
+    from ..models.bases import BaseNewRecommendModel, BaseRecommendModel
 
 
 class RecommendDB(AbstractRecommendDB):
@@ -53,6 +58,8 @@ class RecommendDB(AbstractRecommendDB):
         self.__dbname = dbname
 
         self.__db: Optional["AsyncIOMotorDatabase"] = None
+        # Beanie Documents
+        self.__documents: dict[RecommendModelType, type["BaseRecommendDocument"]] = {}
 
     ###########################################################################
     # Properties
@@ -68,7 +75,7 @@ class RecommendDB(AbstractRecommendDB):
         return self.__db
 
     ###########################################################################
-    # Methods
+    # Methods: Connection
     ###########################################################################
     async def connect(self) -> bool:
         """
@@ -103,7 +110,14 @@ class RecommendDB(AbstractRecommendDB):
         else:
             client = AsyncIOMotorClient(url)
 
-        self.__db = client[self.__dbname]
+        self.__db = client.get_database(self.__dbname)
+
+        # Init beanie
+        await beanie.init_beanie(database=self.__db, document_models=[UserDocument])
+
+        self.__documents[RecommendModelType.USER] = UserDocument
+
+        # Check the connection
         await self.ping()
 
         return True
@@ -138,3 +152,41 @@ class RecommendDB(AbstractRecommendDB):
         await self.__db.client.drop_database(self.__dbname)
 
         return True
+
+    ###########################################################################
+    # Methods: CRUD
+    ###########################################################################
+    async def add(self, model: "BaseNewRecommendModel") -> "BaseRecommendModel":
+        """
+        Add a new model to the database.
+
+        Args:
+            model (BaseNewRecommendModel): Model to be added.
+
+        Returns:
+            BaseRecommendModel: The newly created model instance.
+
+        Raises:
+            `RecommendDBModelCreationError` - The class that implements this
+            method must throw this exception if the model creation failed.
+        """
+        doc_inst = self.__documents.get(model.model_type)
+        if not doc_inst:
+            raise RecommendDBModelCreationError(
+                "%s has no compatible beanie document type", model.model_type
+            )
+
+        # Create a new entry in the db
+        document = doc_inst.from_model(model)
+        try:
+            await document.create()
+        except DuplicateKeyError as err:
+            raise RecommendDBModelCreationError("Model already exists") from err
+
+        result = document.to_model()
+        if not result:
+            raise RecommendDBModelCreationError(
+                "%s has no compatible read model", model.model_type
+            )
+
+        return result

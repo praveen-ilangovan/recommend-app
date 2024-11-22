@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from ..types import RecommendModelType, CrudType
 
 
-class AbstractRecommendModel(BaseModel, ABC):
+class AbstractRecommendModel(ABC, BaseModel):
     """
     Abstract base class for all models in the recommend_app.
     """

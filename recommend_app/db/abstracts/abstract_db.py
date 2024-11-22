@@ -15,6 +15,10 @@ modifying the core logic.
 
 # Builtin imports
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..models.bases import BaseNewRecommendModel, BaseRecommendModel
 
 
 class AbstractRecommendDB(ABC):
@@ -62,4 +66,23 @@ class AbstractRecommendDB(ABC):
     async def disconnect(self) -> bool:
         """
         Removes the connection to the database.
+        """
+
+    ###########################################################################
+    # Abstracts - CRUD
+    ###########################################################################
+    @abstractmethod
+    async def add(self, model: "BaseNewRecommendModel") -> "BaseRecommendModel":
+        """
+        Add a new model to the database.
+
+        Args:
+            model (BaseNewRecommendModel): Model to be added.
+
+        Returns:
+            BaseRecommendModel: The newly created model instance.
+
+        Raises:
+            `RecommendDBModelCreationError` - The class that implements this
+            method must throw this exception if the model creation failed.
         """

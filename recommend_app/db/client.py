@@ -11,14 +11,14 @@ easier to manage and extend the application's data storage layer.
 """
 
 # Builtin imports
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 # Local imports
-from .models.user import NewUser
 from .exceptions import RecommendDBConnectionError
 
 if TYPE_CHECKING:
     from .abstracts.abstract_db import AbstractRecommendDB
+    from .models.user import NewUser, UserInDb
 
 
 class RecommendDbClient:
@@ -88,7 +88,7 @@ class RecommendDbClient:
     ###########################################################################
     # Methods: User
     ###########################################################################
-    async def add_user(self, new_user: NewUser):
+    async def add_user(self, new_user: "NewUser") -> "UserInDb":
         """
         Add a new user to the database.
 
@@ -102,4 +102,5 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelCreationError` if user creation fails.
         """
-        print(new_user)
+        result = await self.__db.add(new_user)
+        return cast("UserInDb", result)

@@ -16,3 +16,11 @@ class RecommendDBConnectionError(RecommendAppError):
     Raised when a connection to the database fails. It indicates an issue with
     establishing or maintaining a database connection.
     """
+
+
+class RecommendDBModelCreationError(RecommendAppError):
+    """
+    Raised when there is a failure in creating a new model (e.g., a user) in
+    the database. This could occur due to duplication or other database errors
+    during the creation process.
+    """

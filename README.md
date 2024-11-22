@@ -12,6 +12,11 @@ Users can create customizable boards, where each board holds multiple cards repr
 
 ![alt text](resources/under_construction.jpg)
 
+Rethinking the whole idea as a Full Stack App. Gonna rebuild it and this time
+parallely working on the API and FE too. This attempt, FE is gonna be written
+using Jinja templates. But it will eventually be rewritten using a proper 
+framework (React probably)
+
 ## Tech
 
  - Python
@@ -25,20 +30,26 @@ Users can create customizable boards, where each board holds multiple cards repr
 
  - Clone the repo
  - CD into it
- - Pull the old-main branch
  - Install
 
 ```sh
 cd recommend-app
-git checkout old_main
 make install
+poetry run app
 ```
 
-You can checkout the first attempt at the db side of things. 
+Application should start running @ http://127.0.0.1:8000/health
 
-## What's happening now?
+## Code quality
 
-Rethinking the whole idea as a Full Stack App. Gonna rebuild it and this time
-parallely working on the API and FE too. This attempt, FE is gonna be written
-using Jinja templates. But it will eventually be rewritten using a proper 
-framework (React probably)
+- Lint and Format (Ruff)
+- Static type checking (mypy)
+- Testing (pytest)
+
+Runs ruff and mypy as pre-commit hooks. To run them on demand, use the following
+commands
+
+```sh
+make check
+make test
+```

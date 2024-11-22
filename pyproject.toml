@@ -40,7 +40,7 @@ asyncio_default_fixture_loop_scope = "session"
 DB_NAME="TestRecommendDB"
 
 [tool.poetry.scripts]
-start = "recommend_app.api.main:main"
+app = "recommend_app.api.main:main"
 
 [build-system]
 requires = ["poetry-core"]

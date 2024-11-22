@@ -14,7 +14,7 @@ def main():
     uvicorn.run(
         "recommend_app.api.app:app",
         host="127.0.0.1",
-        port=os.getenv("PORT", 8000),
+        port=int(os.getenv("PORT", "8000")),
         reload=True,
     )
 

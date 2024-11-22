@@ -1,0 +1,21 @@
+{% include 'layout.html' %}
+
+<h5>Health Status Check</h5>
+<div class="d-flex justify-content-center">
+  <table class="table" style="width: 400px">
+    <thead>
+      <tr>
+        <th scope="col">Key</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in report %}
+      <tr>
+        <td>{{ item.key }}</td>
+        <td>{{ item.value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

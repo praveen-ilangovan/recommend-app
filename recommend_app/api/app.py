@@ -6,10 +6,11 @@ FastAPI
 from contextlib import asynccontextmanager
 
 # Project specific imports
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Request
 
 # Local imports
 from ..db import create_client
+from .. import ui
 from . import dependencies
 
 # -----------------------------------------------------------------------------#
@@ -23,7 +24,6 @@ async def lifespan(app: FastAPI):
     # Connect to the database
     client = create_client()
     await client.connect()
-    print("Adding!!")
     dependencies.add_db_client(client)
 
     yield
@@ -33,6 +33,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+ui.mount_static_files(app)
 
 # -----------------------------------------------------------------------------#
 # Routes
@@ -40,9 +41,10 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/health", tags=["Root"], status_code=status.HTTP_200_OK)
-async def show_health() -> dict[str, str]:
+async def show_health(request: Request) -> ui.JinjaTemplateResponse:
     """
     Gives the health status of the connection
     """
     status = await dependencies.get_db_client().ping()
-    return {"DB_Client": "active" if status else "inactive"}
+    report = [{"key": "DB_Client", "value": "active" if status else "inactive"}]
+    return ui.show_page(request=request, name="health.html", context={"report": report})

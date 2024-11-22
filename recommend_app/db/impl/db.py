@@ -181,12 +181,8 @@ class RecommendDB(AbstractRecommendDB):
         try:
             await document.create()
         except DuplicateKeyError as err:
-            raise RecommendDBModelCreationError("Model already exists") from err
-
-        result = document.to_model()
-        if not result:
             raise RecommendDBModelCreationError(
-                "%s has no compatible read model", model.model_type
-            )
+                "%s already exists", model.model_type
+            ) from err
 
-        return result
+        return document.to_model()

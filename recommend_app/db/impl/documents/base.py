@@ -3,7 +3,7 @@ Base Document
 """
 
 # Builtin imports
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 from abc import ABC, abstractmethod
 
 # Project specific imports
@@ -44,7 +44,7 @@ class BaseRecommendDocument(ABC, Document):
     # -------------------------------------------------------------------------#
     # Methods
     # -------------------------------------------------------------------------#
-    def to_model(self) -> Optional["BaseRecommendModel"]:
+    def to_model(self) -> "BaseRecommendModel":
         """
         RecommendDocument to RecommendModel
         """

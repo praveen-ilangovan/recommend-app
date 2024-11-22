@@ -7,7 +7,7 @@ from pydantic_core import ValidationError
 import pytest
 
 # Local imports
-from recommend_app.db.models.user import NewUser
+from recommend_app.db.models.user import NewUser, UserInDb
 from recommend_app.db.types import CrudType, RecommendModelType
 
 #-----------------------------------------------------------------------------#
@@ -30,3 +30,14 @@ def test_new_user_model_with_invalid_email():
                         first_name="John",
                         last_name="Doe",
                         password="password123")
+
+def test_userindb_model():
+    user = UserInDb(id='dasfn7697ctsdvs',
+                       email_address="john.doe@mail.com",
+                       user_name="john_doe",
+                       first_name="John",
+                       last_name="Doe",
+                       password="password123")
+    assert user.email_address == "john.doe@mail.com"
+    assert user.crud_type == CrudType.READ
+    assert user.model_type == RecommendModelType.USER

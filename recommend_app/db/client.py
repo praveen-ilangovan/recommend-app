@@ -14,6 +14,7 @@ easier to manage and extend the application's data storage layer.
 from typing import TYPE_CHECKING
 
 # Local imports
+from .models.user import NewUser
 from .exceptions import RecommendDBConnectionError
 
 if TYPE_CHECKING:
@@ -48,7 +49,7 @@ class RecommendDbClient:
         self.__db = db
 
     ###########################################################################
-    # Methods
+    # Methods: DB
     ###########################################################################
     async def connect(self) -> bool:
         """
@@ -83,3 +84,22 @@ class RecommendDbClient:
         """
         status = await self.__db.disconnect()
         return status
+
+    ###########################################################################
+    # Methods: User
+    ###########################################################################
+    async def add_user(self, new_user: NewUser):
+        """
+        Add a new user to the database.
+
+        Args:
+            new_user (NewUser): Data model that has the details of the new user
+                including email_address, user_name, first and last_name and password.
+
+        Returns:
+            User: The newly created User object.
+
+        Raises:
+            `RecommendDBModelCreationError` if user creation fails.
+        """
+        print(new_user)

@@ -38,7 +38,7 @@ class AbstractRecommendDB(ABC):
         super().__init__()
 
     ###########################################################################
-    # Methods: Abstracts
+    # Abstracts - Connections
     ###########################################################################
     @abstractmethod
     async def connect(self) -> bool:

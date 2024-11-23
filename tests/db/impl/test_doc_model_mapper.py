@@ -7,7 +7,7 @@ from recommend_app.db.models.user import UserInDb
 from recommend_app.db.impl.documents.user import UserDocument
 from recommend_app.db.hashing import Hasher
 
-from .. import utils
+from ... import utils
 
 def test_model_to_document(db_client):
     new_user = utils.create_user()

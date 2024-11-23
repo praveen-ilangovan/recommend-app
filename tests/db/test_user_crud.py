@@ -10,7 +10,7 @@ from recommend_app.db.models.user import NewUser, UserInDb
 from recommend_app.db.exceptions import RecommendDBModelCreationError
 from recommend_app.db.hashing import Hasher
 
-from . import utils
+from .. import utils
 
 @pytest.fixture(scope="session")
 def new_user():

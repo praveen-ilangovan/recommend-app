@@ -173,7 +173,7 @@ class RecommendDB(AbstractRecommendDB):
         doc_inst = self.__documents.get(model.model_type)
         if not doc_inst:
             raise RecommendDBModelCreationError(
-                "%s has no compatible beanie document type", model.model_type
+                f"{model.model_type.value} has no compatible beanie document type"
             )
 
         # Create a new entry in the db
@@ -182,7 +182,7 @@ class RecommendDB(AbstractRecommendDB):
             await document.create()
         except DuplicateKeyError as err:
             raise RecommendDBModelCreationError(
-                "%s already exists", model.model_type
+                f"{model.model_type.value} already exists"
             ) from err
 
         return document.to_model()

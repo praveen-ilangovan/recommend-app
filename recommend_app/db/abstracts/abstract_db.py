@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..models.bases import BaseNewRecommendModel, BaseRecommendModel
+    from ..types import RecommendModelType
 
 
 class AbstractRecommendDB(ABC):
@@ -63,7 +64,7 @@ class AbstractRecommendDB(ABC):
         """
 
     @abstractmethod
-    async def disconnect(self) -> bool:
+    async def disconnect(self, clear_db: bool = False) -> bool:
         """
         Removes the connection to the database.
         """
@@ -85,4 +86,27 @@ class AbstractRecommendDB(ABC):
         Raises:
             `RecommendDBModelCreationError` - The class that implements this
             method must throw this exception if the model creation failed.
+        """
+
+    @abstractmethod
+    async def get(
+        self, model_type: "RecommendModelType", attrs_dict: dict[str, str]
+    ) -> "BaseRecommendModel":
+        """
+        Retrieve a single model from the database that matches the given
+        criteria.
+
+        Args:
+            model_type (RecommendModelType): The type of the model to retrieve
+                                             (e.g., User, Board, Card).
+            attrs_dict (dict[str, Any]): A dictionary of attributes to filter
+                                         the model by.
+
+        Returns:
+            BaseRecommendModel: The model instance that matches the given criteria.
+
+        Raises:
+            `RecommendAppDbError`
+            `RecommendDBModelNotFound` - The class that implements this
+            method must throw this exception if the model is not found.
         """

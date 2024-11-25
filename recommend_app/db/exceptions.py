@@ -11,6 +11,12 @@ the recommend_app database. These exceptions inherit from the base
 from ..exceptions import RecommendAppError
 
 
+class RecommendAppDbError(RecommendAppError):
+    """
+    Raised when there is an error in the DB
+    """
+
+
 class RecommendDBConnectionError(RecommendAppError):
     """
     Raised when a connection to the database fails. It indicates an issue with
@@ -23,4 +29,12 @@ class RecommendDBModelCreationError(RecommendAppError):
     Raised when there is a failure in creating a new model (e.g., a user) in
     the database. This could occur due to duplication or other database errors
     during the creation process.
+    """
+
+
+class RecommendDBModelNotFound(RecommendAppError):
+    """
+    Raised when a requested model (e.g., a user) is not found in the database.
+    This is useful for handling cases where queries for non-existent records
+    are made.
     """

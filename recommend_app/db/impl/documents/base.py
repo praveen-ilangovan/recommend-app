@@ -3,7 +3,7 @@ Base Document
 """
 
 # Builtin imports
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, Optional
 from abc import ABC, abstractmethod
 
 # Project specific imports
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from ...abstracts.abstract_model import AbstractRecommendModel
 
 
-class BaseRecommendDocument(ABC, Document):
+class AbstractRecommendDocument(ABC, Document):
     """
     Base document class
     """
@@ -30,11 +30,20 @@ class BaseRecommendDocument(ABC, Document):
         They should be of type BaseRecommendModel
         """
 
+    @staticmethod
+    @abstractmethod
+    async def get_document(
+        attrs_dict: dict[str, str],
+    ) -> Optional["AbstractRecommendDocument"]:
+        """
+        Get the document from the db using the given attributes
+        """
+
     # -------------------------------------------------------------------------#
     # Class Method
     # -------------------------------------------------------------------------#
     @classmethod
-    def from_model(cls, model: "AbstractRecommendModel") -> "BaseRecommendDocument":
+    def from_model(cls, model: "AbstractRecommendModel") -> "AbstractRecommendDocument":
         """
         Create an instance of the Beanie Document from the RecommendModel.
         RecommendModel to RecommendDocument

@@ -23,4 +23,4 @@ async def db_client():
 
     yield client
 
-    await client.disconnect()
+    await client.disconnect(clear_db=True)

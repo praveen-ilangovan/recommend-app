@@ -31,14 +31,19 @@ import beanie
 
 # Local imports
 from ..abstracts.abstract_db import AbstractRecommendDB
-from ..exceptions import RecommendDBConnectionError, RecommendDBModelCreationError
+from ..exceptions import (
+    RecommendDBConnectionError,
+    RecommendDBModelCreationError,
+    RecommendAppDbError,
+    RecommendDBModelNotFound,
+)
 from ..types import RecommendModelType
 from .documents.user import UserDocument
 
 
 if TYPE_CHECKING:
     from motor.motor_asyncio import AsyncIOMotorDatabase
-    from .documents.base import BaseRecommendDocument
+    from .documents.base import AbstractRecommendDocument
     from ..models.bases import BaseNewRecommendModel, BaseRecommendModel
 
 
@@ -59,7 +64,9 @@ class RecommendDB(AbstractRecommendDB):
 
         self.__db: Optional["AsyncIOMotorDatabase"] = None
         # Beanie Documents
-        self.__documents: dict[RecommendModelType, type["BaseRecommendDocument"]] = {}
+        self.__documents: dict[
+            RecommendModelType, type["AbstractRecommendDocument"]
+        ] = {}
 
     ###########################################################################
     # Properties
@@ -139,9 +146,12 @@ class RecommendDB(AbstractRecommendDB):
 
         return True
 
-    async def disconnect(self) -> bool:
+    async def disconnect(self, clear_db: bool = False) -> bool:
         """
         Removes the connection to the database.
+
+        Args:
+            clear_db (bool): For testing. Clears the db while closing the connection
 
         Returns:
             True if the connection is disconnected
@@ -149,7 +159,10 @@ class RecommendDB(AbstractRecommendDB):
         if self.__db is None:
             return False
 
-        await self.__db.client.drop_database(self.__dbname)
+        if clear_db:
+            await self.__db.client.drop_database(self.__dbname)
+
+        self.__db.client.close()
 
         return True
 
@@ -167,16 +180,11 @@ class RecommendDB(AbstractRecommendDB):
             BaseRecommendModel: The newly created model instance.
 
         Raises:
+            `RecommendAppDbError` - General db error
             `RecommendDBModelCreationError` - The class that implements this
             method must throw this exception if the model creation failed.
         """
-        doc_inst = self.__documents.get(model.model_type)
-        if not doc_inst:
-            raise RecommendDBModelCreationError(
-                f"{model.model_type.value} has no compatible beanie document type"
-            )
-
-        # Create a new entry in the db
+        doc_inst = self.__get_doc_inst(model.model_type)
         document = doc_inst.from_model(model)
         try:
             await document.create()
@@ -186,3 +194,60 @@ class RecommendDB(AbstractRecommendDB):
             ) from err
 
         return document.to_model()
+
+    async def get(
+        self, model_type: "RecommendModelType", attrs_dict: dict[str, str]
+    ) -> "BaseRecommendModel":
+        """
+        Retrieve a single model from the database that matches the given
+        criteria.
+
+        Args:
+            model_type (RecommendModelType): The type of the model to retrieve
+                                             (e.g., User, Board, Card).
+            attrs_dict (dict[str, Any]): A dictionary of attributes to filter
+                                         the model by.
+
+        Returns:
+            BaseRecommendModel: The model instance that matches the given criteria.
+
+        Raises:
+            `RecommendAppDbError` - General db error
+            `RecommendDBModelNotFound` - The class that implements this
+            method must throw this exception if the model is not found.
+        """
+        doc_inst = self.__get_doc_inst(model_type)
+        result = await doc_inst.get_document(attrs_dict)
+        if not result:
+            raise RecommendDBModelNotFound(
+                f"No {model_type.value} found for {attrs_dict}"
+            )
+
+        return result.to_model()
+
+    ###########################################################################
+    # Methods: privates
+    ###########################################################################
+    def __get_doc_inst(
+        self, model_type: "RecommendModelType"
+    ) -> type["AbstractRecommendDocument"]:
+        """
+        Return the doc inst for the requested model type.
+
+        Args:
+            model_type (RecommendModelType): The type of the model to retrieve
+                                             (e.g., User, Board, Card).
+
+        Returns:
+            An instance of the Document
+
+        Raises:
+            `RecommendAppDbError` - The class that implements this
+            method must throw this exception if the model is not found.
+        """
+        inst = self.__documents.get(model_type)
+        if not inst:
+            raise RecommendAppDbError(
+                f"{model_type.value} has no compatible beanie document type"
+            )
+        return inst

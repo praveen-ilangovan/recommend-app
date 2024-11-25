@@ -11,12 +11,13 @@ users
 """
 
 # Project specific imports
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Request
 
 # Local imports
 from ...db.models.user import NewUser, UserInDb
 from ...db.exceptions import RecommendDBModelCreationError
 from .. import dependencies
+from ... import ui
 
 router = APIRouter()
 
@@ -24,6 +25,14 @@ router = APIRouter()
 # -----------------------------------------------------------------------------#
 # Routes
 # -----------------------------------------------------------------------------#
+@router.get("/new")
+async def show_register_page(request: Request) -> ui.JinjaTemplateResponse:
+    """
+    Displays the register page for users to create a new account
+    """
+    return ui.show_page(request=request, name="register.html")
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserInDb)
 async def add_user(new_user: NewUser) -> UserInDb:
     try:

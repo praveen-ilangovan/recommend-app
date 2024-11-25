@@ -44,4 +44,5 @@ def show_page(
         name (str): Name of the html file to load. Eg: health.html
         context (dict): Contextual information for the html page
     """
+    context = context or {}
     return __TEMPLATES.TemplateResponse(request=request, name=name, context=context)

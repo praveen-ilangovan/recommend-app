@@ -27,10 +27,12 @@ def new_user():
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_add_new_user(db_client, new_user):
+    # passwords get updated in the new_user model. So store the pwd here
+    pwd = new_user.password
     user = await db_client.add_user(new_user)
     assert isinstance(user, UserInDb)
     assert user.email_address == new_user.email_address
-    assert Hasher.verify_password(new_user.password, user.password)
+    assert Hasher.verify_password(pwd, user.password)
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_add_duplicate_email_address(db_client):

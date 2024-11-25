@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 # Local imports
 from . import db
 from .db.models.user import NewUser
+from .db.hashing import Hasher
 
 # Load the environment variables
 load_dotenv()
@@ -39,13 +40,16 @@ async def main() -> None:
     client = db.create_client()
     await client.connect()
 
-    # new_user = create_user()
-    # result = await client.add_user(new_user)
-    # print(result)
-
-    email_address = "a@email.com"
-    result = await client.get_user(email_address=email_address)
+    new_user = create_user()
+    pwd = new_user.password
+    result = await client.add_user(new_user)
     print(result)
+
+    # email_address = "praveen@email.com"
+    result = await client.get_user(email_address=new_user.email_address)
+    print(result)
+
+    print(Hasher.verify_password(pwd, result.password))
 
     await client.disconnect()
 

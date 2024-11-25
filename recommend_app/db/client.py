@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Optional, cast
 # Local imports
 from .exceptions import RecommendDBConnectionError, RecommendAppDbError
 from .types import RecommendModelType
+from .hashing import Hasher
 
 if TYPE_CHECKING:
     from .abstracts.abstract_db import AbstractRecommendDB
@@ -103,6 +104,8 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelCreationError` if user creation fails.
         """
+        # Hash the password
+        new_user.password = Hasher.hash_password(new_user.password)
         result = await self.__db.add(new_user)
         return cast("UserInDb", result)
 

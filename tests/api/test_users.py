@@ -4,8 +4,7 @@ Test the users endpoint
 
 # Project specific imports
 from fastapi.testclient import TestClient
-from fastapi import status, HTTPException
-import pytest
+from fastapi import status
 
 # Local imports
 from recommend_app.api.app import app
@@ -24,4 +23,3 @@ def test_add_user():
         
         result = response.json()
         assert result['email_address'] == new_user.email_address
-

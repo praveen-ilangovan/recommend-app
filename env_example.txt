@@ -1,0 +1,5 @@
+DB_URL=""
+DB_USER_ID=""
+DB_PASSWORD=""
+DB_NAME=""
+PORT="8000"

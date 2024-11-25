@@ -11,15 +11,19 @@ from ... import utils
 
 def test_model_to_document(db_client):
     new_user = utils.create_user()
+    pwd = new_user.password
+    new_user.password = Hasher.hash_password(new_user.password)
     document = UserDocument.from_model(new_user)
     assert isinstance(document, UserDocument)
     assert document.email_address == new_user.email_address
-    assert Hasher.verify_password(new_user.password, document.password)
+    assert Hasher.verify_password(pwd, document.password)
 
 def test_document_to_model(db_client):
     new_user = utils.create_user()
+    pwd = new_user.password
+    new_user.password = Hasher.hash_password(new_user.password)
     document = UserDocument.from_model(new_user)
     user = document.to_model()
     assert isinstance(user, UserInDb)
     assert user.email_address == new_user.email_address
-    assert Hasher.verify_password(new_user.password, user.password)
+    assert Hasher.verify_password(pwd, user.password)

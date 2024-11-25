@@ -5,12 +5,11 @@ from typing import Annotated, Optional
 
 # Project specific imports
 from beanie import Indexed
-from pydantic import EmailStr, field_validator
+from pydantic import EmailStr
 
 # Local imports
 from .base import AbstractRecommendDocument
 from ...models.user import UserInDb
-from ...hashing import Hasher
 
 
 class UserDocument(AbstractRecommendDocument):
@@ -28,10 +27,6 @@ class UserDocument(AbstractRecommendDocument):
     first_name: str
     last_name: str
     password: str
-
-    @field_validator("password")
-    def hash_password(cls, password: str) -> str:
-        return Hasher.hash_password(password)
 
     # -------------------------------------------------------------------------#
     # Settings

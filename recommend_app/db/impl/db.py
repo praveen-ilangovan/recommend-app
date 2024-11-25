@@ -223,6 +223,8 @@ class RecommendDB(AbstractRecommendDB):
                 f"No {model_type.value} found for {attrs_dict}"
             )
 
+        print(f"Password in document: {result.password}")
+
         return result.to_model()
 
     ###########################################################################

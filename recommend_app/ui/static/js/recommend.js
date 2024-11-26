@@ -72,10 +72,6 @@ if (loginForm) {
       if (response.ok) {
         // Handle success (e.g., redirect to dashboard)
         const data = await response.json();
-        // Delete any cookies available
-        logout();
-        // Save token to cookie
-        document.cookie = `access_token=${data.access_token}; path=/`;
         window.location.href = "/health"; // Change this to your desired redirect page
       } else {
         // Handle error

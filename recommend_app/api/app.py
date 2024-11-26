@@ -7,13 +7,14 @@ from contextlib import asynccontextmanager
 import importlib.metadata
 
 # Project specific imports
-from fastapi import FastAPI, status, Request
+from fastapi import FastAPI, status, Request, HTTPException
 
 # Local imports
 from ..db import create_client
 from .. import ui
 from . import dependencies
 from .routers import session, users
+from . import auth
 
 
 # -----------------------------------------------------------------------------#
@@ -48,10 +49,17 @@ ui.mount_static_files(app)
 
 
 @app.get("/health", tags=["Root"], status_code=status.HTTP_200_OK)
-async def show_health(request: Request) -> ui.JinjaTemplateResponse:
+async def show_health(
+    request: Request, user: auth.OPTIONAL_USER
+) -> ui.JinjaTemplateResponse:
     """
     Gives the health status of the connection
     """
+    try:
+        print(user)
+    except HTTPException:
+        print("No user")
+
     status = await dependencies.get_db_client().ping()
     report = [
         {"key": "App Version", "value": importlib.metadata.version("recommend_app")},

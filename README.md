@@ -95,6 +95,8 @@ async def main():
     # Verify the user
     print(Hasher.verify_password("password123", result.password))
 
+    await client.disconnect()
+
 asyncio.run(main())
 ```
 

@@ -34,7 +34,7 @@ async def show_login_page(request: Request) -> ui.JinjaTemplateResponse:
     return ui.show_page(request=request, name="login.html")
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=auth.Token)
+@router.post("/", status_code=status.HTTP_200_OK, response_model=auth.Token)
 async def create_session(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> JSONResponse:

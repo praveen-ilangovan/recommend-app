@@ -13,11 +13,13 @@ from recommend_app.db import create_client, RecommendDB
 
 #-----------------------------------------------------------------------------#
 # Fixtures
-# For async: https://pytest-asyncio.readthedocs.io/en/latest/how-to-guides/run_session_tests_in_same_loop.html
 #-----------------------------------------------------------------------------#
 
 @pytest_asyncio.fixture(loop_scope="session")
 async def db_client():
+    """
+    For async: https://pytest-asyncio.readthedocs.io/en/latest/how-to-guides/run_session_tests_in_same_loop.html
+    """
     client = create_client( RecommendDB(os.environ["DB_NAME"]) )
     await client.connect()
 

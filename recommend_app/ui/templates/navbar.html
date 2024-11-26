@@ -7,20 +7,29 @@
 
     <!-- Right elements -->
     <div class="d-flex align-items-center">
+      {% if user %}
+      <div class="dropdown">
+        <a
+          class="btn btn-primary dropdown-toggle"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          href="#"
+          role="button"
+          >Hello, {{ user.first_name }}</a
+        >
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="/session/logout">Logout</a>
+        </div>
+      </div>
+
+      {% else %}
       <a class="btn btn-primary" href="/session/new" role="button"
         >Login / Register</a
       >
 
-      <!-- <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown button
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </div> -->
+      {% endif %}
     </div>
     <!-- Right elements -->
   </div>

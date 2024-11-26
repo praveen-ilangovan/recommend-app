@@ -75,4 +75,8 @@ async def show_health(
         {"key": "DB Client", "value": "active" if status else "inactive"},
         {"key": "User", "value": "Authenticated" if user else "Unauthenticated"},
     ]
-    return ui.show_page(request=request, name="health.html", context={"report": report})
+
+    context = {"report": report}
+    if user:
+        context["user"] = user
+    return ui.show_page(request=request, name="health.html", context=context)

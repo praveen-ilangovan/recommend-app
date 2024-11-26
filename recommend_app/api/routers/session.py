@@ -52,3 +52,10 @@ async def create_session(
     # https://tools.ietf.org/html/rfc6265#section-4.1.2.5
     response.set_cookie(token.name, token.access_token, httponly=True)
     return response
+
+
+@router.get("/logout", status_code=status.HTTP_200_OK)
+async def delete_session(request: Request) -> ui.JinjaTemplateResponse:
+    response = ui.show_page(request=request, name="login.html")
+    response.delete_cookie(auth.OAUTH2_SCHEME.token_name)
+    return response

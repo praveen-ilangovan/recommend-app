@@ -29,16 +29,74 @@ framework (React probably)
 ## Quickstart
 
  - Clone the repo
- - CD into it
- - Install
+ - CD into it.
+
+### Environment
+
+ - Create a .env file inside the repo.
+ - It must have the keys listed in [env_example.txt](env_example.txt)
 
 ```sh
-cd recommend-app
+DB_URL=""
+DB_USER_ID=""
+DB_PASSWORD=""
+DB_NAME=""
+PORT="8000"
+```
+
+ - Install the application and run it.
+
+```sh
 make install
 poetry run app
 ```
 
-Application should start running @ http://127.0.0.1:8000/health
+Application should start running @ http://127.0.0.1:8000/
+
+### API Endpoints
+
+ - [GET /health](http://127.0.0.1:8000/health) : Displays if a user is authenticated and database is connected.
+ - [GET /users/new](http://127.0.0.1:8000/users/new) : Displays the user registration page
+ - [POST /users](http://127.0.0.1:8000/users) : Create a new user in the database
+ - [GET /session/new](http://127.0.0.1:8000/session/new) : Displays the user login page
+ - [POST /session](http://127.0.0.1:8000/session) : User log in using their credentials
+ - [GET /session/logout](http://127.0.0.1:8000/session/logout) : User logouts the current session
+
+### DB backend
+
+```python
+import asyncio
+
+from dotenv import load_dotenv
+
+from recommend_app import db
+from recommend_app.db.models.user import NewUser
+from recommend_app.db.hashing import Hasher
+
+load_dotenv()
+
+async def main():
+    client = db.create_client()
+    await client.connect()
+
+    # Create a new user
+    user = NewUser(
+        email_address="johnDoe@mail.com",
+        user_name="john.doe",
+        first_name="John",
+        last_name="Doe",
+        password="password123",
+    )
+    created_user = await client.add_user(user)
+
+    # Get the user
+    result = await client.get_user(email_address=user.email_address)
+
+    # Verify the user
+    print(Hasher.verify_password("password123", result.password))
+
+asyncio.run(main())
+```
 
 ## Code quality
 

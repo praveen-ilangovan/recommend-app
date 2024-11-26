@@ -48,9 +48,7 @@ async def create_session(
     token = auth.create_access_token(user, access_token_expires)
 
     response = JSONResponse({"status": "authenticated"})
-    # NOTE: we should also set secure=True to mark this as a `secure` cookie
-    # https://tools.ietf.org/html/rfc6265#section-4.1.2.5
-    response.set_cookie(token.name, token.access_token, httponly=True)
+    response.set_cookie(token.name, token.access_token, httponly=True, secure=True)
     return response
 
 

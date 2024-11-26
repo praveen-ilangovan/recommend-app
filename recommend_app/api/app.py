@@ -13,7 +13,7 @@ from fastapi import FastAPI, status, Request
 from ..db import create_client
 from .. import ui
 from . import dependencies
-from .routers import users, auth
+from .routers import session, users
 
 
 # -----------------------------------------------------------------------------#
@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(users.router, tags=["Users"], prefix="/users")
-app.include_router(auth.router, tags=["Auth"], prefix="/auth")
+app.include_router(session.router, tags=["Session"], prefix="/session")
 
 
 ui.mount_static_files(app)

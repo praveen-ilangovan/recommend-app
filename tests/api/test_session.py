@@ -3,20 +3,25 @@ Let us test session
 """
 
 # Project specific imports
+import pytest
 from fastapi import status
 
 # Local imports
 from .. import utils
 
-def test_session_post(api_client):
+#-----------------------------------------------------------------------------#
+# Tests
+#-----------------------------------------------------------------------------#
+@pytest.mark.asyncio(loop_scope="session")
+async def test_session_post(api_client):
     new_user = utils.create_user()
     password = new_user.password
 
     # Create a user
-    api_client.post("/users", json=new_user.model_dump())
+    await api_client.post("/users/", json=new_user.model_dump())
 
     # Login
-    response = api_client.post("/session",
+    response = await api_client.post("/session/",
                                data={"username": new_user.user_name,
                                      "password": password,
                                      "grant_type": "password"},
@@ -24,15 +29,16 @@ def test_session_post(api_client):
     assert response.status_code == status.HTTP_200_OK
     assert response.cookies.get("access_token")
 
-def test_session_post_with_email(api_client):
+@pytest.mark.asyncio(loop_scope="session")
+async def test_session_post_with_email(api_client):
     new_user = utils.create_user()
     password = new_user.password
 
     # Create a user
-    api_client.post("/users", json=new_user.model_dump())
+    await api_client.post("/users/", json=new_user.model_dump())
 
     # Login
-    response = api_client.post("/session",
+    response = await api_client.post("/session/",
                                data={"username": new_user.email_address,
                                      "password": password,
                                      "grant_type": "password"},
@@ -40,32 +46,34 @@ def test_session_post_with_email(api_client):
     assert response.status_code == status.HTTP_200_OK
     assert response.cookies.get("access_token")
 
-def test_session_post_invalid_credentials(api_client):
+@pytest.mark.asyncio(loop_scope="session")
+async def test_session_post_invalid_credentials(api_client):
     new_user = utils.create_user()
-    api_client.post("/users", json=new_user.model_dump())
+    await api_client.post("/users/", json=new_user.model_dump())
 
     # Login
-    response = api_client.post("/session",
+    response = await api_client.post("/session/",
                                data={"username": new_user.user_name,
                                      "password": "bad_password",
                                      "grant_type": "password"},
                                headers={"content-type": "application/x-www-form-urlencoded"})
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-def test_session_logout(api_client):
+@pytest.mark.asyncio(loop_scope="session")
+async def test_session_logout(api_client):
     new_user = utils.create_user()
     password = new_user.password
 
     # Create a user
-    api_client.post("/users", json=new_user.model_dump())
+    await api_client.post("/users/", json=new_user.model_dump())
 
     # Login
-    api_client.post("/session",
+    await api_client.post("/session/",
                     data={"username": new_user.user_name,
                           "password": password,
                           "grant_type": "password"},
                     headers={"content-type": "application/x-www-form-urlencoded"})
     
     # Logout
-    response = api_client.get("/session/logout")
+    response = await api_client.get("/session/logout")
     assert not response.cookies.get("access_token")

@@ -171,3 +171,4 @@ cython_debug/
 # Local files
 async_typing.py
 Recommend_Models.txt
+test_app.py

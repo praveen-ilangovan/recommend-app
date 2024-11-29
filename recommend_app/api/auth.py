@@ -7,7 +7,7 @@ from typing import Any, Optional, Annotated, TYPE_CHECKING, Union
 from datetime import datetime, timezone
 
 # Project specific imports
-from fastapi import Depends, Request, HTTPException, status
+from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 import jwt
@@ -17,6 +17,7 @@ from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 from . import dependencies
 from ..db.exceptions import RecommendAppDbError, RecommendDBModelNotFound
 from ..db.hashing import Hasher
+from .exceptions import RecommendAppRequiresLogin
 
 if TYPE_CHECKING:
     from datetime import timedelta
@@ -202,13 +203,11 @@ async def get_authenticated_user(
         `AuthenticatedUser` - If a user is logged in. if not, returns None
 
     Raises:
-        HTTPException
+        `RecommendAppRequiresLogin`
     """
     user = _decode_token(token)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Please login"
-        )
+        raise RecommendAppRequiresLogin("This page requires login")
     return user
 
 

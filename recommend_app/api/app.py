@@ -6,16 +6,18 @@ FastAPI
 from contextlib import asynccontextmanager
 import importlib.metadata
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote
 
 # Project specific imports
 from fastapi import FastAPI, status, Request
+from fastapi.responses import RedirectResponse
 
 # Local imports
 from ..db import create_client
 from .. import ui
-from . import dependencies
-from .routers import session, users
-from . import auth
+from . import auth, dependencies, exceptions
+from .routers import session, users, boards
+
 
 if TYPE_CHECKING:
     from ..db import RecommendDbClient
@@ -53,13 +55,21 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(users.router, tags=["Users"], prefix="/users")
 app.include_router(session.router, tags=["Session"], prefix="/session")
-
+app.include_router(boards.router, tags=["Boards"], prefix="/boards")
 
 ui.mount_static_files(app)
 
 # -----------------------------------------------------------------------------#
 # Routes
 # -----------------------------------------------------------------------------#
+
+
+@app.exception_handler(exceptions.RecommendAppRequiresLogin)
+async def requires_login(request: Request, _: Exception):
+    """
+    Redirect the user to the login page
+    """
+    return RedirectResponse(f"/session/new?next={quote(request.url._url)}")
 
 
 @app.get("/health", tags=["Root"], status_code=status.HTTP_200_OK)

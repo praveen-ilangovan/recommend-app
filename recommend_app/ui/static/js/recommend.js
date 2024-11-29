@@ -21,8 +21,6 @@ if (registerForm) {
       password: data.password,
     };
 
-    console.log(payload);
-
     try {
       const response = await fetch("/users", {
         method: "POST",
@@ -77,6 +75,44 @@ if (loginForm) {
         // Handle error
         const errorData = await response.json();
         alert(`Error: ${errorData.detail}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again.");
+    }
+  });
+}
+
+// Create Board JS
+const createBoardForm = document.getElementById("createBoardForm");
+if (createBoardForm) {
+  createBoardForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    const payload = {
+      name: data.name,
+      private: data.private,
+    };
+
+    try {
+      const response = await fetch("/boards", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        window.location.href = "/health";
+      } else {
+        // Handle error
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
       }
     } catch (error) {
       console.error("Error:", error);

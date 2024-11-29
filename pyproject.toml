@@ -31,6 +31,8 @@ pre-commit = "^3.8.0"
 pytest-asyncio = "^0.24.0"
 pytest-env = "^1.1.5"
 types-passlib = "^1.7.7.20240819"
+httpx = "^0.28.0"
+asgi-lifespan = "^2.1.0"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.0"

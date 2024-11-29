@@ -14,7 +14,11 @@ easier to manage and extend the application's data storage layer.
 from typing import TYPE_CHECKING, Optional, cast
 
 # Local imports
-from .exceptions import RecommendDBConnectionError, RecommendAppDbError
+from .exceptions import (
+    RecommendDBConnectionError,
+    RecommendAppDbError,
+    RecommendDBModelCreationError,
+)
 from .types import RecommendModelType
 from .hashing import Hasher
 from .models.board import NewBoard
@@ -166,6 +170,13 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelCreationError` if board creation fails.
         """
-        board_with_ownerid = NewBoard(**new_board.model_dump(), owner_id=owner.id)
+        try:
+            owner_id = owner.id
+        except AttributeError:
+            raise RecommendDBModelCreationError(
+                "Failed to create a board. Invalid Owner"
+            )
+
+        board_with_ownerid = NewBoard(**new_board.model_dump(), owner_id=owner_id)
         result = await self.__db.add(board_with_ownerid)
         return cast("BoardInDb", result)

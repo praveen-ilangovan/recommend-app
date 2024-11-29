@@ -9,10 +9,10 @@ from pydantic import EmailStr
 
 # Local imports
 from .base import AbstractRecommendDocument
-from ...models.user import UserInDb
+from ...models.user import ExtendedUserAttributes, UserInDb
 
 
-class UserDocument(AbstractRecommendDocument):
+class UserDocument(ExtendedUserAttributes, AbstractRecommendDocument):
     """
     Beanie ODM for users
 
@@ -24,9 +24,6 @@ class UserDocument(AbstractRecommendDocument):
     # -------------------------------------------------------------------------#
     email_address: Annotated[EmailStr, Indexed(unique=True)]
     user_name: Annotated[str, Indexed(unique=True)]
-    first_name: str
-    last_name: str
-    password: str
 
     # -------------------------------------------------------------------------#
     # Settings

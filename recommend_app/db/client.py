@@ -17,10 +17,12 @@ from typing import TYPE_CHECKING, Optional, cast
 from .exceptions import RecommendDBConnectionError, RecommendAppDbError
 from .types import RecommendModelType
 from .hashing import Hasher
+from .models.board import NewBoard
 
 if TYPE_CHECKING:
     from .abstracts.abstract_db import AbstractRecommendDB
     from .models.user import NewUser, UserInDb
+    from .models.board import BoardInDb
 
 
 class RecommendDbClient:
@@ -107,7 +109,9 @@ class RecommendDbClient:
         # Hash the password
         new_user.password = Hasher.hash_password(new_user.password)
         result = await self.__db.add(new_user)
-        return cast("UserInDb", result)
+        return cast(
+            "UserInDb", result
+        )  # Type narrowing to keep static type checker happy.
 
     async def get_user(
         self,
@@ -144,3 +148,24 @@ class RecommendDbClient:
 
         result = await self.__db.get(RecommendModelType.USER, attrs_dict)
         return cast("UserInDb", result)
+
+    ###########################################################################
+    # Methods: Board
+    ###########################################################################
+    async def add_board(self, new_board: NewBoard, owner: "UserInDb") -> "BoardInDb":
+        """
+        Add a new board to the database, associated with a specific user.
+
+        Args:
+            new_board (NewBoard): Board model with all the necessary info to create a new board
+            owner (UserInDb): User who is creating this board
+
+        Returns:
+            BoardInDb: The newly created Board object.
+
+        Raises:
+            `RecommendDBModelCreationError` if board creation fails.
+        """
+        board_with_ownerid = NewBoard(**new_board.model_dump(), owner_id=owner.id)
+        result = await self.__db.add(board_with_ownerid)
+        return cast("BoardInDb", result)

@@ -39,6 +39,7 @@ from ..exceptions import (
 )
 from ..types import RecommendModelType
 from .documents.user import UserDocument
+from .documents.board import BoardDocument
 
 
 if TYPE_CHECKING:
@@ -120,9 +121,12 @@ class RecommendDB(AbstractRecommendDB):
         self.__db = client.get_database(self.__dbname)
 
         # Init beanie
-        await beanie.init_beanie(database=self.__db, document_models=[UserDocument])
+        await beanie.init_beanie(
+            database=self.__db, document_models=[UserDocument, BoardDocument]
+        )
 
         self.__documents[RecommendModelType.USER] = UserDocument
+        self.__documents[RecommendModelType.BOARD] = BoardDocument
 
         # Check the connection
         await self.ping()

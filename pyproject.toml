@@ -37,6 +37,12 @@ mkdocs = "^1.6.0"
 mkdocs-material = "^9.5.31"
 mkdocstrings = {extras = ["python"], version = "^0.25.2"}
 
+[tool.ruff]
+exclude = ["__main__.py"]
+
+[tool.mypy]
+plugins = ['pydantic.mypy']
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"

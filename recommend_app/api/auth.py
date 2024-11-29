@@ -215,5 +215,5 @@ async def get_authenticated_user(
 # -----------------------------------------------------------------------------#
 # Dependency
 # -----------------------------------------------------------------------------#
-OPTIONAL_USER = Annotated[dict, Depends(get_user)]
-REQUIRED_USER = Annotated[dict, Depends(get_authenticated_user)]
+OPTIONAL_USER = Annotated[Optional[AuthenticatedUser], Depends(get_user)]
+REQUIRED_USER = Annotated[AuthenticatedUser, Depends(get_authenticated_user)]

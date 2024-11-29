@@ -5,7 +5,7 @@ FastAPI
 # Builtin imports
 from contextlib import asynccontextmanager
 import importlib.metadata
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 # Project specific imports
 from fastapi import FastAPI, status, Request
@@ -76,7 +76,7 @@ async def show_health(
         {"key": "User", "value": "Authenticated" if user else "Unauthenticated"},
     ]
 
-    context = {"report": report}
+    context: dict[str, Any] = {"report": report}
     if user:
         context["user"] = user
     return ui.show_page(request=request, name="health.html", context=context)

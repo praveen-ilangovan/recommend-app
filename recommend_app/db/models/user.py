@@ -11,18 +11,53 @@ the app.
 """
 
 # Project specific imports
-from pydantic import EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 # Local imports
 from ..types import RecommendModelType
 from .bases import BaseNewRecommendModel, BaseRecommendModel
 
 # -----------------------------------------------------------------------------#
+# Attributes
+# -----------------------------------------------------------------------------#
+
+
+class BaseUserAttributes(BaseModel):
+    """
+    Defines a list of attributes used across CRUD operations. These are the
+    attributes common to all the Recommend User models.
+
+    Args:
+        user_name (str): User name. Must be unique. Email or user_name is used to
+            identify the user.
+        first_name (str): First name of the user
+        last_name (str): Last name of the user
+    """
+
+    user_name: str
+    first_name: str
+    last_name: str
+
+
+class ExtendedUserAttributes(BaseUserAttributes):
+    """
+    As the name indicates, this has more attributes used in specific models.
+
+    Args:
+        email_address (emailstr): Email address of the user. Must be unique
+        password (str): Sign in password. Encryption happens in the client class.
+    """
+
+    email_address: EmailStr
+    password: str
+
+
+# -----------------------------------------------------------------------------#
 # Models
 # -----------------------------------------------------------------------------#
 
 
-class NewUser(BaseNewRecommendModel):
+class NewUser(ExtendedUserAttributes, BaseNewRecommendModel):
     """
     Model to create a new user
 
@@ -32,7 +67,7 @@ class NewUser(BaseNewRecommendModel):
             identify the user.
         first_name (str): First name of the user
         last_name (str): Last name of the user
-        password (str): Sign in password. Will be encrypted before storing
+        password (str): Sign in password. Encryption happens in the client class.
     """
 
     model_config = ConfigDict(
@@ -46,12 +81,6 @@ class NewUser(BaseNewRecommendModel):
             }
         }
     )
-
-    email_address: EmailStr
-    user_name: str
-    first_name: str
-    last_name: str
-    password: str
 
     # -------------------------------------------------------------------------#
     # Properties
@@ -68,7 +97,7 @@ class NewUser(BaseNewRecommendModel):
         return RecommendModelType.USER
 
 
-class UserInDb(BaseRecommendModel):
+class UserInDb(ExtendedUserAttributes, BaseRecommendModel):
     """
     Model to hold the user data in the db
 
@@ -84,21 +113,15 @@ class UserInDb(BaseRecommendModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "id": "ObjectId('67407a5d14376db5b4218532')",
+                "id": "67407a5d14376db5b4218532",
                 "email_address": "john.doe@email.com",
                 "user_name": "john_doe",
                 "first_name": "John",
                 "last_name": "Doe",
-                "hashed_password": "ncvdisvbskv1w2ebeh",
+                "password": "ncvdisvbskv1w2ebeh",
             }
         }
     )
-
-    email_address: EmailStr
-    user_name: str
-    first_name: str
-    last_name: str
-    password: str
 
     # -------------------------------------------------------------------------#
     # Properties

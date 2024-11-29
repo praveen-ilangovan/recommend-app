@@ -42,8 +42,8 @@ async def show_create_board_page(
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=BoardInDb)
 async def add_board(new_board: NewBoard, user: auth.REQUIRED_USER) -> BoardInDb:
     try:
-        user = cast("UserInDb", user)  # Keeping MyPy happy.
-        board = await dependencies.get_db_client().add_board(new_board, user)
+        db_user = cast("UserInDb", user)  # Keeping MyPy happy.
+        board = await dependencies.get_db_client().add_board(new_board, db_user)
     except RecommendDBModelCreationError as err:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail={"error": err.message})
 

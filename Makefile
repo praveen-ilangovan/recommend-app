@@ -23,7 +23,7 @@ check: ## Run code quality tools.
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@poetry run pytest
+	@poetry run pytest .\tests
 
 ##################
 #####  DOCS  #####

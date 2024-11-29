@@ -14,6 +14,7 @@ from fastapi.responses import RedirectResponse
 
 # Local imports
 from ..db import create_client
+from ..db.exceptions import RecommendDBConnectionError
 from .. import ui
 from . import auth, dependencies, exceptions
 from .routers import session, users, boards
@@ -79,7 +80,11 @@ async def show_health(
     """
     Gives the health status of the connection
     """
-    status = await dependencies.get_db_client().ping()
+    try:
+        status = await dependencies.get_db_client().ping()
+    except RecommendDBConnectionError:
+        status = None
+
     report = [
         {"key": "App Version", "value": importlib.metadata.version("recommend_app")},
         {"key": "DB Client", "value": "active" if status else "inactive"},

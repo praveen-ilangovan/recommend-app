@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING, Optional
 
 # Project specific imports
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo.errors import OperationFailure, DuplicateKeyError
+from pymongo.errors import OperationFailure, DuplicateKeyError, InvalidOperation
 import beanie
 
 # Local imports
@@ -145,7 +145,7 @@ class RecommendDB(AbstractRecommendDB):
 
         try:
             await self.__db.client.admin.command("ping")
-        except OperationFailure as err:
+        except (OperationFailure, InvalidOperation) as err:
             raise RecommendDBConnectionError("Failed to connect to the DB") from err
 
         return True

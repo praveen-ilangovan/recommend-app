@@ -7,6 +7,7 @@ import pytest
 from fastapi import status
 
 # Local imports
+from recommend_app.api import constants as Key
 from .. import utils
 
 #-----------------------------------------------------------------------------#
@@ -19,7 +20,7 @@ async def test_add_user(api_client):
     # The trailing slash in the /users/ is important.
     # Without it, the endpoint would get redirected and the response status
     # would be 307
-    response = await api_client.post("/users/", json=new_user.model_dump())
+    response = await api_client.post(Key.ROUTES.ADD_USER, json=new_user.model_dump())
     assert response.status_code == status.HTTP_201_CREATED
     
     result = response.json()

@@ -50,5 +50,5 @@ async def api_client(WrappedApp):
     The test client we will using in the test. It takes in the wrapped app along
     with the db override.
     """
-    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=WrappedApp), base_url="http://test") as client:
         yield client

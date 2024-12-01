@@ -1,0 +1,24 @@
+{% include 'layout.html' %}
+
+<div class="container">
+  <!-- Content here -->
+  <h3>{{ requested_user.first_name }}'s Boards</h3>
+  {% if boards %}
+  <table class="table" style="width: 400px">
+    <thead>
+      <tr>
+        <th scope="col">Board</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for board in boards %}
+      <tr>
+        <td>{{ board.name }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <h5>User has no public boards</h5>
+  {% endif %}
+</div>

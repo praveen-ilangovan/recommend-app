@@ -15,7 +15,7 @@ modifying the core logic.
 
 # Builtin imports
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ..models.bases import BaseNewRecommendModel, BaseRecommendModel
@@ -113,7 +113,7 @@ class AbstractRecommendDB(ABC):
 
     @abstractmethod
     async def get_all(
-        self, model_type: "RecommendModelType", attrs_dict: dict[str, str]
+        self, model_type: "RecommendModelType", attrs_dict: dict[str, Any]
     ) -> list["BaseRecommendModel"]:
         """
         Retrieve all models from the database that match the given criteria.

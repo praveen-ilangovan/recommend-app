@@ -11,7 +11,7 @@ easier to manage and extend the application's data storage layer.
 """
 
 # Builtin imports
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, Optional, cast, Any
 
 # Local imports
 from .exceptions import RecommendDBConnectionError, RecommendAppDbError
@@ -205,17 +205,22 @@ class RecommendDbClient:
 
         return board
 
-    async def get_all_boards(self, owner_id: str) -> list["BoardInDb"]:
+    async def get_all_boards(
+        self, owner_id: str, only_public: bool = False
+    ) -> list["BoardInDb"]:
         """
         Retrieve all boards associated with a specific user.
 
         Args:
             owner_id (str): The id of the owner whose boards are being queried
+            only_public (bool): If set to true, only public boards will be returned.
 
         Returns:
             list[Board]: A list of Board objects belonging to the user.
         """
-        boards = await self.__db.get_all(
-            RecommendModelType.BOARD, {"owner_id": owner_id}
-        )
+        attr_dict: dict[str, Any] = {"owner_id": owner_id}
+        if only_public:
+            attr_dict["private"] = False
+
+        boards = await self.__db.get_all(RecommendModelType.BOARD, attr_dict)
         return cast(list["BoardInDb"], boards)

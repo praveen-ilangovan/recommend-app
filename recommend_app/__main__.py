@@ -14,7 +14,7 @@ from . import db
 from .db.models.user import NewUser
 from .db.models.board import NewBoard
 from .db.hashing import Hasher
-from .db.impl.documents.user import UserDocument
+from .db.impl.documents.board import BoardDocument
 
 
 # Load the environment variables
@@ -48,14 +48,17 @@ async def main() -> None:
     # result = await client.add_user(new_user)
     # print(result)
 
-    # email_address = "praveen@email.com"
-    # result = await client.get_user(email_address=email_address)
-    # print(result)
-
     email_address = "praveen@email.com"
-    attrs_dict = {"email_address": email_address}
-    result = await UserDocument.find_one(attrs_dict)
+    result = await client.get_user(email_address=email_address)
     print(result)
+
+    boards = await BoardDocument.find({'owner_id': '6744a0ddee62a60d03f06d99', 'private':True}).to_list()
+    print(len(boards))
+
+    # email_address = "praveen@email.com"
+    # attrs_dict = {"email_address": email_address}
+    # result = await UserDocument.find_one(attrs_dict)
+    # print(result)
 
     # print(Hasher.verify_password(pwd, result.password))
 

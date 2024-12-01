@@ -22,7 +22,7 @@ Dependencies:
 
 # Builtin imports
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any
 
 # Project specific imports
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -241,7 +241,7 @@ class RecommendDB(AbstractRecommendDB):
         return result.to_model()
 
     async def get_all(
-        self, model_type: "RecommendModelType", attrs_dict: dict[str, str]
+        self, model_type: "RecommendModelType", attrs_dict: dict[str, Any]
     ) -> list["BaseRecommendModel"]:
         """
         Retrieves all documents matching criteria from the specified MongoDB

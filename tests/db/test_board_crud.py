@@ -110,3 +110,23 @@ async def test_get_all_boards_of_non_existent_owner(db_client):
 
     boards = await db_client.get_all_boards('1234')
     assert boards == []
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_all_public_boards(db_client):
+    new_user = utils.create_user()
+    user = await db_client.add_user(new_user)
+
+    for _ in range(3):
+        new_board = NewBoard(name='Movies to watch')
+        await db_client.add_board(new_board, user.id)
+
+    for _ in range(2):
+        new_board = NewBoard(name='Movies to watch', private=True)
+        await db_client.add_board(new_board, user.id)
+
+    boards = await db_client.get_all_boards(user.id)
+    assert len(boards) == 5
+
+    boards = await db_client.get_all_boards(user.id, only_public=True)
+    assert len(boards) == 3
+

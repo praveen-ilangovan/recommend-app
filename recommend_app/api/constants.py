@@ -7,6 +7,9 @@ class ROUTES:
     # root
     HEALTH = "/health"
 
+    # me
+    ME = "/me/"
+
     # session
     LOGIN = "/session/new"
     CREATE_SESSION = "/session/"
@@ -15,6 +18,7 @@ class ROUTES:
     # users
     REGISTER = "/users/new"
     ADD_USER = "/users/"
+    USER_BOARDS = "/users/{user_id}"
 
     # boards
     CREATE_BOARD = "/boards/new"

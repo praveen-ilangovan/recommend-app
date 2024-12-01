@@ -1,0 +1,58 @@
+{% include 'layout.html' %}
+
+<div class="container">
+  <!-- Content here -->
+  <h3>Profile Information</h3>
+  {% if user %}
+  <table class="table" style="width: 400px">
+    <thead>
+      <tr>
+        <th scope="col">Key</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Email Address</td>
+        <td>{{ user.email_address }}</td>
+      </tr>
+      <tr>
+        <td>Username</td>
+        <td>{{ user.user_name }}</td>
+      </tr>
+      <tr>
+        <td>First Name</td>
+        <td>{{ user.first_name }}</td>
+      </tr>
+      <tr>
+        <td>Last Name</td>
+        <td>{{ user.last_name }}</td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+
+  <h3>My Boards</h3>
+  {% if boards %}
+  <table class="table" style="width: 400px">
+    <thead>
+      <tr>
+        <th scope="col">Board</th>
+        <th scope="col">Private</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for board in boards %}
+      <tr>
+        <td>{{ board.name }}</td>
+        <td>{{ board.private }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <a class="btn btn-primary" href="/boards/new" role="button"
+    >Create a new board</a
+  >
+</div>

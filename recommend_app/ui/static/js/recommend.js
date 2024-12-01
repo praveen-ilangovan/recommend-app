@@ -59,7 +59,7 @@ if (loginForm) {
     }
 
     try {
-      const response = await fetch("/session", {
+      const response = await fetch("/session/", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -70,7 +70,7 @@ if (loginForm) {
       if (response.ok) {
         // Handle success (e.g., redirect to dashboard)
         const data = await response.json();
-        window.location.href = "/health"; // Change this to your desired redirect page
+        window.location.href = "/me/";
       } else {
         // Handle error
         const errorData = await response.json();
@@ -93,13 +93,18 @@ if (createBoardForm) {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    let private = false;
+    if (data.private) {
+      private = true;
+    }
+
     const payload = {
       name: data.name,
-      private: data.private,
+      private: private,
     };
 
     try {
-      const response = await fetch("/boards", {
+      const response = await fetch("/boards/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +113,7 @@ if (createBoardForm) {
       });
 
       if (response.ok) {
-        window.location.href = "/health";
+        window.location.href = "/me/";
       } else {
         // Handle error
         const errorData = await response.json();

@@ -222,12 +222,16 @@ class RecommendDB(AbstractRecommendDB):
             method must throw this exception if the model is not found.
         """
         doc_inst = self.__get_doc_inst(model_type)
-        try:
-            result = await doc_inst.get_document(attrs_dict)
-        except ValidationError:
-            raise RecommendDBModelNotFound(
-                f"No {model_type.value} found for {attrs_dict}"
-            )
+
+        if "id" in attrs_dict.keys():
+            try:
+                result = await doc_inst.get(attrs_dict["id"])
+            except ValidationError:
+                raise RecommendDBModelNotFound(
+                    f"No {model_type.value} found for {attrs_dict}"
+                )
+        else:
+            result = await doc_inst.find_one(attrs_dict)
 
         if not result:
             raise RecommendDBModelNotFound(
@@ -235,6 +239,30 @@ class RecommendDB(AbstractRecommendDB):
             )
 
         return result.to_model()
+
+    async def get_all(
+        self, model_type: "RecommendModelType", attrs_dict: dict[str, str]
+    ) -> list["BaseRecommendModel"]:
+        """
+        Retrieves all documents matching criteria from the specified MongoDB
+        collection.
+
+        This method fetches multiple documents from the appropriate collection
+        based on the model type and the provided criteria.
+
+        Args:
+            model_type (RecommendModelType): The type of model to retrieve.
+            attrs_dict (dict[str, str]): A dictionary of attributes to match
+                the documents.
+
+        Returns:
+            list[BaseRecommendModel]: A list of retrieved model instances.
+        """
+        doc_inst = self.__get_doc_inst(model_type)
+
+        # TODO: Do Pagination (MongoDb Aggregation)
+        docs = await doc_inst.find(attrs_dict).to_list()
+        return [doc_inst.to_model(doc) for doc in docs]
 
     ###########################################################################
     # Methods: privates

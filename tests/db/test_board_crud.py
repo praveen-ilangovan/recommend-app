@@ -90,3 +90,23 @@ async def test_get_private_board_with_wrong_owner_id(db_client):
 async def test_get_non_existent_board(db_client):
     with pytest.raises(RecommendDBModelNotFound) as exc_info:
         await db_client.get_board('123')
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_all_boards(db_client):
+    new_user = utils.create_user()
+    user = await db_client.add_user(new_user)
+
+    for _ in range(5):
+        new_board = NewBoard(name='Movies to watch')
+        await db_client.add_board(new_board, user.id)
+
+    boards = await db_client.get_all_boards(user.id)
+    assert len(boards) == 5
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_all_boards_of_non_existent_owner(db_client):
+    boards = await db_client.get_all_boards('6744a0ddee62a60d03f06d98')
+    assert boards == []
+
+    boards = await db_client.get_all_boards('1234')
+    assert boards == []

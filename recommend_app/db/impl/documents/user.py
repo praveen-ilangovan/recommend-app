@@ -1,7 +1,7 @@
 """ """
 
 # Builtin imports
-from typing import Annotated, Optional
+from typing import Annotated
 
 # Project specific imports
 from beanie import Indexed
@@ -41,25 +41,3 @@ class UserDocument(ExtendedUserAttributes, AbstractRecommendDocument):
         They should be of type BaseRecommendModel
         """
         return UserInDb
-
-    # -------------------------------------------------------------------------#
-    # Methods
-    # -------------------------------------------------------------------------#
-    @staticmethod
-    async def get_document(attrs_dict: dict[str, str]) -> Optional["UserDocument"]:
-        """
-        Get the document from the db using the given attributes
-        """
-        keys = attrs_dict.keys()
-        if "id" in keys:
-            return await UserDocument.get(attrs_dict["id"])
-        elif "email_address" in keys:
-            return await UserDocument.find_one(
-                UserDocument.email_address == attrs_dict["email_address"]
-            )
-        elif "user_name" in keys:
-            return await UserDocument.find_one(
-                UserDocument.user_name == attrs_dict["user_name"]
-            )
-
-        return None

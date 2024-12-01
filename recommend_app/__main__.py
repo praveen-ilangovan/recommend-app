@@ -14,6 +14,8 @@ from . import db
 from .db.models.user import NewUser
 from .db.models.board import NewBoard
 from .db.hashing import Hasher
+from .db.impl.documents.user import UserDocument
+
 
 # Load the environment variables
 load_dotenv()
@@ -50,23 +52,28 @@ async def main() -> None:
     # result = await client.get_user(email_address=email_address)
     # print(result)
 
+    email_address = "praveen@email.com"
+    attrs_dict = {"email_address": email_address}
+    result = await UserDocument.find_one(attrs_dict)
+    print(result)
+
     # print(Hasher.verify_password(pwd, result.password))
 
     # new_board = NewBoard(name="Top Movies to Watch")
     # board = await client.add_board(new_board=new_board, owner=result)
     # print(board)
 
-    board_id = "67499a9c03cab482dce67296"
-    owner_id = "6744a0ddee62a60d03f06d99"
+    # board_id = "67499a9c03cab482dce67296"
+    # owner_id = "6744a0ddee62a60d03f06d99"
 
-    board = await client.get_board(board_id)
-    print(board)
+    # board = await client.get_board(board_id)
+    # print(board)
 
-    board = await client.get_board(board_id, owner_id)
-    print(board)
+    # board = await client.get_board(board_id, owner_id)
+    # print(board)
 
-    board = await client.get_board("6749b1cbbe5aa922be16c31f", owner_id="1234")
-    print(board)
+    # board = await client.get_board("6749b1cbbe5aa922be16c31f", owner_id="1234")
+    # print(board)
 
     await client.disconnect()
 

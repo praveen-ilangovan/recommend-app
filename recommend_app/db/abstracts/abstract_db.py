@@ -110,3 +110,21 @@ class AbstractRecommendDB(ABC):
             `RecommendDBModelNotFound` - The class that implements this
             method must throw this exception if the model is not found.
         """
+
+    @abstractmethod
+    async def get_all(
+        self, model_type: "RecommendModelType", attrs_dict: dict[str, str]
+    ) -> list["BaseRecommendModel"]:
+        """
+        Retrieve all models from the database that match the given criteria.
+
+        Args:
+            model_type (RecommendModelType): The type of the models to retrieve
+                                             (e.g., User, Board, Card).
+            attrs_dict (dict[str, str]): A dictionary of attributes to filter
+                                         the models by.
+
+        Returns:
+            list[BaseRecommendModel]: A list of model instances that match the
+                                  given criteria.
+        """

@@ -3,7 +3,7 @@ Base Document
 """
 
 # Builtin imports
-from typing import TYPE_CHECKING, cast, Optional
+from typing import TYPE_CHECKING, cast
 from abc import ABC, abstractmethod
 
 # Project specific imports
@@ -28,15 +28,6 @@ class AbstractRecommendDocument(ABC, Document):
         """
         Every document should map to its corresponding Recommend inDb model.
         They should be of type BaseRecommendModel
-        """
-
-    @staticmethod
-    @abstractmethod
-    async def get_document(
-        attrs_dict: dict[str, str],
-    ) -> Optional["AbstractRecommendDocument"]:
-        """
-        Get the document from the db using the given attributes
         """
 
     # -------------------------------------------------------------------------#

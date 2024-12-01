@@ -204,3 +204,18 @@ class RecommendDbClient:
                 )
 
         return board
+
+    async def get_all_boards(self, owner_id: str) -> list["BoardInDb"]:
+        """
+        Retrieve all boards associated with a specific user.
+
+        Args:
+            owner_id (str): The id of the owner whose boards are being queried
+
+        Returns:
+            list[Board]: A list of Board objects belonging to the user.
+        """
+        boards = await self.__db.get_all(
+            RecommendModelType.BOARD, {"owner_id": owner_id}
+        )
+        return cast(list["BoardInDb"], boards)

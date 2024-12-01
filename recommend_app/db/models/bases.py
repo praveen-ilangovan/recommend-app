@@ -5,9 +5,6 @@ Module:db.models.bases
 Defines the base models. One for each crud operation types.
 """
 
-# Builtin imports
-from typing import Union
-
 # Local imports
 from ..abstracts.abstract_model import AbstractRecommendModel
 from ..types import CrudType
@@ -44,7 +41,7 @@ class BaseRecommendModel(AbstractRecommendModel):
         id (str|int): Uniqye id of this model in the DB
     """
 
-    id: Union[str, int]
+    id: str
 
     ###########################################################################
     # Properties

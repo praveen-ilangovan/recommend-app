@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING, Optional
 # Project specific imports
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import OperationFailure, DuplicateKeyError, InvalidOperation
+from pydantic import ValidationError
 import beanie
 
 # Local imports
@@ -221,7 +222,13 @@ class RecommendDB(AbstractRecommendDB):
             method must throw this exception if the model is not found.
         """
         doc_inst = self.__get_doc_inst(model_type)
-        result = await doc_inst.get_document(attrs_dict)
+        try:
+            result = await doc_inst.get_document(attrs_dict)
+        except ValidationError:
+            raise RecommendDBModelNotFound(
+                f"No {model_type.value} found for {attrs_dict}"
+            )
+
         if not result:
             raise RecommendDBModelNotFound(
                 f"No {model_type.value} found for {attrs_dict}"

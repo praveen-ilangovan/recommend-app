@@ -6,8 +6,8 @@ Test board crud methods
 import pytest
 
 # Local imports
-from recommend_app.db.models.user import UserInDb
 from recommend_app.db.models.board import NewBoard, BoardInDb
+from recommend_app.db.exceptions import RecommendAppDbError, RecommendDBModelNotFound
 
 from .. import utils
 
@@ -21,7 +21,7 @@ async def test_add_new_board(db_client):
     user = await db_client.add_user(new_user)
 
     new_board = NewBoard(name='Movies to watch')
-    board = await db_client.add_board(new_board, user)
+    board = await db_client.add_board(new_board, user.id)
 
     assert isinstance(board, BoardInDb)
     assert board.name == new_board.name
@@ -29,13 +29,64 @@ async def test_add_new_board(db_client):
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_add_new_board_with_non_existent_user(db_client):
-    new_user = utils.create_user()
-    user = UserInDb(**new_user.model_dump(), id='1234')
-
     new_board = NewBoard(name='Movies to watch')
-    board = await db_client.add_board(new_board, user)
+    board = await db_client.add_board(new_board, '1234')
 
     assert isinstance(board, BoardInDb)
     assert board.name == new_board.name
-    assert board.owner_id == user.id
+    assert board.owner_id == '1234'
 
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_public_board_with_no_owner_id(db_client):
+    name = utils.get_random_name()
+    new_board = NewBoard(name=name)
+    board = await db_client.add_board(new_board, '1234')
+
+    board1 = await db_client.get_board(board.id)
+    assert board.id == board1.id
+    assert board.owner_id == board1.owner_id
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_public_board_with_owner_id(db_client):
+    name = utils.get_random_name()
+    new_board = NewBoard(name=name)
+    board = await db_client.add_board(new_board, '1234')
+
+    board1 = await db_client.get_board(board.id, '1234')
+    assert board.id == board1.id
+    assert board.owner_id == board1.owner_id
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_private_board_without_owner_id(db_client):
+    name = utils.get_random_name()
+    new_board = NewBoard(name=name, private=True)
+    board = await db_client.add_board(new_board, '1234')
+
+    with pytest.raises(RecommendAppDbError) as exc_info:
+        await db_client.get_board(board.id)
+        assert str(exc_info.value).endswith('Please provide the owner_id')
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_private_board_with_owner_id(db_client):
+    name = utils.get_random_name()
+    new_board = NewBoard(name=name, private=True)
+    board = await db_client.add_board(new_board, '1234')
+
+    board1 = await db_client.get_board(board.id, '1234')
+    assert board.id == board1.id
+    assert board.owner_id == board1.owner_id
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_private_board_with_wrong_owner_id(db_client):
+    name = utils.get_random_name()
+    new_board = NewBoard(name=name, private=True)
+    board = await db_client.add_board(new_board, '1234')
+
+    with pytest.raises(RecommendAppDbError) as exc_info:
+        await db_client.get_board(board.id, '123')
+        assert str(exc_info.value) == "Owner doesn't have access to this private board."
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_non_existent_board(db_client):
+    with pytest.raises(RecommendDBModelNotFound) as exc_info:
+        await db_client.get_board('123')

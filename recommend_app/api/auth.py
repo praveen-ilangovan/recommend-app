@@ -3,7 +3,7 @@ OAuth related functionality
 """
 
 # Builtin imports
-from typing import Any, Optional, Annotated, TYPE_CHECKING, Union
+from typing import Any, Optional, Annotated, TYPE_CHECKING
 from datetime import datetime, timezone
 
 # Project specific imports
@@ -77,7 +77,7 @@ class Token(BaseModel):
 class AuthenticatedUser(BaseModel):
     sub: str
     email_address: str
-    id: Union[str, int]
+    id: str
     user_name: str
     first_name: str
     last_name: str

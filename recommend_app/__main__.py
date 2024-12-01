@@ -46,14 +46,26 @@ async def main() -> None:
     # result = await client.add_user(new_user)
     # print(result)
 
-    email_address = "praveen@email.com"
-    result = await client.get_user(email_address=email_address)
-    print(result)
+    # email_address = "praveen@email.com"
+    # result = await client.get_user(email_address=email_address)
+    # print(result)
 
     # print(Hasher.verify_password(pwd, result.password))
 
-    new_board = NewBoard(name="Top Movies to Watch")
-    board = await client.add_board(new_board=new_board, owner=result)
+    # new_board = NewBoard(name="Top Movies to Watch")
+    # board = await client.add_board(new_board=new_board, owner=result)
+    # print(board)
+
+    board_id = "67499a9c03cab482dce67296"
+    owner_id = "6744a0ddee62a60d03f06d99"
+
+    board = await client.get_board(board_id)
+    print(board)
+
+    board = await client.get_board(board_id, owner_id)
+    print(board)
+
+    board = await client.get_board("6749b1cbbe5aa922be16c31f", owner_id="1234")
     print(board)
 
     await client.disconnect()

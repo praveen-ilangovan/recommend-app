@@ -19,3 +19,4 @@ class ROUTES:
     # boards
     CREATE_BOARD = "/boards/new"
     ADD_BOARD = "/boards/"
+    GET_BOARD = "/boards/{board_id}"

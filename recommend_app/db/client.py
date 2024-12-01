@@ -14,11 +14,7 @@ easier to manage and extend the application's data storage layer.
 from typing import TYPE_CHECKING, Optional, cast
 
 # Local imports
-from .exceptions import (
-    RecommendDBConnectionError,
-    RecommendAppDbError,
-    RecommendDBModelCreationError,
-)
+from .exceptions import RecommendDBConnectionError, RecommendAppDbError
 from .types import RecommendModelType
 from .hashing import Hasher
 from .models.board import NewBoard
@@ -156,13 +152,13 @@ class RecommendDbClient:
     ###########################################################################
     # Methods: Board
     ###########################################################################
-    async def add_board(self, new_board: NewBoard, owner: "UserInDb") -> "BoardInDb":
+    async def add_board(self, new_board: NewBoard, owner_id: str) -> "BoardInDb":
         """
         Add a new board to the database, associated with a specific user.
 
         Args:
             new_board (NewBoard): Board model with all the necessary info to create a new board
-            owner (UserInDb): User who is creating this board
+            owner_id (str): User who is creating this board
 
         Returns:
             BoardInDb: The newly created Board object.
@@ -170,13 +166,41 @@ class RecommendDbClient:
         Raises:
             `RecommendDBModelCreationError` if board creation fails.
         """
-        try:
-            owner_id = owner.id
-        except AttributeError:
-            raise RecommendDBModelCreationError(
-                "Failed to create a board. Invalid Owner"
-            )
-
         board_with_ownerid = NewBoard(**new_board.model_dump(), owner_id=owner_id)
         result = await self.__db.add(board_with_ownerid)
         return cast("BoardInDb", result)
+
+    async def get_board(
+        self, board_id: str, owner_id: Optional[str] = None
+    ) -> "BoardInDb":
+        """
+        Retrieve a board from the database by its unique identifier (UID).
+
+        Args:
+            board_id (str): The unique identifier of the board.
+            owner_id (str): If the board is private, then owner_id must be
+                provided. The board will be returned only if it belongs to the
+                owner.
+
+        Returns:
+            Board: The Board object corresponding to the provided UID.
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found
+            `RecommendAppDbError` if the board is private and no owner_id is
+                given or if the given owner_id doesn't match the board's owner.
+        """
+        attrs_dict = {"id": board_id}
+        board = await self.__db.get(RecommendModelType.BOARD, attrs_dict)
+        board = cast("BoardInDb", board)
+        if board.private:
+            if not owner_id:
+                raise RecommendAppDbError(
+                    f"Board with {board_id} is private. Please provide the owner_id"
+                )
+            if board.owner_id != owner_id:
+                raise RecommendAppDbError(
+                    "Owner doesn't have access to this private board."
+                )
+
+        return board

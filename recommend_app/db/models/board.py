@@ -134,8 +134,8 @@ class UpdateBoard(BaseUpdateRecommendModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "name": "Movies to watch",
-                "private": "False",
+                "name": "",
+                "private": "",
             }
         }
     )

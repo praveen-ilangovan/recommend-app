@@ -39,13 +39,47 @@
       <tr>
         <th scope="col">Board</th>
         <th scope="col">Private</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
       </tr>
     </thead>
     <tbody>
       {% for board in boards %}
       <tr>
-        <td>{{ board.name }}</td>
-        <td>{{ board.private }}</td>
+        <td>
+          <input type="text" style="display: none" />
+          <span>{{ board.name }}</span>
+        </td>
+        <td>
+          <input
+            class="form-check-input me-2"
+            type="checkbox"
+            value="1"
+            name="private"
+            style="display: none"
+          />
+          <span>{{ board.private }}</span>
+        </td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="editBoardData(this)"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning"
+            style="display: none"
+            onclick="updateBoardData(this, '{{ board.id }}')"
+          >
+            Update
+          </button>
+        </td>
+        <td>
+          <button type="button" class="btn btn-danger">Delete</button>
+        </td>
       </tr>
       {% endfor %}
     </tbody>

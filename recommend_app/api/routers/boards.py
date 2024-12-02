@@ -12,7 +12,7 @@ from typing import Any
 from fastapi import APIRouter, status, HTTPException, Request
 
 # Local imports
-from ...db.models.board import NewBoard, BoardInDb
+from ...db.models.board import NewBoard, BoardInDb, UpdateBoard
 from ...db.exceptions import (
     RecommendDBModelCreationError,
     RecommendDBModelNotFound,
@@ -66,3 +66,22 @@ async def get_board(board_id: str, user: auth.OPTIONAL_USER) -> BoardInDb:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
 
     return board
+
+
+@router.put("/{board_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def update_board(board_id: str, data: UpdateBoard, user: auth.REQUIRED_USER):
+    try:
+        board = await dependencies.get_db_client().get_board(board_id, user.id)
+
+        # Only the owners of the board can update it
+        if board.owner_id != user.id:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                detail={"error": "Only owners can update the board"},
+            )
+
+        await dependencies.get_db_client().update_board(board.id, data)
+    except RecommendDBModelNotFound as err:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
+    except RecommendAppDbError as err:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})

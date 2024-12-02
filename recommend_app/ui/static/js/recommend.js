@@ -125,3 +125,70 @@ if (createBoardForm) {
     }
   });
 }
+
+// Test function
+function testFn(element, parameter) {
+  const row = element.closest("tr");
+  const updateButton = row.cells[2].getElementsByTagName("button")[1];
+  console.log(row.cells.length);
+  console.log(updateButton);
+}
+
+function editBoardData(element) {
+  const row = element.closest("tr");
+
+  // Hide the span and display the input field
+  // Initialize the field with the current value
+  const editNameField = row.cells[0].getElementsByTagName("input")[0];
+  const currentNameField = row.cells[0].getElementsByTagName("span")[0];
+  editNameField.style.display = "block";
+  currentNameField.style.display = "none";
+  editNameField.value = currentNameField.innerHTML;
+
+  // Hide the span and display the checkbox
+  // Initialize the checkbox with the current value
+  const editPrivateField = row.cells[1].getElementsByTagName("input")[0];
+  const currentPrivateField = row.cells[1].getElementsByTagName("span")[0];
+  editPrivateField.style.display = "block";
+  currentPrivateField.style.display = "none";
+  editPrivateField.checked = currentPrivateField.innerHTML == "True";
+
+  // Hide the edit button and Display the updateButton
+  const updateButton = row.cells[2].getElementsByTagName("button")[1];
+  element.style.display = "none";
+  updateButton.style.display = "block";
+}
+
+async function updateBoardData(element, board_id) {
+  const row = element.closest("tr");
+  const editNameField = row.cells[0].getElementsByTagName("input")[0];
+  const editPrivateField = row.cells[1].getElementsByTagName("input")[0];
+
+  const payload = {
+    name: editNameField.value,
+    private: editPrivateField.checked,
+  };
+
+  const url = "/boards/" + board_id;
+
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      window.location.href = "/me/";
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+}

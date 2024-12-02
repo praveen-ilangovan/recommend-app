@@ -46,7 +46,11 @@ from .documents.board import BoardDocument
 if TYPE_CHECKING:
     from motor.motor_asyncio import AsyncIOMotorDatabase
     from .documents.base import AbstractRecommendDocument
-    from ..models.bases import BaseNewRecommendModel, BaseRecommendModel
+    from ..models.bases import (
+        BaseNewRecommendModel,
+        BaseRecommendModel,
+        BaseUpdateRecommendModel,
+    )
 
 
 class RecommendDB(AbstractRecommendDB):
@@ -221,23 +225,7 @@ class RecommendDB(AbstractRecommendDB):
             `RecommendDBModelNotFound` - The class that implements this
             method must throw this exception if the model is not found.
         """
-        doc_inst = self.__get_doc_inst(model_type)
-
-        if "id" in attrs_dict.keys():
-            try:
-                result = await doc_inst.get(attrs_dict["id"])
-            except ValidationError:
-                raise RecommendDBModelNotFound(
-                    f"No {model_type.value} found for {attrs_dict}"
-                )
-        else:
-            result = await doc_inst.find_one(attrs_dict)
-
-        if not result:
-            raise RecommendDBModelNotFound(
-                f"No {model_type.value} found for {attrs_dict}"
-            )
-
+        result = await self.__get_document(model_type, attrs_dict)
         return result.to_model()
 
     async def get_all(
@@ -264,9 +252,78 @@ class RecommendDB(AbstractRecommendDB):
         docs = await doc_inst.find(attrs_dict).to_list()
         return [doc_inst.to_model(doc) for doc in docs]
 
+    async def update(
+        self, obj_id: str, update_model: "BaseUpdateRecommendModel"
+    ) -> "BaseRecommendModel":
+        """
+        Updates the model in the database with the provided data. Only the non
+        None data is updated.
+
+        Args:
+            obj_id (str): Id of the object to be updated.
+            update_model (BaseUpdateRecommendModel): Data to be updated.
+
+        Returns:
+            BaseRecommendModel: The model instance that matches the given criteria.
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found
+            `RecommendAppDbError` if there is an issue in updating the model
+        """
+        board = await self.__get_document(update_model.model_type, {"id": obj_id})
+
+        # Filter out non-None values
+        update_data = {
+            key: value
+            for key, value in update_model.model_dump().items()
+            if value is not None
+        }
+        result = await board.set(update_data)
+        return result.to_model()
+
     ###########################################################################
     # Methods: privates
     ###########################################################################
+    async def __get_document(
+        self, model_type: "RecommendModelType", attrs_dict: dict[str, str]
+    ) -> "AbstractRecommendDocument":
+        """
+        Retrieve a single document from the database that matches the given
+        criteria.
+
+        Args:
+            model_type (RecommendModelType): The type of the model to retrieve
+                                             (e.g., User, Board, Card).
+            attrs_dict (dict[str, Any]): A dictionary of attributes to filter
+                                         the model by.
+
+        Returns:
+            AbstractRecommendDocument
+
+        Raises:
+            `RecommendAppDbError` - General db error
+            `RecommendDBModelNotFound` - The class that implements this
+            method must throw this exception if the model is not found.
+        """
+        doc_inst = self.__get_doc_inst(model_type)
+
+        if "id" in attrs_dict.keys():
+            try:
+                result = await doc_inst.get(attrs_dict["id"])
+            except ValidationError:
+                raise RecommendDBModelNotFound(
+                    f"No {model_type.value} found for {attrs_dict}"
+                )
+        else:
+            result = await doc_inst.find_one(attrs_dict)
+
+        if not result:
+            raise RecommendDBModelNotFound(
+                f"No {model_type.value} found for {attrs_dict}"
+            )
+
+        return result
+
     def __get_doc_inst(
         self, model_type: "RecommendModelType"
     ) -> type["AbstractRecommendDocument"]:

@@ -7,12 +7,15 @@ recommend_app.
 
 """
 
+# Builtin imports
+from typing import Optional
+
 # Project specific imports
 from pydantic import BaseModel, ConfigDict
 
 # Local imports
 from ..types import RecommendModelType
-from .bases import BaseNewRecommendModel, BaseRecommendModel
+from .bases import BaseNewRecommendModel, BaseRecommendModel, BaseUpdateRecommendModel
 
 
 # -----------------------------------------------------------------------------#
@@ -97,6 +100,42 @@ class BoardInDb(ExtendedBoardAttributes, BaseRecommendModel):
                 "name": "Movies to watch",
                 "private": "False",
                 "owner_id": "6744a0ddee62a60d03f06d99",
+            }
+        }
+    )
+
+    # -------------------------------------------------------------------------#
+    # Properties
+    # -------------------------------------------------------------------------#
+    @property
+    def model_type(self) -> RecommendModelType:
+        """
+        Returns the model type
+
+        Returns:
+            RecommendModelType: A string representing the type of the model
+                (e.g., 'User', 'Board', 'Card').
+        """
+        return RecommendModelType.BOARD
+
+
+class UpdateBoard(BaseUpdateRecommendModel):
+    """
+    Attributes in the board that can be updated by its owner
+
+    Args:
+        name (str): Name of the board
+        private (bool): If true, only the owner can view this board.
+    """
+
+    name: Optional[str] = None
+    private: Optional[bool] = None
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "Movies to watch",
+                "private": "False",
             }
         }
     )

@@ -55,3 +55,22 @@ class BaseRecommendModel(AbstractRecommendModel):
             CrudType: Crud operation to be performed.
         """
         return CrudType.READ
+
+
+class BaseUpdateRecommendModel(AbstractRecommendModel):
+    """
+    Represents the model used to update an entry from the database.
+    """
+
+    ###########################################################################
+    # Properties
+    ###########################################################################
+    @property
+    def crud_type(self) -> CrudType:
+        """
+        Returns the crud_type
+
+        Returns:
+            CrudType: Crud operation to be performed.
+        """
+        return CrudType.UPDATE

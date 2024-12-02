@@ -22,7 +22,7 @@ from .models.board import NewBoard
 if TYPE_CHECKING:
     from .abstracts.abstract_db import AbstractRecommendDB
     from .models.user import NewUser, UserInDb
-    from .models.board import BoardInDb
+    from .models.board import BoardInDb, UpdateBoard
 
 
 class RecommendDbClient:
@@ -224,3 +224,25 @@ class RecommendDbClient:
 
         boards = await self.__db.get_all(RecommendModelType.BOARD, attr_dict)
         return cast(list["BoardInDb"], boards)
+
+    async def update_board(
+        self, board_id: str, update_data: "UpdateBoard"
+    ) -> "BoardInDb":
+        """
+        Retrieve a board from the database by its unique identifier (UID) and
+        update its attributes
+
+        Args:
+            board_id (str): The unique identifier of the board.
+            update_data (UpdateBoard): If the value is not None, then the board
+                is updated.
+
+        Returns:
+            Board: Board with the updated data
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found
+            `RecommendAppDbError` if there is an issue in updating the model
+        """
+        result = await self.__db.update(board_id, update_data)
+        return cast("BoardInDb", result)

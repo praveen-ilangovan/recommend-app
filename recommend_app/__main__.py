@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 # Local imports
 from . import db
 from .db.models.user import NewUser
-from .db.models.board import NewBoard
+from .db.models.board import NewBoard, UpdateBoard
 from .db.hashing import Hasher
 from .db.impl.documents.board import BoardDocument
 
@@ -48,12 +48,12 @@ async def main() -> None:
     # result = await client.add_user(new_user)
     # print(result)
 
-    email_address = "praveen@email.com"
-    result = await client.get_user(email_address=email_address)
-    print(result)
+    # email_address = "praveen@email.com"
+    # result = await client.get_user(email_address=email_address)
+    # print(result)
 
-    boards = await BoardDocument.find({'owner_id': '6744a0ddee62a60d03f06d99', 'private':True}).to_list()
-    print(len(boards))
+    # boards = await BoardDocument.find({'owner_id': '6744a0ddee62a60d03f06d99', 'private':True}).to_list()
+    # print(len(boards))
 
     # email_address = "praveen@email.com"
     # attrs_dict = {"email_address": email_address}
@@ -77,6 +77,11 @@ async def main() -> None:
 
     # board = await client.get_board("6749b1cbbe5aa922be16c31f", owner_id="1234")
     # print(board)
+
+
+    # Update board
+    data = UpdateBoard(private=True)
+    await client.update_board("67499a5c8412707ee0bbef94", data)
 
     await client.disconnect()
 

@@ -18,7 +18,11 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ..models.bases import BaseNewRecommendModel, BaseRecommendModel
+    from ..models.bases import (
+        BaseNewRecommendModel,
+        BaseRecommendModel,
+        BaseUpdateRecommendModel,
+    )
     from ..types import RecommendModelType
 
 
@@ -127,4 +131,24 @@ class AbstractRecommendDB(ABC):
         Returns:
             list[BaseRecommendModel]: A list of model instances that match the
                                   given criteria.
+        """
+
+    @abstractmethod
+    async def update(
+        self, obj_id: str, update_model: "BaseUpdateRecommendModel"
+    ) -> "BaseRecommendModel":
+        """
+        Updates the model in the database with the provided data. Only the non
+        None data is updated.
+
+        Args:
+            obj_id (str): Id of the object to be updated.
+            update_model (BaseUpdateRecommendModel): Data to be updated.
+
+        Returns:
+            BaseRecommendModel: The model instance that matches the given criteria.
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found
+            `RecommendAppDbError` if there is an issue in updating the model
         """

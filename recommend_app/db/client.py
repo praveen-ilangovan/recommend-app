@@ -246,3 +246,15 @@ class RecommendDbClient:
         """
         result = await self.__db.update(board_id, update_data)
         return cast("BoardInDb", result)
+
+    async def remove_board(self, board_id: str) -> bool:
+        """
+        Remove a board from the database.
+
+        Args:
+            board (Board): The Board object to be removed.
+
+        Returns:
+            bool: True if the board was successfully removed, False otherwise.
+        """
+        return await self.__db.remove(RecommendModelType.BOARD, board_id)

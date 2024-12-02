@@ -48,9 +48,9 @@ async def main() -> None:
     # result = await client.add_user(new_user)
     # print(result)
 
-    # email_address = "praveen@email.com"
-    # result = await client.get_user(email_address=email_address)
-    # print(result)
+    email_address = "praveen@email.com"
+    result = await client.get_user(email_address=email_address)
+    print(result)
 
     # boards = await BoardDocument.find({'owner_id': '6744a0ddee62a60d03f06d99', 'private':True}).to_list()
     # print(len(boards))
@@ -62,9 +62,9 @@ async def main() -> None:
 
     # print(Hasher.verify_password(pwd, result.password))
 
-    # new_board = NewBoard(name="Top Movies to Watch")
-    # board = await client.add_board(new_board=new_board, owner=result)
-    # print(board)
+    new_board = NewBoard(name="Top Movies to Watch")
+    board = await client.add_board(new_board=new_board, owner_id=result.id)
+    print(board)
 
     # board_id = "67499a9c03cab482dce67296"
     # owner_id = "6744a0ddee62a60d03f06d99"
@@ -80,8 +80,11 @@ async def main() -> None:
 
 
     # Update board
-    data = UpdateBoard(private=True)
-    await client.update_board("67499a5c8412707ee0bbef94", data)
+    # data = UpdateBoard(private=True)
+    # await client.update_board("67499a5c8412707ee0bbef94", data)
+
+    # result = await client.remove_board(board.id)
+    # print(result)
 
     await client.disconnect()
 

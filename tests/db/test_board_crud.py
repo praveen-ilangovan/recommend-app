@@ -152,3 +152,26 @@ async def test_update_non_existent_board(db_client):
     with pytest.raises(RecommendDBModelNotFound):
         data = UpdateBoard(private=True)
         await db_client.update_board('1234', data)
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_delete_public_board(db_client):
+    new_user = utils.create_user()
+    user = await db_client.add_user(new_user)
+
+    new_board = NewBoard(name='Movies to watch')
+    board = await db_client.add_board(new_board, user.id)
+    assert await db_client.remove_board(board.id)
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_delete_private_board(db_client):
+    new_user = utils.create_user()
+    user = await db_client.add_user(new_user)
+
+    new_board = NewBoard(name='Movies to watch', private=True)
+    board = await db_client.add_board(new_board, user.id)
+    assert await db_client.remove_board(board.id)
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_delete_non_existent_board(db_client):
+    with pytest.raises(RecommendDBModelNotFound):
+        await db_client.remove_board('1234')

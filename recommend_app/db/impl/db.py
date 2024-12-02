@@ -270,7 +270,7 @@ class RecommendDB(AbstractRecommendDB):
             `RecommendDBModelNotFound` if the board is not found
             `RecommendAppDbError` if there is an issue in updating the model
         """
-        board = await self.__get_document(update_model.model_type, {"id": obj_id})
+        doc = await self.__get_document(update_model.model_type, {"id": obj_id})
 
         # Filter out non-None values
         update_data = {
@@ -278,8 +278,24 @@ class RecommendDB(AbstractRecommendDB):
             for key, value in update_model.model_dump().items()
             if value is not None
         }
-        result = await board.set(update_data)
+        result = await doc.set(update_data)
         return result.to_model()
+
+    async def remove(self, model_type: "RecommendModelType", obj_id: str) -> bool:
+        """
+        Remove a document from the database.
+
+        Args:
+            model_type (RecommendModelType): The type of the model to delete
+                                             (e.g., User, Board, Card).
+            obj_id (str): Id of the object to be deleted.
+
+        Returns:
+            bool: True if the document was successfully removed, False otherwise.
+        """
+        doc = await self.__get_document(model_type, {"id": obj_id})
+        result = await doc.delete()
+        return result.deleted_count == 1 if result else False
 
     ###########################################################################
     # Methods: privates

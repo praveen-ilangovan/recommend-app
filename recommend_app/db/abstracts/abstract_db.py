@@ -152,3 +152,17 @@ class AbstractRecommendDB(ABC):
             `RecommendDBModelNotFound` if the board is not found
             `RecommendAppDbError` if there is an issue in updating the model
         """
+
+    @abstractmethod
+    async def remove(self, model_type: "RecommendModelType", obj_id: str) -> bool:
+        """
+        Remove a model from the database.
+
+        Args:
+            model_type (RecommendModelType): The type of the model to delete
+                                             (e.g., User, Board, Card).
+            obj_id (str): Id of the object to be deleted.
+
+        Returns:
+            bool: True if the model was successfully removed, False otherwise.
+        """

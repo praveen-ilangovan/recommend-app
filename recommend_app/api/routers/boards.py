@@ -71,6 +71,12 @@ async def get_board(board_id: str, user: auth.OPTIONAL_USER) -> BoardInDb:
 @router.put("/{board_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_board(board_id: str, data: UpdateBoard, user: auth.REQUIRED_USER):
     try:
+        if not user:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                detail={"error": "Please sign in"},
+            )
+
         board = await dependencies.get_db_client().get_board(board_id, user.id)
 
         # Only the owners of the board can update it
@@ -81,6 +87,31 @@ async def update_board(board_id: str, data: UpdateBoard, user: auth.REQUIRED_USE
             )
 
         await dependencies.get_db_client().update_board(board.id, data)
+    except RecommendDBModelNotFound as err:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
+    except RecommendAppDbError as err:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+
+
+@router.delete("/{board_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def remove_board(board_id: str, user: auth.REQUIRED_USER):
+    try:
+        if not user:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                detail={"error": "Please sign in"},
+            )
+
+        board = await dependencies.get_db_client().get_board(board_id, user.id)
+
+        # Only the owners of the board can delete it
+        if board.owner_id != user.id:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                detail={"error": "Only owners can delete the board"},
+            )
+
+        await dependencies.get_db_client().remove_board(board.id)
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:

@@ -78,7 +78,13 @@
           </button>
         </td>
         <td>
-          <button type="button" class="btn btn-danger">Delete</button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            onclick="deleteBoard('{{ board.id }}')"
+          >
+            Delete
+          </button>
         </td>
       </tr>
       {% endfor %}

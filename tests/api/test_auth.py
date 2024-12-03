@@ -13,10 +13,9 @@ from recommend_app.api import auth
 
 from .. import utils
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def authenticated_user():
     user = utils.create_user()
-    
     return auth.AuthenticatedUser(sub=user.email_address,
                                   email_address=user.email_address,
                                   user_name=user.email_address,

@@ -126,14 +126,6 @@ if (createBoardForm) {
   });
 }
 
-// Test function
-function testFn(element, parameter) {
-  const row = element.closest("tr");
-  const updateButton = row.cells[2].getElementsByTagName("button")[1];
-  console.log(row.cells.length);
-  console.log(updateButton);
-}
-
 function editBoardData(element) {
   const row = element.closest("tr");
 
@@ -178,6 +170,27 @@ async function updateBoardData(element, board_id) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      window.location.href = "/me/";
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+}
+
+async function deleteBoard(board_id) {
+  const url = "/boards/" + board_id;
+
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
     });
 
     if (response.ok) {

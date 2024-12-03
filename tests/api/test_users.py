@@ -25,3 +25,9 @@ async def test_add_user(api_client):
     
     result = response.json()
     assert result['email_address'] == new_user.email_address
+
+"""
+Get user by id
+    signed in user -> redirect
+    other user -> only public boards will be returned
+"""

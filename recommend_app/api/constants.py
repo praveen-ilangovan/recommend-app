@@ -25,3 +25,4 @@ class ROUTES:
     ADD_BOARD = "/boards/"
     GET_BOARD = "/boards/{board_id}"
     UPDATE_BOARD = "/boards/{board_id}"
+    DELETE_BOARD = "/boards/{board_id}"

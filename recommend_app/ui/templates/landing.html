@@ -2,35 +2,67 @@
 
 <div class="container">
   <!-- Content here -->
-  <h3>Profile Information</h3>
-  {% if user %}
-  <table class="table" style="width: 400px">
-    <thead>
-      <tr>
-        <th scope="col">Key</th>
-        <th scope="col">Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Email Address</td>
-        <td>{{ user.email_address }}</td>
-      </tr>
-      <tr>
-        <td>Username</td>
-        <td>{{ user.user_name }}</td>
-      </tr>
-      <tr>
-        <td>First Name</td>
-        <td>{{ user.first_name }}</td>
-      </tr>
-      <tr>
-        <td>Last Name</td>
-        <td>{{ user.last_name }}</td>
-      </tr>
-    </tbody>
-  </table>
-  {% endif %}
+
+  <div>
+    <h3>Profile Information</h3>
+    {% if user %}
+    <table class="table" style="width: 400px">
+      <thead>
+        <tr>
+          <th scope="col">Key</th>
+          <th scope="col">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Email Address</td>
+          <td>{{ user.email_address }}</td>
+        </tr>
+        <tr>
+          <td>Username</td>
+          <td>
+            <input type="text" style="display: none" />
+            <span>{{ user.user_name }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>First Name</td>
+          <td>
+            <input type="text" style="display: none" />
+            <span>{{ user.first_name }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Last Name</td>
+          <td>
+            <input type="text" style="display: none" />
+            <span>{{ user.last_name }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        onclick="editUserData(this)"
+      >
+        Edit User Info
+      </button>
+      <button
+        type="button"
+        class="btn btn-warning"
+        style="display: none"
+        onclick="updateUserData(this, '{{ user.id }}')"
+      >
+        Save
+      </button>
+      <button type="button" class="btn btn-secondary">Change Password</button>
+    </div>
+
+    {% endif %}
+  </div>
 
   <h3>My Boards</h3>
   {% if boards %}

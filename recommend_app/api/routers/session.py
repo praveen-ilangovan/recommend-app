@@ -4,7 +4,6 @@ Authentication
 
 # Builtin imports
 from typing import Annotated
-from datetime import timedelta
 
 # Project specific imports
 from fastapi import APIRouter, HTTPException, status, Depends, Request
@@ -14,10 +13,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 # Local imports
 from ... import ui
 from .. import auth
-
-
-# Constants
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
 
 # Route
 router = APIRouter()
@@ -44,12 +39,7 @@ async def create_session(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid signin credentials"
         )
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = auth.create_access_token(user, access_token_expires)
-
-    response = JSONResponse({"status": "authenticated"})
-    response.set_cookie(token.name, token.access_token, httponly=True, secure=True)
-    return response
+    return auth.create_access_token_set_cookie(user)
 
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)

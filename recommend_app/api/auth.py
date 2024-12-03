@@ -4,23 +4,23 @@ OAuth related functionality
 
 # Builtin imports
 from typing import Any, Optional, Annotated, TYPE_CHECKING
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 # Project specific imports
 from fastapi import Depends, Request
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 import jwt
 from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
 # Local imports
-from . import dependencies
+from . import dependencies, constants
 from ..db.exceptions import RecommendAppDbError, RecommendDBModelNotFound
 from ..db.hashing import Hasher
 from .exceptions import RecommendAppRequiresLogin
 
 if TYPE_CHECKING:
-    from datetime import timedelta
     from ..db.models.user import UserInDb
 
 
@@ -144,7 +144,7 @@ async def authenticate_user(
     return AuthenticatedUser.from_dbuser(user)
 
 
-def create_access_token(user: AuthenticatedUser, expires_delta: "timedelta") -> Token:
+def create_access_token(user: AuthenticatedUser, expires_delta: timedelta) -> Token:
     """
     Using the data of the user, create a json token.
     """
@@ -156,6 +156,25 @@ def create_access_token(user: AuthenticatedUser, expires_delta: "timedelta") -> 
     return Token(
         name=OAUTH2_SCHEME.token_name, access_token=access_token, token_type="bearer"
     )
+
+
+def create_access_token_set_cookie(user: AuthenticatedUser) -> JSONResponse:
+    """
+    For the given user, create an access token and return a JSONResponse that
+    sets the token as a cookie. This is being used by create_session and update_user
+
+    Args:
+        user (AuthenticatedUser): The current signed in user
+
+    Returns:
+        A JsonResponse that sets the cookie
+    """
+    access_token_expires = timedelta(minutes=constants.ACCESS_TOKEN_EXPIRE_MINUTES)
+    token = create_access_token(user, access_token_expires)
+
+    response = JSONResponse({"status": "authenticated"})
+    response.set_cookie(token.name, token.access_token, httponly=True, secure=True)
+    return response
 
 
 def _decode_token(token: str) -> Optional[AuthenticatedUser]:

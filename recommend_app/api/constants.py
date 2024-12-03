@@ -18,7 +18,8 @@ class ROUTES:
     # users
     REGISTER = "/users/new"
     ADD_USER = "/users/"
-    USER_BOARDS = "/users/{user_id}"
+    GET_USER = "/users/{user_id}"
+    UPDATE_USER = "/users/{user_id}"
 
     # boards
     CREATE_BOARD = "/boards/new"
@@ -26,3 +27,6 @@ class ROUTES:
     GET_BOARD = "/boards/{board_id}"
     UPDATE_BOARD = "/boards/{board_id}"
     DELETE_BOARD = "/boards/{board_id}"
+
+
+ACCESS_TOKEN_EXPIRE_MINUTES = 15

@@ -104,6 +104,81 @@ async function logout() {
 }
 
 /*
+  Users
+*/
+
+function editUserData(element) {
+  const div = element.closest("div");
+  const table = div.parentElement.getElementsByTagName("table")[0];
+
+  // UserName
+
+  // FirstName
+  const firstNameRow = table.rows[3];
+  const firstNameEditField =
+    firstNameRow.cells[1].getElementsByTagName("input")[0];
+  const currentFirstNameField =
+    firstNameRow.cells[1].getElementsByTagName("span")[0];
+  firstNameEditField.style.display = "inline";
+  currentFirstNameField.style.display = "none";
+  firstNameEditField.value = currentFirstNameField.innerHTML;
+
+  // LastName
+  const lastNameRow = table.rows[4];
+  const lastNameEditField =
+    lastNameRow.cells[1].getElementsByTagName("input")[0];
+  const currentLastNameField =
+    lastNameRow.cells[1].getElementsByTagName("span")[0];
+  lastNameEditField.style.display = "inline";
+  currentLastNameField.style.display = "none";
+  lastNameEditField.value = currentLastNameField.innerHTML;
+
+  // Button
+  const saveButton = div.getElementsByTagName("button")[1];
+  element.style.display = "none";
+  saveButton.style.display = "inline";
+}
+
+async function updateUserData(element, user_id) {
+  const div = element.closest("div");
+  const table = div.parentElement.getElementsByTagName("table")[0];
+  const firstNameEditField =
+    table.rows[3].cells[1].getElementsByTagName("input")[0];
+  const lastNameEditField =
+    table.rows[4].cells[1].getElementsByTagName("input")[0];
+
+  const payload = {
+    first_name: firstNameEditField.value,
+    last_name: lastNameEditField.value,
+  };
+
+  console.log(payload);
+
+  const url = "/users/" + user_id;
+
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      window.location.href = "/me/";
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+}
+
+/*
   Boards
 */
 

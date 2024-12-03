@@ -8,7 +8,7 @@ from fastapi import status
 
 # Local imports
 from recommend_app.api import constants as Key
-from .. import utils
+from ... import utils
 
 #-----------------------------------------------------------------------------#
 # Tests
@@ -25,9 +25,3 @@ async def test_add_user(api_client):
     
     result = response.json()
     assert result['email_address'] == new_user.email_address
-
-"""
-Get user by id
-    signed in user -> redirect
-    other user -> only public boards will be returned
-"""

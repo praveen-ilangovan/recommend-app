@@ -11,11 +11,15 @@ users
 
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 
 # Local imports
-from ...db.models.user import NewUser, UserInDb
-from ...db.exceptions import RecommendDBModelCreationError
+from ...db.models.user import NewUser, UserInDb, UpdateUser
+from ...db.exceptions import (
+    RecommendDBModelCreationError,
+    RecommendAppDbError,
+    RecommendDBModelNotFound,
+)
 from .. import dependencies, auth, constants
 from ... import ui
 
@@ -61,3 +65,33 @@ async def show_user_page(
         name="user.html",
         context={"user": user, "requested_user": requested_user, "boards": boards},
     )
+
+
+@router.put("/{user_id}", status_code=status.HTTP_200_OK)
+async def update_user(
+    user_id: str, data: UpdateUser, user: auth.REQUIRED_USER
+) -> JSONResponse:
+    if not user or user.id != user_id:
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            detail={"error": "Unauthorized to make this change"},
+        )
+
+    try:
+        updated = await dependencies.get_db_client().update_user(user_id, data)
+    except RecommendDBModelNotFound as err:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
+    except RecommendAppDbError as err:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+
+    # Since the user information has been updated, we have to regenerate the access token.
+    # Access token has information about the user.
+    authorised_user = auth.AuthenticatedUser.from_dbuser(updated)
+    return auth.create_access_token_set_cookie(authorised_user)
+
+    # access_token_expires = timedelta(minutes=constants.ACCESS_TOKEN_EXPIRE_MINUTES)
+    # token = auth.create_access_token(authorised_user, access_token_expires)
+    # response = JSONResponse({"status": "authenticated"})
+    # response.set_cookie(token.name, token.access_token, httponly=True, secure=True)
+
+    # return response

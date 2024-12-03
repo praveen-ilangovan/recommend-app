@@ -39,6 +39,18 @@
             <span>{{ user.last_name }}</span>
           </td>
         </tr>
+        <tr style="display: none">
+          <td>New Password</td>
+          <td>
+            <input type="password" />
+          </td>
+        </tr>
+        <tr style="display: none">
+          <td>Repeat Password</td>
+          <td>
+            <input type="password" />
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -56,9 +68,39 @@
         style="display: none"
         onclick="updateUserData(this, '{{ user.id }}')"
       >
-        Save
+        Save User Info
       </button>
-      <button type="button" class="btn btn-secondary">Change Password</button>
+
+      <a
+        class="btn btn-secondary"
+        style="display: none"
+        href="/me/"
+        role="button"
+        >Cancel</a
+      >
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        onclick="editPassword(this)"
+      >
+        Change password
+      </button>
+      <button
+        type="button"
+        class="btn btn-warning"
+        style="display: none"
+        onclick="savePassword(this, '{{ user.id }}')"
+      >
+        Save new password
+      </button>
+      <a
+        class="btn btn-secondary"
+        style="display: none"
+        href="/me/"
+        role="button"
+        >Cancel</a
+      >
     </div>
 
     {% endif %}

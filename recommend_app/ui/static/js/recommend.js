@@ -135,8 +135,10 @@ function editUserData(element) {
 
   // Button
   const saveButton = div.getElementsByTagName("button")[1];
+  const cancelButton = div.getElementsByTagName("a")[0];
   element.style.display = "none";
   saveButton.style.display = "inline";
+  cancelButton.style.display = "inline";
 }
 
 async function updateUserData(element, user_id) {
@@ -152,7 +154,65 @@ async function updateUserData(element, user_id) {
     last_name: lastNameEditField.value,
   };
 
-  console.log(payload);
+  const url = "/users/" + user_id;
+
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      window.location.href = "/me/";
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+}
+
+/*
+  Password
+*/
+
+function editPassword(element) {
+  const div = element.closest("div");
+  const table = div.parentElement.getElementsByTagName("table")[0];
+  table.rows[5].style.display = "inline";
+  table.rows[6].style.display = "inline";
+
+  // Toggle the visibility of the buttons
+  const savePasswordButton = div.getElementsByTagName("button")[3];
+  const cancelButton = div.getElementsByTagName("a")[1];
+  element.style.display = "none";
+  savePasswordButton.style.display = "inline";
+  cancelButton.style.display = "inline";
+}
+
+async function savePassword(element, user_id) {
+  const div = element.closest("div");
+  const table = div.parentElement.getElementsByTagName("table")[0];
+
+  const newPassword =
+    table.rows[5].cells[1].getElementsByTagName("input")[0].value;
+  const repeatPassword =
+    table.rows[6].cells[1].getElementsByTagName("input")[0].value;
+
+  if (newPassword !== repeatPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  const payload = {
+    password: newPassword,
+  };
 
   const url = "/users/" + user_id;
 

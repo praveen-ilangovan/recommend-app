@@ -11,11 +11,12 @@ the app.
 """
 
 # Project specific imports
+from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict
 
 # Local imports
 from ..types import RecommendModelType
-from .bases import BaseNewRecommendModel, BaseRecommendModel
+from .bases import BaseNewRecommendModel, BaseRecommendModel, BaseUpdateRecommendModel
 
 # -----------------------------------------------------------------------------#
 # Attributes
@@ -119,6 +120,46 @@ class UserInDb(ExtendedUserAttributes, BaseRecommendModel):
                 "first_name": "John",
                 "last_name": "Doe",
                 "password": "ncvdisvbskv1w2ebeh",
+            }
+        }
+    )
+
+    # -------------------------------------------------------------------------#
+    # Properties
+    # -------------------------------------------------------------------------#
+    @property
+    def model_type(self) -> RecommendModelType:
+        """
+        Returns the model type
+
+        Returns:
+            RecommendModelType: A string representing the type of the model
+                (e.g., 'User', 'Board', 'Card').
+        """
+        return RecommendModelType.USER
+
+
+class UpdateUser(BaseUpdateRecommendModel):
+    """
+    User attributes that can be updated by its owner
+
+    Args:
+        name (str): Name of the board
+        private (bool): If true, only the owner can view this board.
+    """
+
+    user_name: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    password: Optional[str] = None
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "user_name": "",
+                "first_name": "",
+                "last_name": "",
+                "password": "",
             }
         }
     )

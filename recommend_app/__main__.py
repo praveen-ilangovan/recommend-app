@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 # Local imports
 from . import db
-from .db.models.user import NewUser
+from .db.models.user import NewUser, UpdateUser
 from .db.models.board import NewBoard, UpdateBoard
 from .db.hashing import Hasher
 from .db.impl.documents.board import BoardDocument
@@ -49,8 +49,13 @@ async def main() -> None:
     # print(result)
 
     email_address = "praveen@email.com"
-    result = await client.get_user(email_address=email_address)
-    print(result)
+    user = await client.get_user(email_address=email_address)
+    print(user)
+
+    data = UpdateUser(first_name='Praveen', last_name='Ilangovan')
+    updated = await client.update_user(user.id, data)
+    print(updated)
+
 
     # boards = await BoardDocument.find({'owner_id': '6744a0ddee62a60d03f06d99', 'private':True}).to_list()
     # print(len(boards))
@@ -62,9 +67,9 @@ async def main() -> None:
 
     # print(Hasher.verify_password(pwd, result.password))
 
-    new_board = NewBoard(name="Top Movies to Watch")
-    board = await client.add_board(new_board=new_board, owner_id=result.id)
-    print(board)
+    # new_board = NewBoard(name="Top Movies to Watch")
+    # board = await client.add_board(new_board=new_board, owner_id=result.id)
+    # print(board)
 
     # board_id = "67499a9c03cab482dce67296"
     # owner_id = "6744a0ddee62a60d03f06d99"

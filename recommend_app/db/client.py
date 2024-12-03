@@ -21,7 +21,7 @@ from .models.board import NewBoard
 
 if TYPE_CHECKING:
     from .abstracts.abstract_db import AbstractRecommendDB
-    from .models.user import NewUser, UserInDb
+    from .models.user import NewUser, UserInDb, UpdateUser
     from .models.board import BoardInDb, UpdateBoard
 
 
@@ -147,6 +147,28 @@ class RecommendDbClient:
             )
 
         result = await self.__db.get(RecommendModelType.USER, attrs_dict)
+        return cast("UserInDb", result)
+
+    async def update_user(self, user_id: str, update_data: "UpdateUser") -> "UserInDb":
+        """
+        Update user info
+
+        Args:
+            user_id (str): The unique identifier of the user.
+            update_data (UpdateUser): If the value is not None, then the user
+                is updated.
+
+        Returns:
+            User: User with the updated data
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found
+            `RecommendAppDbError` if there is an issue in updating the model
+        """
+        # Hash the password
+        if update_data.password:
+            update_data.password = Hasher.hash_password(update_data.password)
+        result = await self.__db.update(user_id, update_data)
         return cast("UserInDb", result)
 
     ###########################################################################

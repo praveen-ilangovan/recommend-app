@@ -63,6 +63,7 @@ Application should start running @ http://127.0.0.1:8000/
     - [GET /users/new](http://127.0.0.1:8000/users/new) : Displays the user registration page
     - [POST /users/](http://127.0.0.1:8000/users) : Create a new user in the database
     - [GET /users/user_id](http://127.0.0.1:8000/users/{id}) : List the public boards of the user
+    - [PUT /users/user_id](http://127.0.0.1:8000/users/{id}) : Edit user info like first and last name and password
 
  * Session
     - [GET /session/new](http://127.0.0.1:8000/session/new) : Displays the user login page

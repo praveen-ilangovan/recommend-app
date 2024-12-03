@@ -83,6 +83,30 @@ if (loginForm) {
   });
 }
 
+// Logout
+async function logout() {
+  try {
+    const response = await fetch("/session/", {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      window.location.href = "/session/new";
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+}
+
+/*
+  Boards
+*/
+
 // Create Board JS
 const createBoardForm = document.getElementById("createBoardForm");
 if (createBoardForm) {

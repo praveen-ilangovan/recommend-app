@@ -52,7 +52,7 @@ async def create_session(
     return response
 
 
-@router.get("/logout", status_code=status.HTTP_200_OK)
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_session(request: Request) -> ui.JinjaTemplateResponse:
     response = ui.show_page(request=request, name="login.html")
     response.delete_cookie(auth.OAUTH2_SCHEME.token_name)

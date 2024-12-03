@@ -76,5 +76,5 @@ async def test_session_logout(api_client):
                     headers={"content-type": "application/x-www-form-urlencoded"})
     
     # Logout
-    response = await api_client.get(Key.ROUTES.LOGOUT)
+    response = await api_client.delete(Key.ROUTES.LOGOUT)
     assert not response.cookies.get("access_token")

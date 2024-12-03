@@ -13,7 +13,7 @@ class ROUTES:
     # session
     LOGIN = "/session/new"
     CREATE_SESSION = "/session/"
-    LOGOUT = "/session/logout"
+    LOGOUT = "/session/"
 
     # users
     REGISTER = "/users/new"

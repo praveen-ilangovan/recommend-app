@@ -13,6 +13,8 @@ from fastapi import APIRouter, status, HTTPException, Request
 
 # Local imports
 from ...db.models.board import NewBoard, BoardInDb, UpdateBoard
+from ...db.models.card import NewCard, CardInDb
+
 from ...db.exceptions import (
     RecommendDBModelCreationError,
     RecommendDBModelNotFound,
@@ -116,3 +118,40 @@ async def remove_board(board_id: str, user: auth.REQUIRED_USER):
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+
+
+# -----------------------------------------------------------------------------#
+# Routes: Cards
+# -----------------------------------------------------------------------------#
+
+
+@router.post(
+    "/{board_id}/cards", status_code=status.HTTP_201_CREATED, response_model=CardInDb
+)
+async def add_card(
+    board_id: str, new_card: NewCard, user: auth.REQUIRED_USER
+) -> CardInDb:
+    if not user:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, detail={"error": "Invalid user: None"}
+        )
+
+    try:
+        # Make sure the board belongs to the user
+        board = await dependencies.get_db_client().get_board(board_id, user.id)
+        if board.owner_id != user.id:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                detail={"error": "Only owner can add a card to the board."},
+            )
+
+        card = await dependencies.get_db_client().add_card(new_card, board_id)
+
+    except RecommendDBModelNotFound as err:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
+    except RecommendAppDbError as err:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+    except RecommendDBModelCreationError as err:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail={"error": err.message})
+
+    return card

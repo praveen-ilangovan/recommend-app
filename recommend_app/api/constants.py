@@ -28,5 +28,8 @@ class ROUTES:
     UPDATE_BOARD = "/boards/{board_id}"
     DELETE_BOARD = "/boards/{board_id}"
 
+    # cards
+    ADD_CARD = "/boards/{board_id}/cards"
+
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 15

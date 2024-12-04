@@ -24,11 +24,13 @@ class ROUTES:
     # boards
     CREATE_BOARD = "/boards/new"
     ADD_BOARD = "/boards/"
-    GET_BOARD = "/boards/{board_id}"
+    SHOW_BOARD = "/boards/{board_id}"
+    GET_BOARD = "/boards/{board_id}?show_page=false"
     UPDATE_BOARD = "/boards/{board_id}"
     DELETE_BOARD = "/boards/{board_id}"
 
     # cards
+    CREATE_CARD = "/{board_id}/cards/new"
     ADD_CARD = "/boards/{board_id}/cards"
 
 

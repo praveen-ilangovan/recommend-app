@@ -58,7 +58,9 @@ async def add_board(new_board: NewBoard, user: auth.REQUIRED_USER) -> BoardInDb:
 
 
 @router.get("/{board_id}", status_code=status.HTTP_200_OK, response_model=BoardInDb)
-async def get_board(board_id: str, user: auth.OPTIONAL_USER) -> BoardInDb:
+async def get_board(
+    request: Request, board_id: str, user: auth.OPTIONAL_USER, show_page: bool = True
+) -> ui.JinjaTemplateResponse | BoardInDb:
     try:
         owner_id = user.id if user else None
         board = await dependencies.get_db_client().get_board(board_id, owner_id)
@@ -67,6 +69,10 @@ async def get_board(board_id: str, user: auth.OPTIONAL_USER) -> BoardInDb:
     except RecommendAppDbError as err:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
 
+    if show_page:
+        return ui.show_page(
+            request=request, name="board.html", context={"user": user, "board": board}
+        )
     return board
 
 
@@ -123,6 +129,17 @@ async def remove_board(board_id: str, user: auth.REQUIRED_USER):
 # -----------------------------------------------------------------------------#
 # Routes: Cards
 # -----------------------------------------------------------------------------#
+
+
+@router.get("/{board_id}/cards/new")
+async def show_create_card_page(
+    request: Request, board_id: str, user: auth.REQUIRED_USER
+) -> ui.JinjaTemplateResponse:
+    """
+    Displays the page for users to create a new board
+    """
+    context = {"user": user, "board_id": board_id}
+    return ui.show_page(request=request, name="cardForm.html", context=context)
 
 
 @router.post(

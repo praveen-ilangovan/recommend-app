@@ -62,8 +62,8 @@ Application should start running @ http://127.0.0.1:8000/
  * Users
     - [GET /users/new](http://127.0.0.1:8000/users/new) : Displays the user registration page
     - [POST /users/](http://127.0.0.1:8000/users) : Create a new user in the database
-    - [GET /users/user_id](http://127.0.0.1:8000/users/{id}) : List the public boards of the user
-    - [PUT /users/user_id](http://127.0.0.1:8000/users/{id}) : Edit user info like first and last name and password
+    - [GET /users/{user_id}](http://127.0.0.1:8000/users/{id}) : List the public boards of the user
+    - [PUT /users/{user_id}](http://127.0.0.1:8000/users/{id}) : Edit user info like first and last name and password
 
  * Session
     - [GET /session/new](http://127.0.0.1:8000/session/new) : Displays the user login page
@@ -73,10 +73,12 @@ Application should start running @ http://127.0.0.1:8000/
  * Boards
     - [GET /boards/new](http://127.0.0.1:8000/boards/new) : Displays the create board page
     - [POST /boards/](http://127.0.0.1:8000/boards) : Creates a new board in the database
-    - [GET /boards/board_id](http://127.0.0.1:8000/boards/{id}) : Displays the board. Private boards could only be viewed by the owner
-    - [PUT /boards/board_id](http://127.0.0.1:8000/boards/{id}) : Updates the board data. Again, only the owner can update.
-    - [DELETE /boards/board_id](http://127.0.0.1:8000/boards/{id}) : Deletes the board. Only the owner can delete the board.
+    - [GET /boards/{board_id}](http://127.0.0.1:8000/boards/{id}) : Displays the board. Private boards could only be viewed by the owner
+    - [PUT /boards/{board_id}](http://127.0.0.1:8000/boards/{id}) : Updates the board data. Again, only the owner can update.
+    - [DELETE /boards/{board_id}](http://127.0.0.1:8000/boards/{id}) : Deletes the board. Only the owner can delete the board.
 
+ * Cards
+    - [POST /boards/{board_id}/cards](http://127.0.0.1:8000/boards/{id}/cards) : Creates a new card
 
 ### DB backend
 

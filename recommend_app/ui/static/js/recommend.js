@@ -292,8 +292,11 @@ function editBoardData(element) {
   // Initialize the field with the current value
   const editNameField = row.cells[0].getElementsByTagName("input")[0];
   const currentNameField = row.cells[0].getElementsByTagName("span")[0];
+  const currentNameLinkField = row.cells[0].getElementsByTagName("a")[0];
+  console.log(currentNameLinkField);
   editNameField.style.display = "block";
   currentNameField.style.display = "none";
+  currentNameLinkField.style.display = "none";
   editNameField.value = currentNameField.innerHTML;
 
   // Hide the span and display the checkbox
@@ -363,4 +366,54 @@ async function deleteBoard(board_id) {
     console.error("Error:", error);
     alert("An error occurred. Please try again.");
   }
+}
+
+/*
+Cards
+*/
+
+// Register JS
+const createCardForm = document.getElementById("createCardForm");
+if (createCardForm) {
+  createCardForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    const board_id = data.board_id;
+    const payload = {
+      url: data.url,
+      title: data.title,
+      description: data.description,
+      thumbnail: data.thumbnail,
+    };
+
+    const url = "/boards/" + board_id + "/cards";
+    const redirect = "/boards/" + board_id;
+
+    console.log(payload);
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        window.location.href = redirect;
+      } else {
+        // Handle error
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again.");
+    }
+  });
 }

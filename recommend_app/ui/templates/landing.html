@@ -122,7 +122,10 @@
       <tr>
         <td>
           <input type="text" style="display: none" />
-          <span>{{ board.name }}</span>
+          <span style="display: none">{{ board.name }}</span>
+          <a class="link-opacity-100-hover" href="/boards/{{ board.id }}"
+            >{{ board.name }}</a
+          >
         </td>
         <td>
           <input

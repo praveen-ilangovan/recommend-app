@@ -1,0 +1,54 @@
+{% include 'layout.html' %}
+
+<div class="container">
+  <!-- Content here -->
+
+  <div>
+    <h3>Board Information</h3>
+    {% if user %}
+    <table class="table" style="width: 400px">
+      <thead>
+        <tr>
+          <th scope="col">Key</th>
+          <th scope="col">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Name</td>
+          <td>{{ board.name }}</td>
+        </tr>
+        <tr>
+          <td>Private</td>
+          <td>{{ board.private }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div>
+      <button type="button" class="btn btn-secondary">Edit Board Info</button>
+      <button type="button" class="btn btn-warning" style="display: none">
+        Save Board Info
+      </button>
+
+      <a
+        class="btn btn-secondary"
+        style="display: none"
+        href="/me/"
+        role="button"
+        >Cancel</a
+      >
+    </div>
+
+    {% endif %}
+  </div>
+
+  <h3>My Cards</h3>
+  {% if cards %} {% endif %}
+  <a
+    class="btn btn-primary"
+    href="/boards/{{ board.id }}/cards/new"
+    role="button"
+    >Create a new card</a
+  >
+</div>

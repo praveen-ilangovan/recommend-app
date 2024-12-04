@@ -304,3 +304,36 @@ class RecommendDbClient:
         card_with_boardid = NewCard(**new_card.model_dump(), board_id=board_id)
         result = await self.__db.add(card_with_boardid)
         return cast("CardInDb", result)
+
+    async def get_card(self, card_id: str) -> "CardInDb":
+        """
+        Retrieve a card from the database by its unique identifier (UID).
+
+        Args:
+            card_id (str): The unique identifier of the card.
+
+        Returns:
+            Card: The Card object corresponding to the provided UID.
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found
+            `RecommendAppDbError` if the board is private and no owner_id is
+                given or if the given owner_id doesn't match the board's owner.
+        """
+        attrs_dict = {"id": card_id}
+        card = await self.__db.get(RecommendModelType.CARD, attrs_dict)
+        return cast("CardInDb", card)
+
+    async def get_all_cards(self, board_id: str) -> list["CardInDb"]:
+        """
+        Retrieve all cards associated with a specific board.
+
+        Args:
+            board_id (str): Id of the board
+
+        Returns:
+            list[Card]: A list of Card objects belonging to the board.
+        """
+        attr_dict: dict[str, Any] = {"board_id": board_id}
+        cards = await self.__db.get_all(RecommendModelType.CARD, attr_dict)
+        return cast(list["CardInDb"], cards)

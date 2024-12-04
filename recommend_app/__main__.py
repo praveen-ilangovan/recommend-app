@@ -83,8 +83,8 @@ async def main() -> None:
     board_id = "67499a5c8412707ee0bbef94"
     # owner_id = "6744a0ddee62a60d03f06d99"
 
-    board = await client.get_board(board_id)
-    print(board)
+    # board = await client.get_board(board_id)
+    # print(board)
 
     # board = await client.get_board(board_id, owner_id)
     # print(board)
@@ -100,9 +100,16 @@ async def main() -> None:
     # result = await client.remove_board(board.id)
     # print(result)
 
-    new_card = create_card()
-    result = await client.add_card(new_card, board_id)
-    print(result)
+    # new_card = create_card()
+    # result = await client.add_card(new_card, board_id)
+    # print(result)
+
+
+    # card = await client.get_card('67503931111286271af0e014')
+    # print(card)
+
+    cards = await client.get_all_cards('67499a5c8412707ee0bbef94')
+    print(cards)
 
     await client.disconnect()
 

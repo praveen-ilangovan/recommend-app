@@ -8,7 +8,7 @@ import pytest_asyncio
 
 # Local imports
 from recommend_app.db.models.card import CardInDb
-from recommend_app.db.exceptions import RecommendDBModelCreationError
+from recommend_app.db.exceptions import RecommendDBModelCreationError, RecommendDBModelNotFound
 from .. import utils
 
 @pytest_asyncio.fixture(loop_scope="session")
@@ -69,3 +69,39 @@ async def test_add_same_card_to_two_boards(db_client_with_user_and_boards):
     card2 = await db_client.add_card(new_card, pvt_board.id)
     assert card1.url == card2.url
     assert card1.id != card2.id
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_card(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+    pub_board = db_client_with_user_and_boards['pub_board']
+
+    new_card = utils.create_card()
+    card1 = await db_client.add_card(new_card, pub_board.id)
+    card2 = await db_client.get_card(card1.id)
+    assert card1.id == card2.id
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_non_existent_card(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+
+    with pytest.raises(RecommendDBModelNotFound):
+        await db_client.get_card('1234')
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_all_cards(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+
+    user = await db_client.add_user(utils.create_user())
+    board = await db_client.add_board(utils.create_public_board(), user.id)
+
+    for _ in range(4):
+        await db_client.add_card(utils.create_card(), board.id)
+
+    cards = await db_client.get_all_cards(board.id)
+    assert len(cards) == 4
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_get_all_cards_from_non_existent_board(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+    cards = await db_client.get_all_cards(['1234'])
+    assert not cards

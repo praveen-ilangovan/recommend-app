@@ -42,10 +42,10 @@ class ExtendedBoardAttributes(BaseBoardAttributes):
     As the name indicates, this has more attributes used in specific models.
 
     Args:
-        owner_id (str|int): Owner ID of the board. The user who creates the board.
+        owner_id (str): Owner ID of the board. The user who creates the board.
     """
 
-    owner_id: str | int
+    owner_id: str
 
 
 # -----------------------------------------------------------------------------#

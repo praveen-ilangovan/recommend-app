@@ -18,11 +18,14 @@ from .exceptions import RecommendDBConnectionError, RecommendAppDbError
 from .types import RecommendModelType
 from .hashing import Hasher
 from .models.board import NewBoard
+from .models.card import NewCard
+
 
 if TYPE_CHECKING:
     from .abstracts.abstract_db import AbstractRecommendDB
     from .models.user import NewUser, UserInDb, UpdateUser
     from .models.board import BoardInDb, UpdateBoard
+    from .models.card import CardInDb
 
 
 class RecommendDbClient:
@@ -280,3 +283,24 @@ class RecommendDbClient:
             bool: True if the board was successfully removed, False otherwise.
         """
         return await self.__db.remove(RecommendModelType.BOARD, board_id)
+
+    ###########################################################################
+    # Methods: Card
+    ###########################################################################
+    async def add_card(self, new_card: NewCard, board_id: str) -> "CardInDb":
+        """
+        Add a new card to the database.
+
+        Args:
+            new_card (NewCard): Model with all the necessary info to create a new card
+            board_id (str): Board to which this card will be added to.
+
+        Returns:
+            CardInDb: The newly created Card object.
+
+        Raises:
+            `RecommendDBModelCreationError` if card creation fails.
+        """
+        card_with_boardid = NewCard(**new_card.model_dump(), board_id=board_id)
+        result = await self.__db.add(card_with_boardid)
+        return cast("CardInDb", result)

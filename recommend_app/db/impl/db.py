@@ -41,7 +41,7 @@ from ..exceptions import (
 from ..types import RecommendModelType
 from .documents.user import UserDocument
 from .documents.board import BoardDocument
-
+from .documents.card import CardDocument
 
 if TYPE_CHECKING:
     from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -125,13 +125,14 @@ class RecommendDB(AbstractRecommendDB):
 
         self.__db = client.get_database(self.__dbname)
 
-        # Init beanie
-        await beanie.init_beanie(
-            database=self.__db, document_models=[UserDocument, BoardDocument]
-        )
-
         self.__documents[RecommendModelType.USER] = UserDocument
         self.__documents[RecommendModelType.BOARD] = BoardDocument
+        self.__documents[RecommendModelType.CARD] = CardDocument
+
+        # Init beanie
+        await beanie.init_beanie(
+            database=self.__db, document_models=list(self.__documents.values())
+        )
 
         # Check the connection
         await self.ping()

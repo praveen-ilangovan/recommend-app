@@ -4,6 +4,7 @@ import uuid
 # Local imports
 from recommend_app.db.models.user import NewUser
 from recommend_app.db.models.board import NewBoard
+from recommend_app.db.models.card import NewCard
 from recommend_app.api.auth import AuthenticatedUser
 
 def get_random_name():
@@ -25,6 +26,14 @@ def create_public_board():
 
 def create_private_board():
     return NewBoard(name=get_random_name(), private=True)
+
+def create_card():
+    user_name = get_random_name()
+    return NewCard(
+        url=f"www.{user_name}.com",
+        title='My title',
+        description="simple des"
+    )
 
 #-----------------------------------------------------------------------------#
 # User overrides

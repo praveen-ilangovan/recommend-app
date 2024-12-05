@@ -15,29 +15,79 @@
       </thead>
       <tbody>
         <tr>
-          <td>Title</td>
-          <td>{{ card.title }}</td>
-        </tr>
-        <tr>
           <td>URL</td>
           <td>{{ card.url }}</td>
         </tr>
         <tr>
+          <td>Title</td>
+          <td>
+            <input type="text" style="display: none" id="cardTitleInputField" />
+            <span id="cardTitleSpanField">{{ card.title }}</span>
+          </td>
+        </tr>
+        <tr>
           <td>Description</td>
-          <td>{{ card.description }}</td>
+          <td>
+            <input
+              type="text"
+              style="display: none"
+              id="cardDescriptionInputField"
+            />
+            <span id="cardDescriptionSpanField">{{ card.description }}</span>
+          </td>
         </tr>
         <tr>
           <td>Thumbnail</td>
-          <td>{{ card.thumbnail }}</td>
+          <td>
+            <input
+              type="text"
+              style="display: none"
+              id="cardThumbnailInputField"
+            />
+            <span id="cardThumbnailSpanField">{{ card.thumbnail }}</span>
+          </td>
         </tr>
       </tbody>
     </table>
     {% endif %}
 
     <div>
-      <a class="btn btn-secondary" href="/boards/{{ board.id }}" role="button"
-        >Back to board</a
+      <button
+        type="button"
+        class="btn btn-secondary"
+        id="editCardDataButton"
+        onclick="editCardData(this)"
       >
+        Edit
+      </button>
+      <button
+        type="button"
+        class="btn btn-warning"
+        id="saveCardDataButton"
+        style="display: none"
+        onclick="updateCardData('{{ card.id }}')"
+      >
+        Save
+      </button>
+      <a
+        class="btn btn-secondary"
+        style="display: none"
+        href=""
+        role="button"
+        id="cancelCardDataButton"
+        >Cancel</a
+      >
+      <button
+        type="button"
+        class="btn btn-danger"
+        id="deleteCardButton"
+        onclick="deleteCard('{{ card.id }}')"
+      >
+        Delete
+      </button>
+      <a class="btn btn-secondary" href="/boards/{{ board.id }}" role="button">
+        Back to board
+      </a>
     </div>
   </div>
 </div>

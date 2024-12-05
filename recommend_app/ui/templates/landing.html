@@ -21,34 +21,33 @@
         <tr>
           <td>Username</td>
           <td>
-            <input type="text" style="display: none" />
             <span>{{ user.user_name }}</span>
           </td>
         </tr>
         <tr>
           <td>First Name</td>
           <td>
-            <input type="text" style="display: none" />
-            <span>{{ user.first_name }}</span>
+            <input type="text" style="display: none" id="firstNameInputField" />
+            <span id="firstNameSpanField">{{ user.first_name }}</span>
           </td>
         </tr>
         <tr>
           <td>Last Name</td>
           <td>
-            <input type="text" style="display: none" />
-            <span>{{ user.last_name }}</span>
+            <input type="text" style="display: none" id="lastNameInputField" />
+            <span id="lastNameSpanField">{{ user.last_name }}</span>
           </td>
         </tr>
-        <tr style="display: none">
+        <tr style="display: none" id="newPasswordRow">
           <td>New Password</td>
           <td>
-            <input type="password" />
+            <input type="password" id="newPasswordInputField" />
           </td>
         </tr>
-        <tr style="display: none">
+        <tr style="display: none" id="repeatPasswordRow">
           <td>Repeat Password</td>
           <td>
-            <input type="password" />
+            <input type="password" id="repeatPasswordInputField" />
           </td>
         </tr>
       </tbody>
@@ -58,30 +57,34 @@
       <button
         type="button"
         class="btn btn-secondary"
+        id="editUserDataButton"
         onclick="editUserData(this)"
       >
-        Edit User Info
+        Edit
       </button>
       <button
         type="button"
         class="btn btn-warning"
         style="display: none"
-        onclick="updateUserData(this, '{{ user.id }}')"
+        id="saveUserDataButton"
+        onclick="updateUserData('{{ user.id }}')"
       >
-        Save User Info
+        Save
       </button>
 
       <a
         class="btn btn-secondary"
         style="display: none"
-        href="/me/"
+        href=""
         role="button"
+        id="cancelUserDataButton"
         >Cancel</a
       >
 
       <button
         type="button"
         class="btn btn-secondary"
+        id="editPasswordButton"
         onclick="editPassword(this)"
       >
         Change password
@@ -90,14 +93,16 @@
         type="button"
         class="btn btn-warning"
         style="display: none"
+        id="savePasswordButton"
         onclick="savePassword(this, '{{ user.id }}')"
       >
-        Save new password
+        Save password
       </button>
       <a
         class="btn btn-secondary"
         style="display: none"
-        href="/me/"
+        href=""
+        id="cancelPasswordButton"
         role="button"
         >Cancel</a
       >
@@ -113,55 +118,18 @@
       <tr>
         <th scope="col">Board</th>
         <th scope="col">Private</th>
-        <th scope="col">Edit</th>
-        <th scope="col">Delete</th>
       </tr>
     </thead>
     <tbody>
       {% for board in boards %}
       <tr>
         <td>
-          <input type="text" style="display: none" />
-          <span style="display: none">{{ board.name }}</span>
           <a class="link-opacity-100-hover" href="/boards/{{ board.id }}"
             >{{ board.name }}</a
           >
         </td>
         <td>
-          <input
-            class="form-check-input me-2"
-            type="checkbox"
-            value="1"
-            name="private"
-            style="display: none"
-          />
           <span>{{ board.private }}</span>
-        </td>
-        <td>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="editBoardData(this)"
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            class="btn btn-warning"
-            style="display: none"
-            onclick="updateBoardData(this, '{{ board.id }}')"
-          >
-            Update
-          </button>
-        </td>
-        <td>
-          <button
-            type="button"
-            class="btn btn-danger"
-            onclick="deleteBoard('{{ board.id }}')"
-          >
-            Delete
-          </button>
         </td>
       </tr>
       {% endfor %}

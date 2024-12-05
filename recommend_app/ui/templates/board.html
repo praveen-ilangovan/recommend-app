@@ -16,28 +16,61 @@
       <tbody>
         <tr>
           <td>Name</td>
-          <td>{{ board.name }}</td>
+          <td>
+            <input type="text" style="display: none" id="boardNameInputField" />
+            <span id="boardNameSpanField">{{ board.name }}</span>
+          </td>
         </tr>
         <tr>
           <td>Private</td>
-          <td>{{ board.private }}</td>
+          <td>
+            <input
+              type="checkbox"
+              value="1"
+              name="private"
+              style="display: none"
+              id="boardPrivateInputField"
+            />
+            <span id="boardPrivateSpanField">{{ board.private }}</span>
+          </td>
         </tr>
       </tbody>
     </table>
 
     <div>
-      <button type="button" class="btn btn-secondary">Edit Board Info</button>
-      <button type="button" class="btn btn-warning" style="display: none">
-        Save Board Info
+      <button
+        type="button"
+        class="btn btn-secondary"
+        id="editBoardDataButton"
+        onclick="editBoardData(this)"
+      >
+        Edit
       </button>
-
+      <button
+        type="button"
+        class="btn btn-warning"
+        id="saveBoardDataButton"
+        style="display: none"
+        onclick="updateBoardData('{{ board.id }}')"
+      >
+        Save
+      </button>
       <a
         class="btn btn-secondary"
         style="display: none"
-        href="/me/"
+        href=""
         role="button"
+        id="cancelBoardDataButton"
         >Cancel</a
       >
+      <button
+        type="button"
+        class="btn btn-danger"
+        id="deleteBoardDataButton"
+        onclick="deleteBoard('{{ board.id }}')"
+      >
+        Delete
+      </button>
     </div>
 
     {% endif %}
@@ -50,28 +83,18 @@
       <tr>
         <th scope="col">Title</th>
         <th scope="col">URL</th>
-        <th scope="col">Description</th>
-        <th scope="col">Thumbnail</th>
       </tr>
     </thead>
     <tbody>
       {% for card in cards %}
       <tr>
         <td>
-          <input type="text" style="display: none" />
-          <span style="display: none">{{ card.title }}</span>
           <a class="link-opacity-100-hover" href="/cards/{{ card.id }}"
             >{{ card.title }}</a
           >
         </td>
         <td>
           <span>{{ card.url }}</span>
-        </td>
-        <td>
-          <span>{{ card.description }}</span>
-        </td>
-        <td>
-          <span>{{ card.thumbnail }}</span>
         </td>
       </tr>
       {% endfor %}

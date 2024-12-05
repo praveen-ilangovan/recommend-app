@@ -1,4 +1,6 @@
-// Register JS
+/*
+Register a new user
+*/
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
   registerForm.addEventListener("submit", async function (event) {
@@ -35,7 +37,7 @@ if (registerForm) {
       } else {
         // Handle error
         const errorData = await response.json();
-        alert(`Error: ${errorData.message}`);
+        alert(`Error: ${errorData.detail.error}`);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -74,7 +76,7 @@ if (loginForm) {
       } else {
         // Handle error
         const errorData = await response.json();
-        alert(`Error: ${errorData.detail}`);
+        alert(`Error: ${errorData.detail.error}`);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -108,50 +110,34 @@ async function logout() {
 */
 
 function editUserData(element) {
-  const div = element.closest("div");
-  const table = div.parentElement.getElementsByTagName("table")[0];
-
-  // UserName
-
-  // FirstName
-  const firstNameRow = table.rows[3];
-  const firstNameEditField =
-    firstNameRow.cells[1].getElementsByTagName("input")[0];
-  const currentFirstNameField =
-    firstNameRow.cells[1].getElementsByTagName("span")[0];
-  firstNameEditField.style.display = "inline";
-  currentFirstNameField.style.display = "none";
-  firstNameEditField.value = currentFirstNameField.innerHTML;
-
-  // LastName
-  const lastNameRow = table.rows[4];
-  const lastNameEditField =
-    lastNameRow.cells[1].getElementsByTagName("input")[0];
-  const currentLastNameField =
-    lastNameRow.cells[1].getElementsByTagName("span")[0];
-  lastNameEditField.style.display = "inline";
-  currentLastNameField.style.display = "none";
-  lastNameEditField.value = currentLastNameField.innerHTML;
-
-  // Button
-  const saveButton = div.getElementsByTagName("button")[1];
-  const cancelButton = div.getElementsByTagName("a")[0];
+  // Hide the edit button and Display the update and cancel button
+  const saveButton = document.getElementById("saveUserDataButton");
+  const cancelButton = document.getElementById("cancelUserDataButton");
   element.style.display = "none";
   saveButton.style.display = "inline";
   cancelButton.style.display = "inline";
+
+  // Hide the span and display the input field
+  // Initialize the field with the current value
+  const firstNameInputField = document.getElementById("firstNameInputField");
+  const firstNameSpanField = document.getElementById("firstNameSpanField");
+  firstNameInputField.style.display = "block";
+  firstNameSpanField.style.display = "none";
+  firstNameInputField.value = firstNameSpanField.innerHTML;
+
+  // Hide the span and display the checkbox
+  // Initialize the checkbox with the current value
+  const lastNameInputField = document.getElementById("lastNameInputField");
+  const lastNameSpanField = document.getElementById("lastNameSpanField");
+  lastNameInputField.style.display = "block";
+  lastNameSpanField.style.display = "none";
+  lastNameInputField.value = lastNameSpanField.innerHTML;
 }
 
-async function updateUserData(element, user_id) {
-  const div = element.closest("div");
-  const table = div.parentElement.getElementsByTagName("table")[0];
-  const firstNameEditField =
-    table.rows[3].cells[1].getElementsByTagName("input")[0];
-  const lastNameEditField =
-    table.rows[4].cells[1].getElementsByTagName("input")[0];
-
+async function updateUserData(user_id) {
   const payload = {
-    first_name: firstNameEditField.value,
-    last_name: lastNameEditField.value,
+    first_name: document.getElementById("firstNameInputField").value,
+    last_name: document.getElementById("lastNameInputField").value,
   };
 
   const url = "/users/" + user_id;
@@ -166,11 +152,11 @@ async function updateUserData(element, user_id) {
     });
 
     if (response.ok) {
-      window.location.href = "/me/";
+      window.location.href = "";
     } else {
       // Handle error
       const errorData = await response.json();
-      alert(`Error: ${errorData.message}`);
+      alert(`Error: ${errorData.detail.error}`);
     }
   } catch (error) {
     console.error("Error:", error);
@@ -183,16 +169,16 @@ async function updateUserData(element, user_id) {
 */
 
 function editPassword(element) {
-  const div = element.closest("div");
-  const table = div.parentElement.getElementsByTagName("table")[0];
-  table.rows[5].style.display = "inline";
-  table.rows[6].style.display = "inline";
+  const newPasswordRow = document.getElementById("newPasswordRow");
+  const repeatPasswordRow = document.getElementById("repeatPasswordRow");
+  newPasswordRow.style.display = "inline";
+  repeatPasswordRow.style.display = "inline";
 
   // Toggle the visibility of the buttons
-  const savePasswordButton = div.getElementsByTagName("button")[3];
-  const cancelButton = div.getElementsByTagName("a")[1];
+  const saveButton = document.getElementById("savePasswordButton");
+  const cancelButton = document.getElementById("cancelPasswordButton");
   element.style.display = "none";
-  savePasswordButton.style.display = "inline";
+  saveButton.style.display = "inline";
   cancelButton.style.display = "inline";
 }
 
@@ -200,10 +186,10 @@ async function savePassword(element, user_id) {
   const div = element.closest("div");
   const table = div.parentElement.getElementsByTagName("table")[0];
 
-  const newPassword =
-    table.rows[5].cells[1].getElementsByTagName("input")[0].value;
-  const repeatPassword =
-    table.rows[6].cells[1].getElementsByTagName("input")[0].value;
+  const newPassword = document.getElementById("newPasswordInputField").value;
+  const repeatPassword = document.getElementById(
+    "repeatPasswordInputField",
+  ).value;
 
   if (newPassword !== repeatPassword) {
     alert("Passwords do not match");
@@ -226,11 +212,11 @@ async function savePassword(element, user_id) {
     });
 
     if (response.ok) {
-      window.location.href = "/me/";
+      window.location.href = "";
     } else {
       // Handle error
       const errorData = await response.json();
-      alert(`Error: ${errorData.message}`);
+      alert(`Error: ${errorData.detail.error}`);
     }
   } catch (error) {
     console.error("Error:", error);
@@ -276,7 +262,7 @@ if (createBoardForm) {
       } else {
         // Handle error
         const errorData = await response.json();
-        alert(`Error: ${errorData.message}`);
+        alert(`Error: ${errorData.detail.error}`);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -286,41 +272,38 @@ if (createBoardForm) {
 }
 
 function editBoardData(element) {
-  const row = element.closest("tr");
+  // Hide the edit button and Display the update and cancel button
+  const updateButton = document.getElementById("saveBoardDataButton");
+  const cancelButton = document.getElementBysId("cancelBoardDataButton");
+  element.style.display = "none";
+  updateButton.style.display = "inline";
+  cancelButton.style.display = "inline";
 
   // Hide the span and display the input field
   // Initialize the field with the current value
-  const editNameField = row.cells[0].getElementsByTagName("input")[0];
-  const currentNameField = row.cells[0].getElementsByTagName("span")[0];
-  const currentNameLinkField = row.cells[0].getElementsByTagName("a")[0];
-  console.log(currentNameLinkField);
-  editNameField.style.display = "block";
-  currentNameField.style.display = "none";
-  currentNameLinkField.style.display = "none";
-  editNameField.value = currentNameField.innerHTML;
+  const boardNameInputField = document.getElementById("boardNameInputField");
+  const boardNameSpanField = document.getElementById("boardNameSpanField");
+  boardNameInputField.style.display = "block";
+  boardNameSpanField.style.display = "none";
+  boardNameInputField.value = boardNameSpanField.innerHTML;
 
   // Hide the span and display the checkbox
   // Initialize the checkbox with the current value
-  const editPrivateField = row.cells[1].getElementsByTagName("input")[0];
-  const currentPrivateField = row.cells[1].getElementsByTagName("span")[0];
-  editPrivateField.style.display = "block";
-  currentPrivateField.style.display = "none";
-  editPrivateField.checked = currentPrivateField.innerHTML == "True";
-
-  // Hide the edit button and Display the updateButton
-  const updateButton = row.cells[2].getElementsByTagName("button")[1];
-  element.style.display = "none";
-  updateButton.style.display = "block";
+  const boardPrivateInputField = document.getElementById(
+    "boardPrivateInputField",
+  );
+  const boardPrivateSpanField = document.getElementById(
+    "boardPrivateSpanField",
+  );
+  boardPrivateInputField.style.display = "block";
+  boardPrivateSpanField.style.display = "none";
+  boardPrivateInputField.checked = boardPrivateSpanField.innerHTML == "True";
 }
 
-async function updateBoardData(element, board_id) {
-  const row = element.closest("tr");
-  const editNameField = row.cells[0].getElementsByTagName("input")[0];
-  const editPrivateField = row.cells[1].getElementsByTagName("input")[0];
-
+async function updateBoardData(board_id) {
   const payload = {
-    name: editNameField.value,
-    private: editPrivateField.checked,
+    name: document.getElementById("boardNameInputField").value,
+    private: document.getElementById("boardPrivateInputField").checked,
   };
 
   const url = "/boards/" + board_id;
@@ -335,7 +318,7 @@ async function updateBoardData(element, board_id) {
     });
 
     if (response.ok) {
-      window.location.href = "/me/";
+      window.location.href = "";
     } else {
       // Handle error
       const errorData = await response.json();
@@ -372,7 +355,7 @@ async function deleteBoard(board_id) {
 Cards
 */
 
-// Register JS
+// Create a card
 const createCardForm = document.getElementById("createCardForm");
 if (createCardForm) {
   createCardForm.addEventListener("submit", async function (event) {
@@ -417,4 +400,45 @@ if (createCardForm) {
       alert("An error occurred. Please try again.");
     }
   });
+}
+
+function editCardData(element) {
+  // Hide the edit button and Display the update and cancel button
+  const saveButton = document.getElementById("saveCardDataButton");
+  const cancelButton = document.getElementById("cancelCardDataButton");
+  element.style.display = "none";
+  saveButton.style.display = "inline";
+  cancelButton.style.display = "inline";
+
+  // Hide the span and display the input field
+  // Initialize the field with the current value
+  const cardTitleInputField = document.getElementById("cardTitleInputField");
+  const cardTitleSpanField = document.getElementById("cardTitleSpanField");
+  cardTitleInputField.style.display = "block";
+  cardTitleSpanField.style.display = "none";
+  cardTitleInputField.value = cardTitleSpanField.innerHTML;
+
+  // Hide the span and display the input field
+  // Initialize the field with the current value
+  const cardDescriptionInputField = document.getElementById(
+    "cardDescriptionInputField",
+  );
+  const cardDescriptionSpanField = document.getElementById(
+    "cardDescriptionSpanField",
+  );
+  cardDescriptionInputField.style.display = "block";
+  cardDescriptionSpanField.style.display = "none";
+  cardDescriptionInputField.value = cardDescriptionSpanField.innerHTML;
+
+  // Hide the span and display the input field
+  // Initialize the field with the current value
+  const cardThumbnailInputField = document.getElementById(
+    "cardThumbnailInputField",
+  );
+  const cardThumbnailSpanField = document.getElementById(
+    "cardThumbnailSpanField",
+  );
+  cardThumbnailInputField.style.display = "block";
+  cardThumbnailSpanField.style.display = "none";
+  cardThumbnailInputField.value = cardThumbnailSpanField.innerHTML;
 }

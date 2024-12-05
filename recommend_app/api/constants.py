@@ -18,7 +18,8 @@ class ROUTES:
     # users
     REGISTER = "/users/new"
     ADD_USER = "/users/"
-    GET_USER = "/users/{user_id}"
+    SHOW_USER = "/users/{user_id}"
+    GET_USER = "/users/{user_id}?show_page=false"
     UPDATE_USER = "/users/{user_id}"
 
     # boards
@@ -32,6 +33,9 @@ class ROUTES:
     # cards
     CREATE_CARD = "/{board_id}/cards/new"
     ADD_CARD = "/boards/{board_id}/cards"
+    GET_CARD = "/cards/{card_id}?show_page=false"
+    UPDATE_CARD = "/cards/{card_id}"
+    DELETE_CARD = "/cards/{card_id}"
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 15

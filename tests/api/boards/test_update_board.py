@@ -33,7 +33,7 @@ async def test_update_public_board_right_user(api_client_with_boards):
     updated_response = await api_client.get(Key.ROUTES.GET_BOARD.format(board_id=created_board['id']))
     updated = updated_response.json()
 
-    assert updated['private']
+    assert updated['board']['private']
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_private_board_right_user(api_client_with_boards):
@@ -52,8 +52,8 @@ async def test_update_private_board_right_user(api_client_with_boards):
     updated_response = await api_client.get(Key.ROUTES.GET_BOARD.format(board_id=created_board['id']))
     updated = updated_response.json()
 
-    assert not updated['private']
-    assert updated['name'] == data.name
+    assert not updated['board']['private']
+    assert updated['board']['name'] == data.name
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_public_board_wrong_user(api_client_with_boards, with_different_user):

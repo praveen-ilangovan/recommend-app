@@ -126,4 +126,16 @@ async def api_client_with_boards(api_client, with_authenticated_user):
     response2 = await api_client.post(Key.ROUTES.ADD_BOARD, json=board2.model_dump())
     private_board = response2.json()
 
-    return {'api_client': api_client, 'public_board': public_board, 'private_board': private_board}
+    card1 = utils.create_card()
+    response3 = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = public_board['id']), json=card1.model_dump())
+    public_card = response3.json()
+
+    card2 = utils.create_card()
+    response4 = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = private_board['id']), json=card2.model_dump())
+    private_card = response4.json()
+
+    return {'api_client': api_client,
+            'public_board': public_board,
+            'private_board': private_board,
+            'card_in_public_board': public_card,
+            'card_in_private_board': private_card}

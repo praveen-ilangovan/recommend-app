@@ -10,6 +10,7 @@ from typing import Any
 
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
+from pydantic import BaseModel
 
 # Local imports
 from ...db.models.board import NewBoard, BoardInDb, UpdateBoard
@@ -24,6 +25,15 @@ from .. import auth, dependencies
 from ... import ui
 
 router = APIRouter()
+
+# -----------------------------------------------------------------------------#
+# Response Model
+# -----------------------------------------------------------------------------#
+
+
+class BoardWithCards(BaseModel):
+    board: BoardInDb
+    cards: list[CardInDb]
 
 
 # -----------------------------------------------------------------------------#
@@ -57,10 +67,12 @@ async def add_board(new_board: NewBoard, user: auth.REQUIRED_USER) -> BoardInDb:
     return board
 
 
-@router.get("/{board_id}", status_code=status.HTTP_200_OK, response_model=BoardInDb)
+@router.get(
+    "/{board_id}", status_code=status.HTTP_200_OK, response_model=BoardWithCards
+)
 async def get_board(
     request: Request, board_id: str, user: auth.OPTIONAL_USER, show_page: bool = True
-) -> ui.JinjaTemplateResponse | BoardInDb:
+) -> ui.JinjaTemplateResponse | BoardWithCards:
     try:
         owner_id = user.id if user else None
         board = await dependencies.get_db_client().get_board(board_id, owner_id)
@@ -76,7 +88,7 @@ async def get_board(
             name="board.html",
             context={"user": user, "board": board, "cards": cards},
         )
-    return board
+    return BoardWithCards(board=board, cards=cards)
 
 
 @router.put("/{board_id}", status_code=status.HTTP_204_NO_CONTENT)

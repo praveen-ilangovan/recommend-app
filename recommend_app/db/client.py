@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from .abstracts.abstract_db import AbstractRecommendDB
     from .models.user import NewUser, UserInDb, UpdateUser
     from .models.board import BoardInDb, UpdateBoard
-    from .models.card import CardInDb
+    from .models.card import CardInDb, UpdateCard
 
 
 class RecommendDbClient:
@@ -337,3 +337,35 @@ class RecommendDbClient:
         attr_dict: dict[str, Any] = {"board_id": board_id}
         cards = await self.__db.get_all(RecommendModelType.CARD, attr_dict)
         return cast(list["CardInDb"], cards)
+
+    async def update_card(self, card_id: str, update_data: "UpdateCard") -> "CardInDb":
+        """
+        Retrieve a card from the database by its unique identifier (UID) and
+        update its attributes
+
+        Args:
+            card_id (str): The unique identifier of the card.
+            update_data (UpdateCard): If the value is not None, then the card
+                is updated.
+
+        Returns:
+            Card: Card with the updated data
+
+        Raises:
+            `RecommendDBModelNotFound` if the board is not found
+            `RecommendAppDbError` if there is an issue in updating the model
+        """
+        result = await self.__db.update(card_id, update_data)
+        return cast("CardInDb", result)
+
+    async def remove_card(self, card_id: str) -> bool:
+        """
+        Remove a card from the database.
+
+        Args:
+            card_id (str): ID of the card to be removed.
+
+        Returns:
+            bool: True if the card was successfully removed, False otherwise.
+        """
+        return await self.__db.remove(RecommendModelType.CARD, card_id)

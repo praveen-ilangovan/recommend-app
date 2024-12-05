@@ -14,7 +14,7 @@ from pydantic import BaseModel, ConfigDict
 
 # Local imports
 from ..types import RecommendModelType
-from .bases import BaseNewRecommendModel, BaseRecommendModel
+from .bases import BaseNewRecommendModel, BaseRecommendModel, BaseUpdateRecommendModel
 
 # -----------------------------------------------------------------------------#
 # Attributes
@@ -124,6 +124,41 @@ class CardInDb(FullCardAttributes, BaseRecommendModel):
                 "description": "A movie about godzilla in netfilx.",
                 "thumbnail": "/link/to/img.jpg",
                 "board_id": "6744a0ddee62a60d03f06d99",
+            }
+        }
+    )
+
+    # -------------------------------------------------------------------------#
+    # Properties
+    # -------------------------------------------------------------------------#
+    @property
+    def model_type(self) -> RecommendModelType:
+        """
+        Returns the model type
+
+        Returns:
+            RecommendModelType: A string representing the type of the model
+                (e.g., 'User', 'Board', 'Card').
+        """
+        return RecommendModelType.CARD
+
+
+class UpdateCard(BaseCardAttributes, BaseUpdateRecommendModel):
+    """
+    Attributes in the card that can be updated by its owner
+
+    Args:
+        title (str): Title of the card.
+        description (str): A short description of what the card is about.
+        thumbnail (str): For now, a url. But think about storing them in a bucket.
+    """
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "title": "",
+                "description": "",
+                "thumbnail": "",
             }
         }
     )

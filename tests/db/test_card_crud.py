@@ -7,7 +7,7 @@ import pytest
 import pytest_asyncio
 
 # Local imports
-from recommend_app.db.models.card import CardInDb
+from recommend_app.db.models.card import CardInDb, UpdateCard
 from recommend_app.db.exceptions import RecommendDBModelCreationError, RecommendDBModelNotFound
 from .. import utils
 
@@ -105,3 +105,53 @@ async def test_get_all_cards_from_non_existent_board(db_client_with_user_and_boa
     db_client = db_client_with_user_and_boards['db_client']
     cards = await db_client.get_all_cards(['1234'])
     assert not cards
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_update_card_in_public_board(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+    pub_board = db_client_with_user_and_boards['pub_board']
+
+    new_card = utils.create_card()
+    card1 = await db_client.add_card(new_card, pub_board.id)
+
+    update_data = UpdateCard(title='UpdatedTitle')
+    card2 = await db_client.update_card(card1.id, update_data)
+    assert card2.title == update_data.title
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_update_card_in_private_board(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+    pvt_board = db_client_with_user_and_boards['pvt_board']
+
+    new_card = utils.create_card()
+    card1 = await db_client.add_card(new_card, pvt_board.id)
+
+    update_data = UpdateCard(title='UpdatedTitle', thumbnail='test thumbnail')
+    card2 = await db_client.update_card(card1.id, update_data)
+    assert card2.title == update_data.title
+    assert card2.thumbnail == update_data.thumbnail
+    assert card2.url == card1.url
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_update_invalid_card(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+
+    update_data = UpdateCard(title='UpdatedTitle', thumbnail='test thumbnail')
+    with pytest.raises(RecommendDBModelNotFound):
+        await db_client.update_card('1234', update_data)
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_remove_card(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+    pub_board = db_client_with_user_and_boards['pub_board']
+
+    new_card = utils.create_card()
+    card1 = await db_client.add_card(new_card, pub_board.id)
+    assert await db_client.remove_card(card1.id)
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_remove_invalid_card(db_client_with_user_and_boards):
+    db_client = db_client_with_user_and_boards['db_client']
+
+    with pytest.raises(RecommendDBModelNotFound):
+        await db_client.remove_card('1234')

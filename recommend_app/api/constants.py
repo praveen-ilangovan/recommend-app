@@ -33,6 +33,7 @@ class ROUTES:
     # cards
     CREATE_CARD = "/{board_id}/cards/new"
     ADD_CARD = "/boards/{board_id}/cards"
+    SHOW_CARD = "/cards/{card_id}"
     GET_CARD = "/cards/{card_id}?show_page=false"
     UPDATE_CARD = "/cards/{card_id}"
     DELETE_CARD = "/cards/{card_id}"

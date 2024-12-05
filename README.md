@@ -81,6 +81,8 @@ Application should start running @ http://127.0.0.1:8000/
     - [[GET] /boards/{board_id}/cards/new](http://127.0.0.1:8000/boards/{id}/cards/new) : Display the create card page
     - [[POST] /boards/{board_id}/cards](http://127.0.0.1:8000/boards/{id}/cards) : Creates a new card
     - [[GET] /cards/{card_id}](http://127.0.0.1:8000/cards/{id}) : Display the card
+    - [[PUT] /cards/{card_id}](http://127.0.0.1:8000/cards/{id}) : Update the card
+    - [[DELETE] /cards/{card_id}](http://127.0.0.1:8000/cards/{id}) : Delete the card
 
 ### DB backend
 

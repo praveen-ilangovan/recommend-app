@@ -111,17 +111,17 @@ async def main() -> None:
     # cards = await client.get_all_cards('67499a5c8412707ee0bbef94')
     # print(cards)
 
-    pub = '674e3244cdfd59b2f86deb1f'
-    pvt = '6749b1cbbe5aa922be16c31f'
-    # print (pub == pvt)
+    # pub = '674e3244cdfd59b2f86deb1f'
+    # pvt = '6749b1cbbe5aa922be16c31f'
+    # # print (pub == pvt)
 
-    card = create_card()
-    # Add same card to the same board.
-    res1 = await client.add_card(card, pub)
-    res2 = await client.add_card(card, pvt)
+    # card = create_card()
+    # # Add same card to the same board.
+    # res1 = await client.add_card(card, pub)
+    # res2 = await client.add_card(card, pvt)
 
-    print(res1)
-    print(res2)
+    # print(res1)
+    # print(res2)
 
     await client.disconnect()
 

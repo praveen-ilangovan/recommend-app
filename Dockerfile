@@ -18,11 +18,10 @@ RUN poetry install --without dev,docs --no-root && rm -rf $POETRY_CACHE_DIR
 
 # Install the app
 COPY recommend_app ./recommend_app
-COPY .env ./.env
 RUN poetry install --without dev,docs
 
 # Add venv/bin to path, so python could be loaded from there
 ENV VIRTUAL_ENV=./.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-ENTRYPOINT [ "/bin/bash" ]
+CMD ["poetry", "run", "app"]

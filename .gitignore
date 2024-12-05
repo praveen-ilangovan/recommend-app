@@ -172,3 +172,4 @@ cython_debug/
 async_typing.py
 Recommend_Models.txt
 test_app.py
+.env_docker

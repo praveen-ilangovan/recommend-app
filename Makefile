@@ -43,12 +43,12 @@ dbuild: ## Build a docker container
 
 .PHONY: drun
 drun: ## Run the docker container
-	@docker run --rm -it praveen/recommend-app
+	@docker run --rm -it --env-file=.env_docker -p 8000:8000 praveen/recommend-app
 
 ##################
 #####  RUN   #####
 .PHONY: run
-run: ## Run the app locally
+run: ## Run the app locallys
 	@poetry run py -m recommend_app
 
 ##################

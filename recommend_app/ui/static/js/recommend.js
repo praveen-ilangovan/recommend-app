@@ -274,7 +274,7 @@ if (createBoardForm) {
 function editBoardData(element) {
   // Hide the edit button and Display the update and cancel button
   const updateButton = document.getElementById("saveBoardDataButton");
-  const cancelButton = document.getElementBysId("cancelBoardDataButton");
+  const cancelButton = document.getElementById("cancelBoardDataButton");
   element.style.display = "none";
   updateButton.style.display = "inline";
   cancelButton.style.display = "inline";

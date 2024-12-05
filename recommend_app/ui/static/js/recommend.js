@@ -409,7 +409,8 @@ if (createCardForm) {
       } else {
         // Handle error
         const errorData = await response.json();
-        alert(`Error: ${errorData.message}`);
+        console.log(errorData);
+        alert(`Error: ${errorData.detail.error}`);
       }
     } catch (error) {
       console.error("Error:", error);

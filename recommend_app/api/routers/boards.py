@@ -64,6 +64,7 @@ async def get_board(
     try:
         owner_id = user.id if user else None
         board = await dependencies.get_db_client().get_board(board_id, owner_id)
+        cards = await dependencies.get_db_client().get_all_cards(board_id)
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
@@ -71,7 +72,9 @@ async def get_board(
 
     if show_page:
         return ui.show_page(
-            request=request, name="board.html", context={"user": user, "board": board}
+            request=request,
+            name="board.html",
+            context={"user": user, "board": board, "cards": cards},
         )
     return board
 

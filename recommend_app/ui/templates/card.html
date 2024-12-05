@@ -1,0 +1,43 @@
+{% include 'layout.html' %}
+
+<div class="container">
+  <!-- Content here -->
+
+  <div>
+    <h3>Card Information</h3>
+    {% if card %}
+    <table class="table" style="width: 400px">
+      <thead>
+        <tr>
+          <th scope="col">Key</th>
+          <th scope="col">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Title</td>
+          <td>{{ card.title }}</td>
+        </tr>
+        <tr>
+          <td>URL</td>
+          <td>{{ card.url }}</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>{{ card.description }}</td>
+        </tr>
+        <tr>
+          <td>Thumbnail</td>
+          <td>{{ card.thumbnail }}</td>
+        </tr>
+      </tbody>
+    </table>
+    {% endif %}
+
+    <div>
+      <a class="btn btn-secondary" href="/boards/{{ board.id }}" role="button"
+        >Back to board</a
+      >
+    </div>
+  </div>
+</div>

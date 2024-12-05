@@ -44,7 +44,40 @@
   </div>
 
   <h3>My Cards</h3>
-  {% if cards %} {% endif %}
+  {% if cards %}
+  <table class="table" style="width: 400px">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">URL</th>
+        <th scope="col">Description</th>
+        <th scope="col">Thumbnail</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in cards %}
+      <tr>
+        <td>
+          <input type="text" style="display: none" />
+          <span style="display: none">{{ card.title }}</span>
+          <a class="link-opacity-100-hover" href="/cards/{{ card.id }}"
+            >{{ card.title }}</a
+          >
+        </td>
+        <td>
+          <span>{{ card.url }}</span>
+        </td>
+        <td>
+          <span>{{ card.description }}</span>
+        </td>
+        <td>
+          <span>{{ card.thumbnail }}</span>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
   <a
     class="btn btn-primary"
     href="/boards/{{ board.id }}/cards/new"

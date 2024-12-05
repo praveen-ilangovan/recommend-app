@@ -322,7 +322,7 @@ async function updateBoardData(board_id) {
     } else {
       // Handle error
       const errorData = await response.json();
-      alert(`Error: ${errorData.message}`);
+      alert(`Error: ${errorData.detail.error}`);
     }
   } catch (error) {
     console.error("Error:", error);
@@ -441,4 +441,56 @@ function editCardData(element) {
   cardThumbnailInputField.style.display = "block";
   cardThumbnailSpanField.style.display = "none";
   cardThumbnailInputField.value = cardThumbnailSpanField.innerHTML;
+}
+
+async function updateCardData(card_id) {
+  const payload = {
+    title: document.getElementById("cardTitleInputField").value,
+    description: document.getElementById("cardDescriptionInputField").value,
+    thumbnail: document.getElementById("cardThumbnailInputField").value,
+  };
+
+  const url = "/cards/" + card_id;
+
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      window.location.href = "";
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.detail.error}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+}
+
+async function deleteCard(card_id) {
+  const url = "/cards/" + card_id;
+
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      window.location.href = "/me/";
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.message}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
 }

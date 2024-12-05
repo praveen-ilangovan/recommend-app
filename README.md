@@ -31,16 +31,17 @@ framework (React probably)
  - Clone the repo
  - CD into it.
 
-### Environment
+### Running locally
 
  - Create a .env file inside the repo.
  - It must have the keys listed in [env_example.txt](env_example.txt)
+ - Make sure the values are wrapped within double quotes
 
 ```sh
 DB_URL=""
 DB_USER_ID=""
 DB_PASSWORD=""
-DB_NAME=""
+DB_NAME="RecommendDB"
 PORT="8000"
 ```
 
@@ -49,6 +50,32 @@ PORT="8000"
 ```sh
 make install
 poetry run app
+```
+
+### Running inside a container
+
+ - Create a .env_docker file inside the repo.
+ - It must have the keys listed in [env_docker_example](env_doker_example)
+ - Make sure the values are not wrapped within quotes
+
+```sh
+DB_URL=
+DB_USER_ID=
+DB_PASSWORD=
+DB_NAME=RecommendDB
+PORT=8000
+```
+
+ - Run these commands
+
+```sh
+make dbuild
+make drun
+
+(or)
+
+docker build -t praveen/recommend-app .
+docker run --rm -it --env-file=.env_docker -p 8000:8000 praveen/recommend-app
 ```
 
 Application should start running @ http://127.0.0.1:8000/

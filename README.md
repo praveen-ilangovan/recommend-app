@@ -55,7 +55,7 @@ poetry run app
 ### Running inside a container
 
  - Create a .env_docker file inside the repo.
- - It must have the keys listed in [env_docker_example](env_doker_example)
+ - It must have the keys listed in [.env_docker_example](.env_docker_example)
  - Make sure the values are not wrapped within quotes
 
 ```sh

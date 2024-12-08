@@ -16,7 +16,7 @@ from ..db import create_client
 from ..db.exceptions import RecommendDBConnectionError
 from .. import ui
 from . import auth, dependencies, exceptions
-from .routers import session, users, boards, me, cards
+from .routers import session, users, boards, me, cards, scrapper
 
 
 if TYPE_CHECKING:
@@ -58,6 +58,7 @@ app.include_router(session.router, tags=["Session"], prefix="/session")
 app.include_router(boards.router, tags=["Boards"], prefix="/boards")
 app.include_router(me.router, tags=["Me"], prefix="/me")
 app.include_router(cards.router, tags=["Cards"], prefix="/cards")
+app.include_router(scrapper.router, tags=["Scrapper"], prefix="/scrapper")
 
 ui.mount_static_files(app)
 

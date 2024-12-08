@@ -12,22 +12,26 @@
                   Create a new card
                 </p>
 
-                <form class="form-inline">
+                <div class="input-group mb-3">
                   <input
                     type="text"
-                    class="form-control"
                     id="scrapURLField"
-                    placeholder="URL"
+                    class="form-control"
+                    placeholder="Enter the url to extract data"
+                    aria-label="Recipient's username"
+                    aria-describedby="basic-addon2"
                   />
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    id="scrapURLButton"
-                    onclick="scrapURLData(this)"
-                  >
-                    Extract
-                  </button>
-                </form>
+                  <div class="input-group-append">
+                    <button
+                      class="btn btn-outline-primary"
+                      type="button"
+                      id="scrapURLButton"
+                      onclick="scrapURLData(this)"
+                    >
+                      Extract
+                    </button>
+                  </div>
+                </div>
 
                 <form class="mx-1 mx-md-4" id="createCardForm">
                   <input

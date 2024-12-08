@@ -111,6 +111,9 @@ Application should start running @ http://127.0.0.1:8000/
     - [[PUT] /cards/{card_id}](http://127.0.0.1:8000/cards/{id}) : Update the card
     - [[DELETE] /cards/{card_id}](http://127.0.0.1:8000/cards/{id}) : Delete the card
 
+ * Scrapper
+    - [[GET] /scrapper/?url={url}](http://127.0.0.1:8000/scrapper/?url={url}) : Scraps the data from the URL
+
 ### DB backend
 
 ```python

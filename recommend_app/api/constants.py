@@ -38,5 +38,8 @@ class ROUTES:
     UPDATE_CARD = "/cards/{card_id}"
     DELETE_CARD = "/cards/{card_id}"
 
+    # scrapper
+    SCRAP = "/scrapper/?url={url}"
+
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 15

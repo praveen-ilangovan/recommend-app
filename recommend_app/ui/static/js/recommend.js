@@ -494,3 +494,33 @@ async function deleteCard(card_id) {
     alert("An error occurred. Please try again.");
   }
 }
+
+/*
+Scrap
+*/
+
+async function scrapURLData(element) {
+  const url = document.getElementById("scrapURLField").value;
+  const scrap_endpoint = "/scrapper/?url=" + url;
+
+  try {
+    const response = await fetch(scrap_endpoint);
+
+    if (response.ok) {
+      // Fill the form
+      const card = await response.json();
+
+      document.getElementById("url").value = card["url"];
+      document.getElementById("title").value = card["title"];
+      document.getElementById("description").value = card["description"];
+      document.getElementById("thumbnail").value = card["thumbnail"];
+    } else {
+      // Handle error
+      const errorData = await response.json();
+      alert(`Error: ${errorData.detail.error}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred. Please try again.");
+  }
+}

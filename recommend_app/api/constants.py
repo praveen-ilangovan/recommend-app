@@ -41,5 +41,9 @@ class ROUTES:
     # scrapper
     SCRAP = "/scrapper/?url={url}"
 
+    # extension
+    CREATE_TOKEN = "/extension/token"
+    GET_VERIFIED_USER = "/extension/token"
+
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 15

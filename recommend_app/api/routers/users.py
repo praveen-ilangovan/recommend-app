@@ -116,10 +116,3 @@ async def update_user(
     # Access token has information about the user.
     authorised_user = auth.AuthenticatedUser.from_dbuser(updated)
     return auth.create_access_token_set_cookie(authorised_user)
-
-    # access_token_expires = timedelta(minutes=constants.ACCESS_TOKEN_EXPIRE_MINUTES)
-    # token = auth.create_access_token(authorised_user, access_token_expires)
-    # response = JSONResponse({"status": "authenticated"})
-    # response.set_cookie(token.name, token.access_token, httponly=True, secure=True)
-
-    # return response

@@ -44,6 +44,7 @@ class ROUTES:
     # extension
     CREATE_TOKEN = "/extension/token"
     GET_VERIFIED_USER = "/extension/token"
+    ADD_CARD_FROM_EXTN = "extension/{board_id}/cards"
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 15

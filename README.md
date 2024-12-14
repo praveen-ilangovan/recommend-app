@@ -8,15 +8,6 @@ Users can create customizable boards, where each board holds multiple cards repr
 
 - **Github repository**: <https://github.com/praveen-ilangovan/recommend-app/>
 
-## UNDER ACTIVE DEVELOPMENT
-
-![alt text](resources/under_construction.jpg)
-
-Rethinking the whole idea as a Full Stack App. Gonna rebuild it and this time
-parallely working on the API and FE too. This attempt, FE is gonna be written
-using Jinja templates. But it will eventually be rewritten using a proper 
-framework (React probably)
-
 ## Tech
 
  - Python
@@ -24,7 +15,7 @@ framework (React probably)
  - MongoDB
  - Beanie ODM
  - FastAPI
- - Jinja2 (eventually will be replaced by React)
+ - Jinja2
 
 ## Quickstart
 
@@ -165,3 +156,12 @@ commands
 make check
 make test
 ```
+
+## Chrome Extension
+
+To add the url of the curret tab in your chrome browser as a card to a board, you could use this [extension](https://github.com/praveen-ilangovan/recommend-app-chrome-extension). You should have the app running locally for the extension to work.
+
+## Next steps
+
+ - Redesign UI with React
+ - Deploy the code

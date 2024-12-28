@@ -7,25 +7,19 @@ from typing import Union, Optional
 
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
-from pydantic import BaseModel
 
 # Local imports
 from ... import ui
 from ...db.exceptions import RecommendDBModelNotFound, RecommendAppDbError
-from ...db.models.board import BoardInDb
 from ...db.models.card import CardInDb, UpdateCard
 from .. import auth, dependencies
+from ..models import BoardAndCard
 
 router = APIRouter()
 
 # -----------------------------------------------------------------------------#
 # Function
 # -----------------------------------------------------------------------------#
-
-
-class BoardAndCard(BaseModel):
-    board: BoardInDb
-    card: CardInDb
 
 
 async def get_board_and_card(card_id: str, user_id: Optional[str]) -> BoardAndCard:

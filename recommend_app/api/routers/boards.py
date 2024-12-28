@@ -10,7 +10,6 @@ from typing import Any
 
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
-from pydantic import BaseModel
 
 # Local imports
 from ...db.models.board import NewBoard, BoardInDb, UpdateBoard
@@ -22,18 +21,10 @@ from ...db.exceptions import (
     RecommendAppDbError,
 )
 from .. import auth, dependencies
+from ..models import BoardWithCards
 from ... import ui
 
 router = APIRouter()
-
-# -----------------------------------------------------------------------------#
-# Response Model
-# -----------------------------------------------------------------------------#
-
-
-class BoardWithCards(BaseModel):
-    board: BoardInDb
-    cards: list[CardInDb]
 
 
 # -----------------------------------------------------------------------------#

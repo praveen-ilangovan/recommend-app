@@ -61,14 +61,14 @@ def reissue_token(request: Request) -> AuthenticatedUserWithToken:
             detail={"error": "Please sign in again."},
         )
 
-    data = json.loads(data)
-    access_token = data["access_token"]
+    loaded_data = json.loads(data) or {}
+    access_token = loaded_data.get("access_token", "")
     user = auth._decode_token(access_token)
     if not user:
         # Token has expired. Try refreshing this using the user data
 
-        del data["access_token"]
-        user = auth.AuthenticatedUser(**data)
+        del loaded_data["access_token"]
+        user = auth.AuthenticatedUser(**loaded_data)
         access_token_expires = timedelta(minutes=constants.ACCESS_TOKEN_EXPIRE_MINUTES)
         token = auth.create_access_token(user, access_token_expires)
         access_token = token.access_token

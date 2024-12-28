@@ -49,6 +49,8 @@ async def get_token_from_header(request: Request) -> Optional[str]:
     if credentials[1] and credentials[1] != "undefined":
         return credentials[1]
 
+    return None
+
 
 def get_token_from_cookie(request: Request, cookie_name: str) -> Optional[str]:
     """

@@ -15,29 +15,19 @@ from typing import Union
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
 from fastapi.responses import RedirectResponse, JSONResponse
-from pydantic import BaseModel
 
 # Local imports
 from ...db.models.user import NewUser, UserInDb, UpdateUser
-from ...db.models.board import BoardInDb
 from ...db.exceptions import (
     RecommendDBModelCreationError,
     RecommendAppDbError,
     RecommendDBModelNotFound,
 )
 from .. import dependencies, auth, constants
+from ..models import UserWithBoards
 from ... import ui
 
 router = APIRouter()
-
-# -----------------------------------------------------------------------------#
-# Response Model
-# -----------------------------------------------------------------------------#
-
-
-class UserWithBoards(BaseModel):
-    user: UserInDb
-    boards: list[BoardInDb]
 
 
 # -----------------------------------------------------------------------------#

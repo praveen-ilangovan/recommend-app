@@ -73,7 +73,7 @@ async def show_user_page(
     show_page: bool = True,
 ) -> Union[RedirectResponse, ui.JinjaTemplateResponse, UserWithBoards]:
     if user and requested_user_id == user.id:
-        return RedirectResponse(constants.ROUTES.ME)
+        return RedirectResponse(constants.ROUTES.SHOW_ME)
 
     try:
         requested_user = await dependencies.get_db_client().get_user(requested_user_id)

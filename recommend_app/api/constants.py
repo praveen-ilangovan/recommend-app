@@ -8,7 +8,8 @@ class ROUTES:
     HEALTH = "/health"
 
     # me
-    ME = "/me/"
+    SHOW_ME = "/me/"
+    ME = "/me/?show_page=false"
 
     # session
     LOGIN = "/session/new"

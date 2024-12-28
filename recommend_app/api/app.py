@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 # Project specific imports
 from fastapi import FastAPI, status, Request
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 # Local imports
 from ..db import create_client
@@ -62,6 +63,17 @@ app.include_router(scrapper.router, tags=["Scrapper"], prefix="/scrapper")
 app.include_router(extension.router, tags=["Extension"], prefix="/extension")
 
 ui.mount_static_files(app)
+
+# Middleware
+origins = ["http://localhost:5173", "localhost:5173"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # -----------------------------------------------------------------------------#
 # Routes

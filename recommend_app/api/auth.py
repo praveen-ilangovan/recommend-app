@@ -27,6 +27,36 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------#
 # OAUTH extensions
 # -----------------------------------------------------------------------------#
+async def get_token_from_header(request: Request) -> Optional[str]:
+    """
+    Grab the authorization key from the request header. Check if it has
+    Bearer scheme credential and if so, return the token.
+
+    Args:
+        request (Request): The incoming request
+
+    Returns:
+        Return the token if there is valid crentional if not returns None
+    """
+    value = request.headers.get("Authorization")
+    if not value:
+        return None
+
+    credentials = value.split()
+    if not credentials or len(credentials) != 2 or credentials[0] != "Bearer":
+        return None
+
+    if credentials[1] and credentials[1] != "undefined":
+        return credentials[1]
+
+
+def get_token_from_cookie(request: Request, cookie_name: str) -> Optional[str]:
+    """
+    Grab the access token from the cookies.
+    """
+    return request.cookies.get(cookie_name)
+
+
 class OAuth2PasswordCookie(OAuth2PasswordBearer):
     """
     OAuth2 password flow with token in a httpOnly cookie
@@ -50,7 +80,10 @@ class OAuth2PasswordCookie(OAuth2PasswordBearer):
         Raises:
             HTTPException: 403 error if no token cookie is present.
         """
-        return request.cookies.get(self.__token_name)
+        token = await get_token_from_header(request)
+        if token:
+            return token
+        return get_token_from_cookie(request, self.__token_name)
 
 
 # -----------------------------------------------------------------------------#
@@ -61,7 +94,6 @@ ALGORITHM = "HS256"
 OAUTH2_SCHEME = OAuth2PasswordCookie(
     tokenUrl="session", auto_error=False, token_name="access_token"
 )
-
 
 # -----------------------------------------------------------------------------#
 # Models

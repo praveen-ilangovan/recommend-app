@@ -33,7 +33,7 @@ if (registerForm) {
       });
 
       if (response.ok) {
-        window.location.href = "/session/new";
+        window.location.href = "/internal/session/new";
       } else {
         // Handle error
         const errorData = await response.json();
@@ -61,7 +61,7 @@ if (loginForm) {
     }
 
     try {
-      const response = await fetch("/session/", {
+      const response = await fetch("/session/?set_cookie=true", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -72,7 +72,7 @@ if (loginForm) {
       if (response.ok) {
         // Handle success (e.g., redirect to dashboard)
         const data = await response.json();
-        window.location.href = "/me/";
+        window.location.href = "/internal/";
       } else {
         // Handle error
         const errorData = await response.json();
@@ -93,7 +93,7 @@ async function logout() {
     });
 
     if (response.ok) {
-      window.location.href = "/session/new";
+      window.location.href = "/internal/session/new";
     } else {
       // Handle error
       const errorData = await response.json();
@@ -258,7 +258,7 @@ if (createBoardForm) {
       });
 
       if (response.ok) {
-        window.location.href = "/me/";
+        window.location.href = "/internal/";
       } else {
         // Handle error
         const errorData = await response.json();
@@ -339,7 +339,7 @@ async function deleteBoard(board_id) {
     });
 
     if (response.ok) {
-      window.location.href = "/me/";
+      window.location.href = "/internal/";
     } else {
       // Handle error
       const errorData = await response.json();
@@ -374,7 +374,7 @@ if (createCardForm) {
     };
 
     const url = "/boards/" + board_id + "/cards";
-    const redirect = "/boards/" + board_id;
+    const redirect = "/internal/boards/" + board_id;
 
     console.log(payload);
 
@@ -483,7 +483,7 @@ async function deleteCard(card_id) {
     });
 
     if (response.ok) {
-      window.location.href = "/me/";
+      window.location.href = "/internal/";
     } else {
       // Handle error
       const errorData = await response.json();

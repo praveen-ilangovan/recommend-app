@@ -3,13 +3,12 @@ Get, Update and Remove card!!
 """
 
 # Builtin imports
-from typing import Union, Optional
+from typing import Optional
 
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
 
 # Local imports
-from ... import ui
 from ...db.exceptions import RecommendDBModelNotFound, RecommendAppDbError
 from ...db.models.card import CardInDb, UpdateCard
 from .. import auth, dependencies
@@ -53,8 +52,8 @@ async def get_board_and_card(card_id: str, user_id: Optional[str]) -> BoardAndCa
 # -----------------------------------------------------------------------------#
 @router.get("/{card_id}", status_code=status.HTTP_200_OK, response_model=CardInDb)
 async def get_card(
-    request: Request, card_id: str, user: auth.OPTIONAL_USER, show_page: bool = True
-) -> Union[ui.JinjaTemplateResponse, CardInDb]:
+    request: Request, card_id: str, user: auth.OPTIONAL_USER
+) -> CardInDb:
     owner_id = user.id if user else None
     models = await get_board_and_card(card_id, owner_id)
 
@@ -65,12 +64,6 @@ async def get_card(
             detail={"error": "Card belongs to a private board."},
         )
 
-    if show_page:
-        return ui.show_page(
-            request=request,
-            name="card.html",
-            context={"user": user, "board": models.board, "card": models.card},
-        )
     return models.card
 
 

@@ -9,9 +9,6 @@ users
 
 """
 
-# Builtin imports
-from typing import Union
-
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
 from fastapi.responses import RedirectResponse, JSONResponse
@@ -25,7 +22,6 @@ from ...db.exceptions import (
 )
 from .. import dependencies, auth, constants
 from ..models import UserWithBoards
-from ... import ui
 
 router = APIRouter()
 
@@ -33,12 +29,6 @@ router = APIRouter()
 # -----------------------------------------------------------------------------#
 # Routes
 # -----------------------------------------------------------------------------#
-@router.get("/new")
-async def show_register_page(request: Request) -> ui.JinjaTemplateResponse:
-    """
-    Displays the register page for users to create a new account
-    """
-    return ui.show_page(request=request, name="register.html")
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserInDb)
@@ -56,14 +46,11 @@ async def add_user(new_user: NewUser) -> UserInDb:
     status_code=status.HTTP_200_OK,
     response_model=UserWithBoards,
 )
-async def show_user_page(
-    request: Request,
-    requested_user_id: str,
-    user: auth.OPTIONAL_USER,
-    show_page: bool = True,
-) -> Union[RedirectResponse, ui.JinjaTemplateResponse, UserWithBoards]:
+async def get_user(
+    request: Request, requested_user_id: str, user: auth.OPTIONAL_USER
+) -> RedirectResponse | UserWithBoards:
     if user and requested_user_id == user.id:
-        return RedirectResponse(constants.ROUTES.SHOW_ME)
+        return RedirectResponse(constants.ROUTES.INTERNAL_LANDING)
 
     try:
         requested_user = await dependencies.get_db_client().get_user(requested_user_id)
@@ -73,13 +60,6 @@ async def show_user_page(
     except RecommendDBModelNotFound as err:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail={"error": err.message}
-        )
-
-    if show_page:
-        return ui.show_page(
-            request=request,
-            name="user.html",
-            context={"user": user, "requested_user": requested_user, "boards": boards},
         )
 
     return UserWithBoards(user=requested_user, boards=boards)

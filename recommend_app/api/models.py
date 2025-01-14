@@ -16,6 +16,10 @@ from .auth import AuthenticatedUser
 # -----------------------------------------------------------------------------#
 
 
+class AuthenticatedUserWithToken(AuthenticatedUser):
+    access_token: str
+
+
 class AuthUserWithBoards(BaseModel):
     user: AuthenticatedUser
     boards: list[BoardInDb]

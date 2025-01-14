@@ -5,9 +5,6 @@ boards
     POST    /boards              - Add a new board to the db
 """
 
-# Builtin imports
-from typing import Any
-
 # Project specific imports
 from fastapi import APIRouter, status, HTTPException, Request
 
@@ -22,7 +19,6 @@ from ...db.exceptions import (
 )
 from .. import auth, dependencies
 from ..models import BoardWithCards
-from ... import ui
 
 router = APIRouter()
 
@@ -30,17 +26,6 @@ router = APIRouter()
 # -----------------------------------------------------------------------------#
 # Routes
 # -----------------------------------------------------------------------------#
-@router.get("/new")
-async def show_create_board_page(
-    request: Request, user: auth.REQUIRED_USER
-) -> ui.JinjaTemplateResponse:
-    """
-    Displays the page for users to create a new board
-    """
-    context: dict[str, Any] = {}
-    if user:
-        context["user"] = user
-    return ui.show_page(request=request, name="boardForm.html", context=context)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=BoardInDb)
@@ -62,8 +47,8 @@ async def add_board(new_board: NewBoard, user: auth.REQUIRED_USER) -> BoardInDb:
     "/{board_id}", status_code=status.HTTP_200_OK, response_model=BoardWithCards
 )
 async def get_board(
-    request: Request, board_id: str, user: auth.OPTIONAL_USER, show_page: bool = True
-) -> ui.JinjaTemplateResponse | BoardWithCards:
+    request: Request, board_id: str, user: auth.OPTIONAL_USER
+) -> BoardWithCards:
     try:
         owner_id = user.id if user else None
         board = await dependencies.get_db_client().get_board(board_id, owner_id)
@@ -73,12 +58,6 @@ async def get_board(
     except RecommendAppDbError as err:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
 
-    if show_page:
-        return ui.show_page(
-            request=request,
-            name="board.html",
-            context={"user": user, "board": board, "cards": cards},
-        )
     return BoardWithCards(board=board, cards=cards)
 
 
@@ -135,17 +114,6 @@ async def remove_board(board_id: str, user: auth.REQUIRED_USER):
 # -----------------------------------------------------------------------------#
 # Routes: Cards
 # -----------------------------------------------------------------------------#
-
-
-@router.get("/{board_id}/cards/new")
-async def show_create_card_page(
-    request: Request, board_id: str, user: auth.REQUIRED_USER
-) -> ui.JinjaTemplateResponse:
-    """
-    Displays the page for users to create a new board
-    """
-    context = {"user": user, "board_id": board_id}
-    return ui.show_page(request=request, name="cardForm.html", context=context)
 
 
 @router.post(

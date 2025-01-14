@@ -8,34 +8,30 @@ class ROUTES:
     HEALTH = "/health"
 
     # me
-    SHOW_ME = "/me/"
-    ME = "/me/?show_page=false"
+    ME = "/me/"
 
     # session
-    LOGIN = "/session/new"
     CREATE_SESSION = "/session/"
+    CREATE_SESSION_WITH_COOKIE = "/session/?set_cookie=true"
     LOGOUT = "/session/"
 
     # users
-    REGISTER = "/users/new"
     ADD_USER = "/users/"
     SHOW_USER = "/users/{user_id}"
-    GET_USER = "/users/{user_id}?show_page=false"
+    GET_USER = "/users/{user_id}"
     UPDATE_USER = "/users/{user_id}"
 
     # boards
-    CREATE_BOARD = "/boards/new"
     ADD_BOARD = "/boards/"
     SHOW_BOARD = "/boards/{board_id}"
-    GET_BOARD = "/boards/{board_id}?show_page=false"
+    GET_BOARD = "/boards/{board_id}"
     UPDATE_BOARD = "/boards/{board_id}"
     DELETE_BOARD = "/boards/{board_id}"
 
     # cards
-    CREATE_CARD = "/{board_id}/cards/new"
     ADD_CARD = "/boards/{board_id}/cards"
     SHOW_CARD = "/cards/{card_id}"
-    GET_CARD = "/cards/{card_id}?show_page=false"
+    GET_CARD = "/cards/{card_id}"
     UPDATE_CARD = "/cards/{card_id}"
     DELETE_CARD = "/cards/{card_id}"
 
@@ -47,5 +43,12 @@ class ROUTES:
     GET_VERIFIED_USER = "/extension/token"
     ADD_CARD_FROM_EXTN = "extension/{board_id}/cards"
 
+    # Internal
+    INTERNAL_LANDING = "/internal/"
+    INTERNAL_REGISTER = "/internal/users/new"
+    INTERNAL_LOGIN = "/internal/session/new"
+    INTERNAL_CREATE_BOARD = "internal/boards/new"
+    INTERNAL_CREATE_CARD = "/internal/boards/{board_id}/cards/new"
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
+
+ACCESS_TOKEN_EXPIRE_MINUTES = 1

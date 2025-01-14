@@ -89,7 +89,7 @@
       {% for card in cards %}
       <tr>
         <td>
-          <a class="link-opacity-100-hover" href="/cards/{{ card.id }}"
+          <a class="link-opacity-100-hover" href="/internal/cards/{{ card.id }}"
             >{{ card.title }}</a
           >
         </td>
@@ -103,7 +103,7 @@
   {% endif %}
   <a
     class="btn btn-primary"
-    href="/boards/{{ board.id }}/cards/new"
+    href="/internal/boards/{{ board.id }}/cards/new"
     role="button"
     >Create a new card</a
   >

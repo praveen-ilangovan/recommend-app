@@ -44,7 +44,7 @@ async def show_landing_page(
     )
 
 
-@router.get("/health", tags=["Root"], status_code=status.HTTP_200_OK)
+@router.get("/health", status_code=status.HTTP_200_OK)
 async def show_health(
     request: Request, user: auth.OPTIONAL_USER
 ) -> ui.JinjaTemplateResponse:
@@ -97,7 +97,7 @@ async def show_login_page(request: Request) -> ui.JinjaTemplateResponse:
 @router.get("/users/{requested_user_id}", status_code=status.HTTP_200_OK)
 async def show_user_page(
     request: Request, requested_user_id: str, user: auth.OPTIONAL_USER
-) -> ui.JinjaTemplateResponse:
+):
     if user and requested_user_id == user.id:
         return RedirectResponse(constants.ROUTES.INTERNAL_LANDING)
 

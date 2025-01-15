@@ -42,7 +42,7 @@ def test_access_token(authenticated_user):
     assert token.name == auth.OAUTH2_SCHEME.token_name
 
     user = auth._decode_token(token.access_token)
-    assert user == authenticated_user
+    assert user.email_address == authenticated_user.email_address
 
 def test_invalid_access_token():
     user = auth._decode_token("MyInvalidAccessToken")

@@ -4,19 +4,17 @@ FastAPI
 
 # Builtin imports
 from contextlib import asynccontextmanager
-import importlib.metadata
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 # Project specific imports
-from fastapi import FastAPI, status, Request
+from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 # Local imports
 from ..db import create_client
-from ..db.exceptions import RecommendDBConnectionError
 from .. import ui
-from . import auth, dependencies, exceptions
+from . import dependencies, exceptions
 from .routers import session, users, boards, me, cards, scrapper, extension, internal
 
 
@@ -89,27 +87,3 @@ async def requires_login(request: Request, _: Exception):
     """
     # return RedirectResponse(f"/session/new?next={quote(request.url._url)}")
     return RedirectResponse("/internal/session/new")
-
-
-@app.get("/health", tags=["Root"], status_code=status.HTTP_200_OK)
-async def show_health(
-    request: Request, user: auth.OPTIONAL_USER
-) -> ui.JinjaTemplateResponse:
-    """
-    Gives the health status of the connection
-    """
-    try:
-        status = await dependencies.get_db_client().ping()
-    except RecommendDBConnectionError:
-        status = None
-
-    report = [
-        {"key": "App Version", "value": importlib.metadata.version("recommend_app")},
-        {"key": "DB Client", "value": "active" if status else "inactive"},
-        {"key": "User", "value": "Authenticated" if user else "Unauthenticated"},
-    ]
-
-    context: dict[str, Any] = {"report": report}
-    if user:
-        context["user"] = user
-    return ui.show_page(request=request, name="health.html", context=context)

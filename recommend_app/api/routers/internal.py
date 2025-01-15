@@ -4,6 +4,7 @@ Internal routes to render jinja templates
 
 # Builtin imports
 from typing import Any
+import importlib.metadata
 
 # Project specific imports
 from fastapi import APIRouter, Request, status, HTTPException
@@ -15,6 +16,7 @@ from .. import auth, dependencies, constants
 from ... import ui
 
 from ...db.exceptions import (
+    RecommendDBConnectionError,
     RecommendDBModelNotFound,
     RecommendAppDbError,
 )
@@ -40,6 +42,30 @@ async def show_landing_page(
         name="landing.html",
         context={"user": user, "boards": boards},
     )
+
+
+@router.get("/health", tags=["Root"], status_code=status.HTTP_200_OK)
+async def show_health(
+    request: Request, user: auth.OPTIONAL_USER
+) -> ui.JinjaTemplateResponse:
+    """
+    Gives the health status of the connection
+    """
+    try:
+        status = await dependencies.get_db_client().ping()
+    except RecommendDBConnectionError:
+        status = None
+
+    report = [
+        {"key": "App Version", "value": importlib.metadata.version("recommend_app")},
+        {"key": "DB Client", "value": "active" if status else "inactive"},
+        {"key": "User", "value": "Authenticated" if user else "Unauthenticated"},
+    ]
+
+    context: dict[str, Any] = {"report": report}
+    if user:
+        context["user"] = user
+    return ui.show_page(request=request, name="health.html", context=context)
 
 
 # -----------------------------------------------------------------------------#

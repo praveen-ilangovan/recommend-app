@@ -5,7 +5,6 @@ Constants
 
 class ROUTES:
     # root
-    HEALTH = "/health"
 
     # me
     ME = "/me/"
@@ -49,6 +48,7 @@ class ROUTES:
     INTERNAL_LOGIN = "/internal/session/new"
     INTERNAL_CREATE_BOARD = "internal/boards/new"
     INTERNAL_CREATE_CARD = "/internal/boards/{board_id}/cards/new"
+    INTERNAL_HEALTH = "/internal/health"
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 1

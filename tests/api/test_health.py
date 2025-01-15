@@ -16,5 +16,5 @@ from recommend_app.api import constants as Key
 #-----------------------------------------------------------------------------#
 @pytest.mark.asyncio(loop_scope="session")
 async def test_show_health(api_client):
-    response = await api_client.get(Key.ROUTES.HEALTH)
+    response = await api_client.get(Key.ROUTES.INTERNAL_HEALTH)
     assert response.status_code == status.HTTP_200_OK

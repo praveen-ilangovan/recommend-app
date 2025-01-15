@@ -115,6 +115,7 @@ class AuthenticatedUser(BaseModel):
     user_name: str
     first_name: str
     last_name: str
+    access_token: Optional[str] = None
 
     # -------------------------------------------------------------------------#
     # Methods
@@ -223,6 +224,7 @@ def _decode_token(token: str) -> Optional[AuthenticatedUser]:
 
     # Convert payload to an authenticated user
     authenticate_user = AuthenticatedUser.from_payload(payload)
+    authenticate_user.access_token = token
     return authenticate_user
 
 

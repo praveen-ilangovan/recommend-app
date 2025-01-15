@@ -12,7 +12,7 @@ RUN pip install poetry==1.8.3
 WORKDIR /app
 
 # Install app dependencies
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml ./
 RUN touch README.md
 RUN poetry install --without dev,docs --no-root && rm -rf $POETRY_CACHE_DIR
 

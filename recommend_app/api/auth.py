@@ -7,7 +7,7 @@ from typing import Any, Optional, Annotated, TYPE_CHECKING
 from datetime import datetime, timezone, timedelta
 
 # Project specific imports
-from fastapi import Depends, Request
+from fastapi import Depends, Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
@@ -18,7 +18,6 @@ from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 from . import dependencies, constants
 from ..db.exceptions import RecommendAppDbError, RecommendDBModelNotFound
 from ..db.hashing import Hasher
-from .exceptions import RecommendAppRequiresLogin
 
 if TYPE_CHECKING:
     from ..db.models.user import UserInDb
@@ -27,7 +26,9 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------#
 # OAUTH extensions
 # -----------------------------------------------------------------------------#
-async def get_token_from_header(request: Request) -> Optional[str]:
+async def get_token_from_header(
+    request: Request, key: str = "Authorization"
+) -> Optional[str]:
     """
     Grab the authorization key from the request header. Check if it has
     Bearer scheme credential and if so, return the token.
@@ -38,7 +39,7 @@ async def get_token_from_header(request: Request) -> Optional[str]:
     Returns:
         Return the token if there is valid crentional if not returns None
     """
-    value = request.headers.get("Authorization")
+    value = request.headers.get(key)
     if not value:
         return None
 
@@ -116,6 +117,7 @@ class AuthenticatedUser(BaseModel):
     first_name: str
     last_name: str
     access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
 
     # -------------------------------------------------------------------------#
     # Methods
@@ -179,18 +181,22 @@ async def authenticate_user(
     return AuthenticatedUser.from_dbuser(user)
 
 
+def create_token(name: str, data: dict[str, Any], expires_delta: timedelta) -> Token:
+    """
+    Create a JWT token for the given data
+    """
+    expire = datetime.now(timezone.utc) + expires_delta
+    data.update({"exp": expire})
+
+    access_token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+    return Token(name=name, access_token=access_token, token_type="bearer")
+
+
 def create_access_token(user: AuthenticatedUser, expires_delta: timedelta) -> Token:
     """
     Using the data of the user, create a json token.
     """
-    to_encode = user.model_dump()
-    expire = datetime.now(timezone.utc) + expires_delta
-    to_encode.update({"exp": expire})
-
-    access_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return Token(
-        name=OAUTH2_SCHEME.token_name, access_token=access_token, token_type="bearer"
-    )
+    return create_token(OAUTH2_SCHEME.token_name, user.model_dump(), expires_delta)
 
 
 def create_access_token_set_cookie(user: AuthenticatedUser) -> JSONResponse:
@@ -212,6 +218,13 @@ def create_access_token_set_cookie(user: AuthenticatedUser) -> JSONResponse:
     return response
 
 
+def create_refresh_token(user: AuthenticatedUser, expires_delta: timedelta) -> Token:
+    """
+    Using the data of the user, create a json token.
+    """
+    return create_token("refresh_token", {"sub": user.sub}, expires_delta)
+
+
 def _decode_token(token: str) -> Optional[AuthenticatedUser]:
     """
     Decode the token and if its active, convert the payload to an authenticated
@@ -226,6 +239,24 @@ def _decode_token(token: str) -> Optional[AuthenticatedUser]:
     authenticate_user = AuthenticatedUser.from_payload(payload)
     authenticate_user.access_token = token
     return authenticate_user
+
+
+async def _decode_refresh_token(token: str) -> Optional[AuthenticatedUser]:
+    """
+    Decode the refresh token and get the authenticated user form the payload
+    """
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except (InvalidTokenError, ExpiredSignatureError):
+        return None
+
+    try:
+        user = await dependencies.get_db_client().get_user(email_address=payload["sub"])
+    except (RecommendAppDbError, RecommendDBModelNotFound):
+        return None
+
+    # Convert payload to an authenticated user
+    return AuthenticatedUser.from_dbuser(user)
 
 
 async def get_user(
@@ -262,7 +293,11 @@ async def get_authenticated_user(
     """
     user = _decode_token(token)
     if not user:
-        raise RecommendAppRequiresLogin("This page requires login")
+        # raise RecommendAppRequiresLogin("This page requires login")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"error": "This page requires login"},
+        )
     return user
 
 

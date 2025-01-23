@@ -12,6 +12,7 @@ class ROUTES:
     # session
     CREATE_SESSION = "/session/"
     CREATE_SESSION_WITH_COOKIE = "/session/?set_cookie=true"
+    REFRESH_SESSION = "/session/refresh"
     LOGOUT = "/session/"
 
     # users
@@ -52,3 +53,4 @@ class ROUTES:
 
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 1
+REFRESH_TOKEN_EXPIRE_DAYS = 7

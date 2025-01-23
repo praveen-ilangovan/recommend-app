@@ -98,7 +98,51 @@ async def test_session_post_without_cookie(api_client):
     assert response.status_code == status.HTTP_200_OK
     assert not response.cookies.get("access_token")
     assert data['access_token']
+    assert data['refresh_token']
     assert data['user_name'] == new_user.user_name
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_refresh_session(api_client):
+    new_user = utils.create_user()
+    password = new_user.password
+
+    # Create a user
+    await api_client.post(Key.ROUTES.ADD_USER, json=new_user.model_dump())
+
+    # Login
+    response = await api_client.post(Key.ROUTES.CREATE_SESSION,
+                               data={"username": new_user.user_name,
+                                     "password": password,
+                                     "grant_type": "password"},
+                               headers={"content-type": "application/x-www-form-urlencoded"})
+    
+    data = response.json()
+
+    # Refresh
+    refresh_response = await api_client.get(Key.ROUTES.REFRESH_SESSION,
+                               headers={
+                                   "RefreshToken": "Bearer " + data['refresh_token'],
+                                   "content-type": "application/x-www-form-urlencoded"
+                                   })
+    
+    refresh_data = refresh_response.json()
+    assert data['email_address'] == refresh_data['email_address']
+    assert refresh_data['access_token']
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_refresh_session_invalid_token(api_client):
+    refresh_response = await api_client.get(Key.ROUTES.REFRESH_SESSION,
+                               headers={
+                                   "RefreshToken": "Bearer InvalidToken",
+                                   "content-type": "application/x-www-form-urlencoded"
+                                   })
+    
+    assert refresh_response.status_code == status.HTTP_400_BAD_REQUEST
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_refresh_session_no_token(api_client):
+    refresh_response = await api_client.get(Key.ROUTES.REFRESH_SESSION)
+    assert refresh_response.status_code == status.HTTP_400_BAD_REQUEST
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_session_logout_without_cookie(api_client):

@@ -64,7 +64,7 @@ async def test_update_public_board_wrong_user(api_client_with_boards, with_diffe
     # This should fail because only an owner can update the board.
     data = UpdateBoard(private=True)
     result = await api_client.put(Key.ROUTES.UPDATE_BOARD.format(board_id=board['id']), json=data.model_dump())    
-    assert result.status_code == status.HTTP_401_UNAUTHORIZED
+    assert result.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_private_board_wrong_user(api_client_with_boards, with_different_user):
@@ -75,7 +75,7 @@ async def test_update_private_board_wrong_user(api_client_with_boards, with_diff
     # This should fail because only an owner can update the board.
     data = UpdateBoard(private=False)
     result = await api_client.put(Key.ROUTES.UPDATE_BOARD.format(board_id=board['id']), json=data.model_dump())
-    assert result.status_code == status.HTTP_401_UNAUTHORIZED
+    assert result.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_public_board_no_user(api_client_with_boards, with_no_signed_in_user):

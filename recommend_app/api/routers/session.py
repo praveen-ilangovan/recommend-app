@@ -29,6 +29,8 @@ async def create_session(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], set_cookie: bool = False
 ) -> JSONResponse | auth.AuthenticatedUser:
     user = await auth.authenticate_user(form_data.username, form_data.password)
+
+    # STATUS_UPDATE: 401
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

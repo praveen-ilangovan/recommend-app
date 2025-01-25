@@ -36,6 +36,7 @@ async def add_user(new_user: NewUser) -> UserInDb:
     try:
         user_in_db = await dependencies.get_db_client().add_user(new_user)
     except RecommendDBModelCreationError as err:
+        # STATUS_UPDATE: check
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail={"error": err.message})
 
     return user_in_db
@@ -70,6 +71,7 @@ async def update_user(
     user_id: str, data: UpdateUser, user: auth.REQUIRED_USER
 ) -> JSONResponse:
     if not user or user.id != user_id:
+        # STATUS_UPDATE: 403
         raise HTTPException(
             status.HTTP_401_UNAUTHORIZED,
             detail={"error": "Unauthorized to make this change"},

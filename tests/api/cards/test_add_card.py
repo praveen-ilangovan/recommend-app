@@ -56,7 +56,7 @@ async def test_add_duplicate_cards(api_client_with_boards):
     card = utils.create_card()
     await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = board['id']), json=card.model_dump())
     response = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = board['id']), json=card.model_dump())
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_add_same_cards_two_different_boards(api_client_with_boards):
@@ -77,7 +77,7 @@ async def test_add_card_to_board_of_different_user(api_client_with_boards, with_
 
     card = utils.create_card()
     response = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = board['id']), json=card.model_dump())
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_add_card_to_board_with_no_signed_in_user(api_client_with_boards, with_no_signed_in_user):
@@ -86,7 +86,7 @@ async def test_add_card_to_board_with_no_signed_in_user(api_client_with_boards, 
 
     card = utils.create_card()
     response = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = board['id']), json=card.model_dump())
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_add_card_to_non_existent_board(api_client_with_boards):

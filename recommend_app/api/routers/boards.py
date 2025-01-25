@@ -32,13 +32,15 @@ router = APIRouter()
 async def add_board(new_board: NewBoard, user: auth.REQUIRED_USER) -> BoardInDb:
     if not user:
         raise HTTPException(
-            status.HTTP_400_BAD_REQUEST, detail={"error": "Invalid user: None"}
+            status.HTTP_401_UNAUTHORIZED, detail={"error": "Please sign in"}
         )
 
     try:
         board = await dependencies.get_db_client().add_board(new_board, user.id)
     except RecommendDBModelCreationError as err:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail={"error": err.message})
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, detail={"error": err.message}
+        )
 
     return board
 
@@ -56,7 +58,7 @@ async def get_board(
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail={"error": err.message})
 
     return BoardWithCards(board=board, cards=cards)
 
@@ -75,7 +77,7 @@ async def update_board(board_id: str, data: UpdateBoard, user: auth.REQUIRED_USE
         # Only the owners of the board can update it
         if board.owner_id != user.id:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
                 detail={"error": "Only owners can update the board"},
             )
 
@@ -83,7 +85,7 @@ async def update_board(board_id: str, data: UpdateBoard, user: auth.REQUIRED_USE
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail={"error": err.message})
 
 
 @router.delete("/{board_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -100,7 +102,7 @@ async def remove_board(board_id: str, user: auth.REQUIRED_USER):
         # Only the owners of the board can delete it
         if board.owner_id != user.id:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
                 detail={"error": "Only owners can delete the board"},
             )
 
@@ -108,7 +110,7 @@ async def remove_board(board_id: str, user: auth.REQUIRED_USER):
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail={"error": err.message})
 
 
 # -----------------------------------------------------------------------------#
@@ -122,17 +124,19 @@ async def remove_board(board_id: str, user: auth.REQUIRED_USER):
 async def add_card(
     board_id: str, new_card: NewCard, user: auth.REQUIRED_USER
 ) -> CardInDb:
+    # STATUS_UPDATE: 401
     if not user:
         raise HTTPException(
-            status.HTTP_400_BAD_REQUEST, detail={"error": "Invalid user: None"}
+            status.HTTP_401_UNAUTHORIZED, detail={"error": "Please sign in"}
         )
 
     try:
         # Make sure the board belongs to the user
         board = await dependencies.get_db_client().get_board(board_id, user.id)
         if board.owner_id != user.id:
+            # STATUS_UPDATE: 403
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
                 detail={"error": "Only owner can add a card to the board."},
             )
 
@@ -143,6 +147,8 @@ async def add_card(
     except RecommendAppDbError as err:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
     except RecommendDBModelCreationError as err:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail={"error": err.message})
+        raise HTTPException(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, detail={"error": err.message}
+        )
 
     return card

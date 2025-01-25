@@ -77,7 +77,7 @@ async def test_update_user_by_different_user(api_client):
 
     data = UpdateUser(first_name='MyFirstName', password='MySecretPassword')
     updated_response = await api_client.put(Key.ROUTES.UPDATE_USER.format(user_id=created_user['id']), json=data.model_dump())
-    assert updated_response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert updated_response.status_code == status.HTTP_403_FORBIDDEN
 
     if get_authenticated_user_override:
         app.dependency_overrides[get_authenticated_user] = get_authenticated_user_override
@@ -94,11 +94,11 @@ async def test_update_user_with_no_signed_in_user(api_client_with_boards, with_n
     api_client = api_client_with_boards['api_client']
     data = UpdateUser(first_name='MyFirstName', password='MySecretPassword')
     updated_response = await api_client.put(Key.ROUTES.UPDATE_USER.format(user_id='12345678'), json=data.model_dump())
-    assert updated_response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert updated_response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_invalid_user(api_client_with_boards):
     api_client = api_client_with_boards['api_client']
     data = UpdateUser(first_name='MyFirstName', password='MySecretPassword')
     updated_response = await api_client.put(Key.ROUTES.UPDATE_USER.format(user_id='12345678'), json=data.model_dump())
-    assert updated_response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert updated_response.status_code == status.HTTP_403_FORBIDDEN

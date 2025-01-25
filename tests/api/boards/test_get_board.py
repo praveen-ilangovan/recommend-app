@@ -46,7 +46,7 @@ async def test_get_private_board_without_owner_id(api_client_with_boards, with_n
     # Get the board. Private board is being accessed by a non signed in user.
     # Should not work
     response = await api_client.get(Key.ROUTES.GET_BOARD.format(board_id=board['id']))
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_get_private_board_with_owner_id(api_client_with_boards):

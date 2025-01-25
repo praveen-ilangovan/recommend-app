@@ -56,7 +56,7 @@ async def test_update_card_in_public_board_diff_user(api_client_with_boards, wit
 
     data = UpdateCard(title="Updated Card Title")
     response = await api_client.put(Key.ROUTES.UPDATE_CARD.format(card_id=card['id']), json=data.model_dump())
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_card_in_private_board_diff_user(api_client_with_boards, with_different_user):
@@ -65,7 +65,7 @@ async def test_update_card_in_private_board_diff_user(api_client_with_boards, wi
 
     data = UpdateCard(title="Updated Card Title")
     response = await api_client.put(Key.ROUTES.UPDATE_CARD.format(card_id=card['id']), json=data.model_dump())
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_card_in_public_board_no_user(api_client_with_boards, with_no_signed_in_user):

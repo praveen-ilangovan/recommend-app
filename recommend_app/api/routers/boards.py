@@ -58,6 +58,10 @@ async def get_board(
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
+        if not owner_id:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, detail={"error": err.message}
+            )
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail={"error": err.message})
 
     return BoardWithCards(board=board, cards=cards)
@@ -145,7 +149,7 @@ async def add_card(
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail={"error": err.message})
     except RecommendDBModelCreationError as err:
         raise HTTPException(
             status.HTTP_500_INTERNAL_SERVER_ERROR, detail={"error": err.message}

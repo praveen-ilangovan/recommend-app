@@ -25,3 +25,11 @@ async def test_add_user(api_client):
     
     result = response.json()
     assert result['email_address'] == new_user.email_address
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_duplicate_user(api_client):
+    new_user = utils.create_user()
+
+    await api_client.post(Key.ROUTES.ADD_USER, json=new_user.model_dump())
+    response = await api_client.post(Key.ROUTES.ADD_USER, json=new_user.model_dump())
+    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR

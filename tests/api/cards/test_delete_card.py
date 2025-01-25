@@ -51,7 +51,7 @@ async def test_remove_card_in_public_board_diff_user(api_client_with_boards, wit
     card = api_client_with_boards['card_in_public_board']
 
     updated_response = await api_client.delete(Key.ROUTES.DELETE_CARD.format(card_id=card['id']))
-    assert updated_response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert updated_response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_remove_card_in_private_board_diff_user(api_client_with_boards, with_different_user):
@@ -59,7 +59,7 @@ async def test_remove_card_in_private_board_diff_user(api_client_with_boards, wi
     card = api_client_with_boards['card_in_private_board']
 
     updated_response = await api_client.delete(Key.ROUTES.DELETE_CARD.format(card_id=card['id']))
-    assert updated_response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert updated_response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_remove_card_in_public_board_no_user(api_client_with_boards, with_no_signed_in_user):

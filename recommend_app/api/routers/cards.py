@@ -42,9 +42,11 @@ async def get_board_and_card(card_id: str, user_id: Optional[str]) -> BoardAndCa
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
-
-    # STATUS_UPDATE: 403??
+        if not user_id:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, detail={"error": err.message}
+            )
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail={"error": err.message})
 
     return BoardAndCard(board=board, card=card)
 
@@ -60,10 +62,9 @@ async def get_card(
     models = await get_board_and_card(card_id, owner_id)
 
     # If the board is private, only the owner can view it.
-    # STATUS_UPDATE: 403
     if models.board.private and models.board.owner_id != owner_id:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail={"error": "Card belongs to a private board."},
         )
 
@@ -81,10 +82,9 @@ async def update_card(card_id: str, data: UpdateCard, user: auth.REQUIRED_USER):
     models = await get_board_and_card(card_id, user.id)
 
     # Only the owner can edit it.
-    # STATUS_UPDATE: 403
     if models.board.owner_id != user.id:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail={"error": "Only owner can edit it."},
         )
 
@@ -93,7 +93,7 @@ async def update_card(card_id: str, data: UpdateCard, user: auth.REQUIRED_USER):
     except RecommendDBModelNotFound as err:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail={"error": err.message})
     except RecommendAppDbError as err:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail={"error": err.message})
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail={"error": err.message})
 
 
 @router.delete("/{card_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -107,10 +107,9 @@ async def remove_card(card_id: str, user: auth.REQUIRED_USER):
     models = await get_board_and_card(card_id, user.id)
 
     # Only the owner can edit it.
-    # STATUS_UPDATE: 403
     if models.board.owner_id != user.id:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail={"error": "Only owner can remove it."},
         )
 

@@ -80,9 +80,27 @@ async def test_add_card_to_board_of_different_user(api_client_with_boards, with_
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
+async def test_add_card_to_private_board_of_different_user(api_client_with_boards, with_different_user):
+    api_client = api_client_with_boards['api_client']
+    board = api_client_with_boards['private_board']
+
+    card = utils.create_card()
+    response = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = board['id']), json=card.model_dump())
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+@pytest.mark.asyncio(loop_scope="session")
 async def test_add_card_to_board_with_no_signed_in_user(api_client_with_boards, with_no_signed_in_user):
     api_client = api_client_with_boards['api_client']
     board = api_client_with_boards['public_board']
+
+    card = utils.create_card()
+    response = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = board['id']), json=card.model_dump())
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+@pytest.mark.asyncio(loop_scope="session")
+async def test_add_card_to_private_board_with_no_signed_in_user(api_client_with_boards, with_no_signed_in_user):
+    api_client = api_client_with_boards['api_client']
+    board = api_client_with_boards['private_board']
 
     card = utils.create_card()
     response = await api_client.post(Key.ROUTES.ADD_CARD.format(board_id = board['id']), json=card.model_dump())

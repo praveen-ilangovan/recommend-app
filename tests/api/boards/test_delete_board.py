@@ -44,24 +44,24 @@ async def test_delete_public_board_by_different_owner(api_client_with_boards, wi
     api_client = api_client_with_boards['api_client']
     board = api_client_with_boards['public_board']
     response = await api_client.delete(Key.ROUTES.DELETE_BOARD.format(board_id=board['id']))
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_delete_private_board_by_different_owner(api_client_with_boards, with_different_user):
     api_client = api_client_with_boards['api_client']
     board = api_client_with_boards['private_board']
     response = await api_client.delete(Key.ROUTES.DELETE_BOARD.format(board_id=board['id']))
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_delete_public_board_by_different_owner(api_client_with_boards, with_no_signed_in_user):
+async def test_delete_public_board_by_no_owner(api_client_with_boards, with_no_signed_in_user):
     api_client = api_client_with_boards['api_client']
     board = api_client_with_boards['public_board']
     response = await api_client.delete(Key.ROUTES.DELETE_BOARD.format(board_id=board['id']))
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_delete_private_board_by_different_owner(api_client_with_boards, with_no_signed_in_user):
+async def test_delete_private_board_by_no_owner(api_client_with_boards, with_no_signed_in_user):
     api_client = api_client_with_boards['api_client']
     board = api_client_with_boards['private_board']
     response = await api_client.delete(Key.ROUTES.DELETE_BOARD.format(board_id=board['id']))

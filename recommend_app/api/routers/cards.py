@@ -10,7 +10,7 @@ from fastapi import APIRouter, status, HTTPException, Request
 
 # Local imports
 from ...db.exceptions import RecommendDBModelNotFound, RecommendAppDbError
-from ...db.models.card import CardInDb, UpdateCard
+from ...db.models.card import UpdateCard
 from .. import auth, dependencies
 from ..models import BoardAndCard
 
@@ -54,21 +54,21 @@ async def get_board_and_card(card_id: str, user_id: Optional[str]) -> BoardAndCa
 # -----------------------------------------------------------------------------#
 # Routes
 # -----------------------------------------------------------------------------#
-@router.get("/{card_id}", status_code=status.HTTP_200_OK, response_model=CardInDb)
+@router.get("/{card_id}", status_code=status.HTTP_200_OK, response_model=BoardAndCard)
 async def get_card(
     request: Request, card_id: str, user: auth.OPTIONAL_USER
-) -> CardInDb:
+) -> BoardAndCard:
     owner_id = user.id if user else None
-    models = await get_board_and_card(card_id, owner_id)
+    model = await get_board_and_card(card_id, owner_id)
 
     # If the board is private, only the owner can view it.
-    if models.board.private and models.board.owner_id != owner_id:
+    if model.board.private and model.board.owner_id != owner_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={"error": "Card belongs to a private board."},
         )
 
-    return models.card
+    return model
 
 
 @router.put("/{card_id}", status_code=status.HTTP_204_NO_CONTENT)

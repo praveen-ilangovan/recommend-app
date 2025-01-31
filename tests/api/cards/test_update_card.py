@@ -34,7 +34,7 @@ async def test_update_card_in_public_board_right_user(api_client_with_boards):
 
     updated_response = await api_client.get(Key.ROUTES.GET_CARD.format(card_id=card['id']))
     updated = updated_response.json()
-    assert updated['title'] == data.title
+    assert updated['card']['title'] == data.title
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_card_in_private_board_right_user(api_client_with_boards):
@@ -47,7 +47,7 @@ async def test_update_card_in_private_board_right_user(api_client_with_boards):
 
     updated_response = await api_client.get(Key.ROUTES.GET_CARD.format(card_id=card['id']))
     updated = updated_response.json()
-    assert updated['title'] == data.title
+    assert updated['card']['title'] == data.title
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_card_in_public_board_diff_user(api_client_with_boards, with_different_user):

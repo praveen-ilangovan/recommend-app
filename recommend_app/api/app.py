@@ -65,7 +65,15 @@ app.include_router(internal.router, tags=["Internal"], prefix="/internal")
 ui.mount_static_files(app)
 
 # Middleware
-origins = ["http://localhost:5173", "localhost:5173"]
+origins = [
+    "http://localhost:5173",
+    "localhost:5173",
+    "http://localhost:4173",
+    "localhost:4173",
+    "http://localhost",
+    "localhost",
+    "https://recommend-app-o98p.onrender.com",
+]
 
 app.add_middleware(
     CORSMiddleware,

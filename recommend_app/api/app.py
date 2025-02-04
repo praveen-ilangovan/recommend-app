@@ -5,11 +5,14 @@ FastAPI
 # Builtin imports
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
+import os
 
 # Project specific imports
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
 
 # Local imports
 from ..db import create_client
@@ -21,6 +24,9 @@ from .routers import session, users, boards, me, cards, scrapper, extension, int
 if TYPE_CHECKING:
     from ..db import RecommendDbClient
 
+
+# Load the environment variables
+load_dotenv()
 
 # -----------------------------------------------------------------------------#
 # App
@@ -65,15 +71,9 @@ app.include_router(internal.router, tags=["Internal"], prefix="/internal")
 ui.mount_static_files(app)
 
 # Middleware
-origins = [
-    "http://localhost:5173",
-    "localhost:5173",
-    "http://localhost:4173",
-    "localhost:4173",
-    "http://localhost",
-    "localhost",
-    "https://recommend-app-o98p.onrender.com",
-]
+origins = os.getenv("CORS_ORIGINS", [])
+if origins:
+    origins = origins.split(";")
 
 app.add_middleware(
     CORSMiddleware,
